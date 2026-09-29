@@ -1,0 +1,75 @@
+{
+  "business": {
+    "name": { "he": "מרחב ריפוי", "en": "Healing Space" },
+    "tagline": { "he": "טיפול הוליסטי · ריפוי רגשי", "en": "Holistic therapy · Emotional healing" },
+    "phone": "+972 50-000-0000",
+    "whatsapp": "972500000000",
+    "email": "hello@example.com",
+    "address": { "he": "רחוב הדוגמה 1, תל אביב", "en": "1 Example St., Tel Aviv" },
+    "instagram": "",
+    "facebook": ""
+  },
+  "timezone": "Asia/Jerusalem",
+  "currency": "ILS",
+  "services": [
+    {
+      "id": "intro",
+      "name": { "he": "שיחת היכרות", "en": "Introductory call" },
+      "description": {
+        "he": "שיחה קצרה בטלפון או בזום, כדי להכיר, להבין מה מביא אותך ולבדוק יחד אם הטיפול מתאים.",
+        "en": "A short phone or Zoom call to get to know each other, understand what brings you here and see if it's a good fit."
+      },
+      "duration": 20,
+      "price": 0,
+      "icon": "chat"
+    },
+    {
+      "id": "holistic",
+      "name": { "he": "טיפול רגשי-הוליסטי", "en": "Holistic emotional therapy" },
+      "description": {
+        "he": "מפגש אישי המשלב שיחה, עבודה עם הגוף וכלים לוויסות רגשי – לשחרור מתחים ולחיזוק החוסן הפנימי.",
+        "en": "A personal session combining talk, body work and emotional-regulation tools to release tension and build inner resilience."
+      },
+      "duration": 60,
+      "price": 350,
+      "icon": "leaf"
+    },
+    {
+      "id": "energy",
+      "name": { "he": "טיפול אנרגטי", "en": "Energy healing" },
+      "description": {
+        "he": "טיפול עדין ומרגיע לאיזון הגוף והנפש, המאפשר מנוחה עמוקה, שקט ותחושת התחדשות.",
+        "en": "A gentle, calming treatment to rebalance body and mind, allowing deep rest, stillness and renewal."
+      },
+      "duration": 60,
+      "price": 300,
+      "icon": "sun"
+    },
+    {
+      "id": "online",
+      "name": { "he": "מפגש אונליין", "en": "Online session" },
+      "description": {
+        "he": "מפגש טיפולי מלא בזום, מכל מקום בעולם – עם אותה תשומת לב ואותו מרחב בטוח.",
+        "en": "A full therapy session over Zoom from anywhere in the world – with the same care and safe space."
+      },
+      "duration": 50,
+      "price": 300,
+      "icon": "screen"
+    }
+  ],
+  "defaultSchedule": {
+    "weeklyHours": {
+      "0": [["09:00", "14:00"], ["16:00", "20:00"]],
+      "1": [["09:00", "14:00"], ["16:00", "20:00"]],
+      "2": [["09:00", "14:00"], ["16:00", "20:00"]],
+      "3": [["09:00", "14:00"], ["16:00", "20:00"]],
+      "4": [["09:00", "14:00"]],
+      "5": [["09:00", "13:00"]],
+      "6": []
+    },
+    "slotInterval": 30,
+    "bufferMinutes": 15,
+    "minNoticeHours": 12,
+    "maxDaysAhead": 60
+  }
+}

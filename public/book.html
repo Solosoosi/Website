@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>קביעת פגישה</title>
+  <meta name="description" content="">
+  <meta name="theme-color" content="#4f6b55">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script src="/js/theme-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script type="module" src="/js/book.js"></script>
+</head>
+<body data-title-key="meta.bookTitle">
+  <a class="skip-link" href="#main" data-i18n="a11y.skip"></a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark" data-icon="logo"></span>
+        <span class="brand-text">
+          <span class="brand-name" data-biz="name"></span>
+          <span class="brand-tagline" data-biz="tagline"></span>
+        </span>
+      </a>
+      <nav class="main-nav" id="main-nav" data-i18n-attr="aria-label:a11y.menu">
+        <ul>
+          <li><a href="/" data-i18n="nav.home"></a></li>
+          <li><a href="/#about" data-i18n="nav.about"></a></li>
+          <li><a href="/#treatments" data-i18n="nav.treatments"></a></li>
+          <li><a href="/#faq" data-i18n="nav.faq"></a></li>
+          <li><a href="/#contact" data-i18n="nav.contact"></a></li>
+          <li><a href="/book" aria-current="page" data-i18n="nav.book"></a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn lang-btn" id="lang-toggle" type="button"></button>
+        <button class="icon-btn" id="theme-toggle" type="button"></button>
+        <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" data-i18n-attr="aria-label:a11y.menu" data-icon="menu"></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero container">
+      <span class="eyebrow" data-biz="tagline"></span>
+      <h1 data-i18n="book.title"></h1>
+      <p class="lead" data-i18n="book.lead"></p>
+    </section>
+
+    <div class="container" id="booking-flow">
+      <ol class="stepper" id="stepper">
+        <li data-step="1"><span class="num">1</span><span class="label" data-i18n="book.step1"></span></li>
+        <li data-step="2"><span class="num">2</span><span class="label" data-i18n="book.step2"></span></li>
+        <li data-step="3"><span class="num">3</span><span class="label" data-i18n="book.step3"></span></li>
+      </ol>
+
+      <div class="booking-layout">
+        <div class="panel">
+          <!-- Step 1: service -->
+          <section id="step-1" aria-labelledby="step-1-title">
+            <h2 id="step-1-title" tabindex="-1" data-i18n="book.chooseService"></h2>
+            <p class="panel-sub" data-i18n="book.chooseServiceSub"></p>
+            <div class="service-options" id="service-options">
+              <p class="panel-sub" data-i18n="common.loading"></p>
+            </div>
+            <div class="panel-actions">
+              <button class="btn btn-primary" type="button" id="to-step-2" disabled>
+                <span data-i18n="book.next"></span><span class="flip-rtl" data-icon="arrow"></span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Step 2: date & time -->
+          <section id="step-2" aria-labelledby="step-2-title" hidden>
+            <h2 id="step-2-title" tabindex="-1" data-i18n="book.chooseTime"></h2>
+            <p class="panel-sub" data-i18n="book.chooseTimeSub"></p>
+            <div id="time-alert"></div>
+            <div class="schedule-grid">
+              <div>
+                <div class="calendar-head">
+                  <button class="icon-btn" type="button" id="prev-month" data-i18n-attr="aria-label:a11y.prevMonth"><span class="flip-rtl" data-icon="chevronPrev"></span></button>
+                  <h3 id="month-label" aria-live="polite"></h3>
+                  <button class="icon-btn" type="button" id="next-month" data-i18n-attr="aria-label:a11y.nextMonth"><span class="flip-rtl" data-icon="chevronNext"></span></button>
+                </div>
+                <div class="calendar-grid" id="calendar" role="group" aria-labelledby="month-label"></div>
+              </div>
+              <div>
+                <h3 class="slots-head" id="slots-title"></h3>
+                <p class="slots-note" data-i18n="book.tzNote"></p>
+                <div id="slots" aria-live="polite"></div>
+              </div>
+            </div>
+            <div class="panel-actions">
+              <button class="btn btn-ghost" type="button" data-go="1">
+                <span class="flip-rtl" data-icon="chevronPrev"></span><span data-i18n="book.back"></span>
+              </button>
+              <button class="btn btn-primary" type="button" id="to-step-3" disabled>
+                <span data-i18n="book.next"></span><span class="flip-rtl" data-icon="arrow"></span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Step 3: details -->
+          <section id="step-3" aria-labelledby="step-3-title" hidden>
+            <h2 id="step-3-title" tabindex="-1" data-i18n="book.details"></h2>
+            <p class="panel-sub" data-i18n="book.detailsSub"></p>
+            <form class="form" id="details-form" novalidate>
+              <div class="field">
+                <label for="b-name" data-i18n="contact.formName"></label>
+                <input id="b-name" name="name" autocomplete="name" required maxlength="80">
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label for="b-phone" data-i18n="contact.formPhone"></label>
+                  <input id="b-phone" name="phone" type="tel" autocomplete="tel" required maxlength="30">
+                </div>
+                <div class="field">
+                  <label for="b-email"><span data-i18n="contact.formEmail"></span> <span class="optional" data-i18n="contact.optional"></span></label>
+                  <input id="b-email" name="email" type="email" autocomplete="email" maxlength="120" data-i18n-attr="placeholder:book.emailHint">
+                </div>
+              </div>
+              <div class="field">
+                <label for="b-notes"><span data-i18n="book.notes"></span> <span class="optional" data-i18n="contact.optional"></span></label>
+                <textarea id="b-notes" name="notes" maxlength="1000"></textarea>
+              </div>
+              <label class="checkbox">
+                <input type="checkbox" name="consent" required>
+                <span data-i18n="book.consent"></span>
+              </label>
+              <div id="details-alert" role="status"></div>
+              <div class="panel-actions">
+                <button class="btn btn-ghost" type="button" data-go="2">
+                  <span class="flip-rtl" data-icon="chevronPrev"></span><span data-i18n="book.back"></span>
+                </button>
+                <button class="btn btn-primary" type="submit" id="confirm-btn" data-i18n="book.confirm"></button>
+              </div>
+            </form>
+          </section>
+        </div>
+
+        <aside class="panel summary" aria-labelledby="summary-title">
+          <h3 id="summary-title" data-i18n="book.summary"></h3>
+          <dl id="summary"></dl>
+          <p class="summary-note" data-i18n="book.summaryNote"></p>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Confirmation -->
+    <section class="container" id="confirmation" hidden>
+      <div class="panel confirmation">
+        <div class="check" data-icon="checkCircle"></div>
+        <h2 id="confirm-title" tabindex="-1" data-i18n="book.successTitle"></h2>
+        <p id="confirm-text"></p>
+        <dl id="confirm-details"></dl>
+        <p class="panel-sub" id="confirm-email" data-i18n="book.successEmail" hidden></p>
+        <div class="hero-ctas center">
+          <a class="btn btn-primary" href="/" data-i18n="book.home"></a>
+          <a class="btn btn-outline" href="/book" data-i18n="book.another"></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom compact">
+        <span>© <span data-biz="year"></span> <span data-biz="name"></span>. <span data-i18n="footer.rights"></span></span>
+        <span data-biz-item><a data-biz-href="phone"><bdi data-biz="phone"></bdi></a></span>
+      </div>
+    </div>
+  </footer>
+
+  <a class="whatsapp-fab" data-biz-href="whatsapp" target="_blank" rel="noopener" data-i18n-attr="aria-label:a11y.whatsapp" data-icon="whatsapp" hidden></a>
+</body>
+</html>

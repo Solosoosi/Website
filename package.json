@@ -1,0 +1,20 @@
+{
+  "name": "healing-practice-website",
+  "version": "1.0.0",
+  "description": "Bilingual (Hebrew/English) practice website with online session booking and an admin panel.",
+  "private": true,
+  "type": "module",
+  "main": "server/index.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server/index.js",
+    "dev": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env --watch server/index.js",
+    "test": "node --disable-warning=ExperimentalWarning --test"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "nodemailer": "^6.10.1"
+  }
+}

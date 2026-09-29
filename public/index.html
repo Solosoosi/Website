@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>טיפול הוליסטי וריפוי רגשי</title>
+  <meta name="description" content="">
+  <meta name="theme-color" content="#4f6b55">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script src="/js/theme-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script type="module" src="/js/home.js"></script>
+</head>
+<body data-title-key="meta.homeTitle">
+  <a class="skip-link" href="#main" data-i18n="a11y.skip"></a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark" data-icon="logo"></span>
+        <span class="brand-text">
+          <span class="brand-name" data-biz="name"></span>
+          <span class="brand-tagline" data-biz="tagline"></span>
+        </span>
+      </a>
+      <nav class="main-nav" id="main-nav" data-i18n-attr="aria-label:a11y.menu">
+        <ul>
+          <li><a href="#about" data-i18n="nav.about"></a></li>
+          <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
+          <li><a href="#process" data-i18n="nav.process"></a></li>
+          <li><a href="#testimonials" data-i18n="nav.testimonials"></a></li>
+          <li><a href="#faq" data-i18n="nav.faq"></a></li>
+          <li><a href="#contact" data-i18n="nav.contact"></a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn lang-btn" id="lang-toggle" type="button"></button>
+        <button class="icon-btn" id="theme-toggle" type="button"></button>
+        <a class="btn btn-primary header-cta" href="/book" data-i18n="nav.book"></a>
+        <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" data-i18n-attr="aria-label:a11y.menu" data-icon="menu"></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <span class="eyebrow" data-biz="tagline"></span>
+          <h1 data-i18n="hero.title"></h1>
+          <p class="lead" data-i18n="hero.lead"></p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="/book">
+              <span data-icon="calendar"></span><span data-i18n="hero.ctaBook"></span>
+            </a>
+            <a class="btn btn-outline" href="#treatments" data-i18n="hero.ctaMore"></a>
+          </div>
+          <ul class="hero-points">
+            <li><span data-icon="check"></span><span data-i18n="hero.point1"></span></li>
+            <li><span data-icon="check"></span><span data-i18n="hero.point2"></span></li>
+            <li><span data-icon="check"></span><span data-i18n="hero.point3"></span></li>
+          </ul>
+        </div>
+        <div class="hero-visual reveal">
+          <!-- Replace the placeholder with: <img src="/images/hero.jpg" alt="…"> -->
+          <div class="photo photo-arch">
+            <div class="photo-leaf" data-icon="leaf"></div>
+            <span class="photo-label" data-i18n="common.photo"></span>
+          </div>
+          <div class="hero-badge">
+            <span class="badge-icon" data-icon="calendar"></span>
+            <span><strong data-i18n="hero.badgeTitle"></strong><span data-i18n="hero.badgeText"></span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section section-alt" id="about">
+      <div class="container about-grid">
+        <div class="reveal">
+          <!-- Replace the placeholder with: <img src="/images/about.jpg" alt="…"> -->
+          <div class="photo photo-round">
+            <div class="photo-leaf" data-icon="heart"></div>
+            <span class="photo-label" data-i18n="common.photo"></span>
+          </div>
+        </div>
+        <div class="about-text reveal">
+          <span class="eyebrow" data-i18n="about.eyebrow"></span>
+          <h2 class="section-title" data-i18n="about.title"></h2>
+          <p data-i18n="about.p1"></p>
+          <p data-i18n="about.p2"></p>
+          <p class="about-quote" data-i18n="about.quote"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Treatments -->
+    <section class="section" id="treatments">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow" data-i18n="treatments.eyebrow"></span>
+          <h2 class="section-title" data-i18n="treatments.title"></h2>
+          <p class="lead" data-i18n="treatments.lead"></p>
+        </div>
+        <div class="cards" id="services-list" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- Process -->
+    <section class="section section-alt" id="process">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow" data-i18n="process.eyebrow"></span>
+          <h2 class="section-title" data-i18n="process.title"></h2>
+        </div>
+        <ol class="steps reveal">
+          <li class="step"><h3 data-i18n="process.s1t"></h3><p data-i18n="process.s1p"></p></li>
+          <li class="step"><h3 data-i18n="process.s2t"></h3><p data-i18n="process.s2p"></p></li>
+          <li class="step"><h3 data-i18n="process.s3t"></h3><p data-i18n="process.s3p"></p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Testimonials (placeholders – replace with real client quotes) -->
+    <section class="section" id="testimonials">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow" data-i18n="testimonials.eyebrow"></span>
+          <h2 class="section-title" data-i18n="testimonials.title"></h2>
+        </div>
+        <div class="cards reveal">
+          <figure class="card quote-card">
+            <blockquote data-i18n="testimonials.sample"></blockquote>
+            <figcaption><span class="avatar">א</span><div><span data-i18n="testimonials.name"></span><span data-i18n="testimonials.role"></span></div></figcaption>
+          </figure>
+          <figure class="card quote-card">
+            <blockquote data-i18n="testimonials.sample"></blockquote>
+            <figcaption><span class="avatar">ב</span><div><span data-i18n="testimonials.name"></span><span data-i18n="testimonials.role"></span></div></figcaption>
+          </figure>
+          <figure class="card quote-card">
+            <blockquote data-i18n="testimonials.sample"></blockquote>
+            <figcaption><span class="avatar">ג</span><div><span data-i18n="testimonials.name"></span><span data-i18n="testimonials.role"></span></div></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section section-alt" id="faq">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow" data-i18n="faq.eyebrow"></span>
+          <h2 class="section-title" data-i18n="faq.title"></h2>
+        </div>
+        <div class="faq reveal">
+          <details><summary data-i18n="faq.q1"></summary><p data-i18n="faq.a1"></p></details>
+          <details><summary data-i18n="faq.q2"></summary><p data-i18n="faq.a2"></p></details>
+          <details><summary data-i18n="faq.q3"></summary><p data-i18n="faq.a3"></p></details>
+          <details><summary data-i18n="faq.q4"></summary><p data-i18n="faq.a4"></p></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section">
+      <div class="container">
+        <div class="cta-band reveal">
+          <h2 data-i18n="cta.title"></h2>
+          <p data-i18n="cta.text"></p>
+          <a class="btn" href="/book"><span data-i18n="cta.button"></span><span class="flip-rtl" data-icon="arrow"></span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section section-alt" id="contact">
+      <div class="container contact-grid">
+        <div class="reveal">
+          <span class="eyebrow" data-i18n="contact.eyebrow"></span>
+          <h2 class="section-title" data-i18n="contact.title"></h2>
+          <p class="lead" data-i18n="contact.lead"></p>
+          <ul class="contact-list">
+            <li data-biz-item>
+              <span class="card-icon" data-icon="phone"></span>
+              <span><small data-i18n="contact.phone"></small><a data-biz-href="phone"><bdi data-biz="phone"></bdi></a></span>
+            </li>
+            <li data-biz-item>
+              <span class="card-icon" data-icon="whatsapp"></span>
+              <span><small data-i18n="contact.whatsapp"></small><a data-biz-href="whatsapp" target="_blank" rel="noopener" data-i18n="contact.whatsappText"></a></span>
+            </li>
+            <li data-biz-item>
+              <span class="card-icon" data-icon="mail"></span>
+              <span><small data-i18n="contact.email"></small><a data-biz-href="email"><bdi data-biz="email"></bdi></a></span>
+            </li>
+            <li data-biz-item>
+              <span class="card-icon" data-icon="pin"></span>
+              <span><small data-i18n="contact.address"></small><a data-biz-href="maps" target="_blank" rel="noopener" data-biz="address"></a></span>
+            </li>
+          </ul>
+        </div>
+        <div class="panel reveal">
+          <form class="form" id="contact-form" novalidate>
+            <div class="field">
+              <label for="c-name" data-i18n="contact.formName"></label>
+              <input id="c-name" name="name" autocomplete="name" required maxlength="80">
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="c-phone" data-i18n="contact.formPhone"></label>
+                <input id="c-phone" name="phone" type="tel" autocomplete="tel" maxlength="30">
+              </div>
+              <div class="field">
+                <label for="c-email" data-i18n="contact.formEmail"></label>
+                <input id="c-email" name="email" type="email" autocomplete="email" maxlength="120">
+              </div>
+            </div>
+            <div class="field">
+              <label for="c-message" data-i18n="contact.formMessage"></label>
+              <textarea id="c-message" name="message" required maxlength="2000"></textarea>
+            </div>
+            <div class="hp-field" aria-hidden="true">
+              <label for="c-website">Website</label>
+              <input id="c-website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+            <div id="contact-status" role="status"></div>
+            <button class="btn btn-primary btn-block" type="submit" data-i18n="contact.send"></button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="/">
+            <span class="brand-mark" data-icon="logo"></span>
+            <span class="brand-text"><span class="brand-name" data-biz="name"></span></span>
+          </a>
+          <p class="footer-about" data-i18n="footer.about"></p>
+        </div>
+        <div>
+          <h4 data-i18n="footer.links"></h4>
+          <ul>
+            <li><a href="#about" data-i18n="nav.about"></a></li>
+            <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
+            <li><a href="#faq" data-i18n="nav.faq"></a></li>
+            <li><a href="/book" data-i18n="nav.book"></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 data-i18n="footer.contact"></h4>
+          <ul>
+            <li data-biz-item><a data-biz-href="phone"><bdi data-biz="phone"></bdi></a></li>
+            <li data-biz-item><a data-biz-href="email"><bdi data-biz="email"></bdi></a></li>
+            <li data-biz-item><a data-biz-href="whatsapp" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li data-biz-item><a data-biz-href="instagram" target="_blank" rel="noopener">Instagram</a></li>
+            <li data-biz-item><a data-biz-href="facebook" target="_blank" rel="noopener">Facebook</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span data-biz="year"></span> <span data-biz="name"></span>. <span data-i18n="footer.rights"></span></span>
+      </div>
+    </div>
+  </footer>
+
+  <a class="whatsapp-fab" data-biz-href="whatsapp" target="_blank" rel="noopener" data-i18n-attr="aria-label:a11y.whatsapp" data-icon="whatsapp" hidden></a>
+</body>
+</html>

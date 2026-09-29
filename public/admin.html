@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ניהול</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script src="/js/theme-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script type="module" src="/js/admin.js"></script>
+</head>
+<body data-title-key="meta.adminTitle">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark" data-icon="logo"></span>
+        <span class="brand-text">
+          <span class="brand-name" data-biz="name"></span>
+          <span class="brand-tagline" data-i18n="admin.title"></span>
+        </span>
+      </a>
+      <div class="header-actions">
+        <button class="icon-btn lang-btn" id="lang-toggle" type="button"></button>
+        <button class="icon-btn" id="theme-toggle" type="button"></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container admin-wrap">
+    <!-- Login -->
+    <section id="login-view" hidden>
+      <div class="panel login-card">
+        <h1 class="section-title" data-i18n="admin.loginTitle"></h1>
+        <p class="alert alert-error" id="admin-disabled" data-i18n="admin.disabled" hidden></p>
+        <form class="form" id="login-form" novalidate>
+          <div class="field">
+            <label for="password" data-i18n="admin.password"></label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <div id="login-alert" role="status"></div>
+          <button class="btn btn-primary btn-block" type="submit" data-i18n="admin.login"></button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" hidden>
+      <div class="admin-top">
+        <h1 data-i18n="admin.title"></h1>
+        <div class="toolbar">
+          <a class="btn btn-outline btn-sm" href="/" data-i18n="admin.viewSite"></a>
+          <button class="btn btn-ghost btn-sm" type="button" id="logout" data-i18n="admin.logout"></button>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" id="tab-bookings" aria-controls="panel-bookings" aria-selected="true" data-tab="bookings" data-i18n="admin.tabBookings"></button>
+        <button class="tab" role="tab" id="tab-schedule" aria-controls="panel-schedule" aria-selected="false" data-tab="schedule" data-i18n="admin.tabSchedule"></button>
+        <button class="tab" role="tab" id="tab-messages" aria-controls="panel-messages" aria-selected="false" data-tab="messages"><span data-i18n="admin.tabMessages"></span><span class="badge" id="unread-badge" hidden></span></button>
+      </div>
+
+      <!-- Bookings -->
+      <div role="tabpanel" id="panel-bookings" aria-labelledby="tab-bookings">
+        <div class="toolbar" id="booking-scopes">
+          <button class="btn btn-outline btn-sm" type="button" data-scope="upcoming" aria-pressed="true" data-i18n="admin.upcoming"></button>
+          <button class="btn btn-outline btn-sm" type="button" data-scope="past" aria-pressed="false" data-i18n="admin.past"></button>
+          <button class="btn btn-outline btn-sm" type="button" data-scope="cancelled" aria-pressed="false" data-i18n="admin.cancelled"></button>
+        </div>
+        <div class="list" id="bookings-list"></div>
+      </div>
+
+      <!-- Schedule -->
+      <div role="tabpanel" id="panel-schedule" aria-labelledby="tab-schedule" hidden>
+        <form id="schedule-form" novalidate>
+          <h2 class="subhead" data-i18n="admin.weeklyHours"></h2>
+          <p class="panel-sub" data-i18n="admin.weeklyHoursSub"></p>
+          <div class="hours" id="hours"></div>
+          <div class="settings-grid">
+            <div class="field"><label for="s-interval" data-i18n="admin.slotInterval"></label><input id="s-interval" name="slotInterval" type="number" min="5" max="240" step="5" required></div>
+            <div class="field"><label for="s-buffer" data-i18n="admin.bufferMinutes"></label><input id="s-buffer" name="bufferMinutes" type="number" min="0" max="240" step="5" required></div>
+            <div class="field"><label for="s-notice" data-i18n="admin.minNoticeHours"></label><input id="s-notice" name="minNoticeHours" type="number" min="0" max="336" required></div>
+            <div class="field"><label for="s-ahead" data-i18n="admin.maxDaysAhead"></label><input id="s-ahead" name="maxDaysAhead" type="number" min="1" max="365" required></div>
+          </div>
+          <div id="schedule-alert" role="status"></div>
+          <button class="btn btn-primary" type="submit" data-i18n="admin.save"></button>
+        </form>
+
+        <h2 class="subhead" data-i18n="admin.blocked"></h2>
+        <p class="panel-sub" data-i18n="admin.blockedSub"></p>
+        <form class="inline-form" id="block-form" novalidate>
+          <div class="field"><label for="block-date" data-i18n="admin.blockDate"></label><input id="block-date" name="date" type="date" required></div>
+          <div class="field"><label for="block-note" data-i18n="admin.blockNote"></label><input id="block-note" name="note" maxlength="120"></div>
+          <button class="btn btn-outline" type="submit" data-i18n="admin.block"></button>
+        </form>
+        <div class="list" id="blocked-list"></div>
+      </div>
+
+      <!-- Messages -->
+      <div role="tabpanel" id="panel-messages" aria-labelledby="tab-messages" hidden>
+        <div class="list" id="messages-list"></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
