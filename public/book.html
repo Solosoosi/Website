@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>קביעת טיפול</title>
   <meta name="description" content="">
-  <meta name="theme-color" content="#1f3d2e">
+  <meta name="theme-color" content="#2e7d6b">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="/js/theme-init.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&family=Karantina:wght@300;400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bellefair&family=Rubik:wght@300;400;500;600&display=swap">
   <link rel="stylesheet" href="/css/styles.css">
   <script type="module" src="/js/book.js"></script>
 </head>
@@ -19,9 +19,9 @@
   <a class="skip-link" href="#main" data-i18n="a11y.skip"></a>
 
   <header class="site-header" id="top">
-    <div class="container header-inner">
+    <div class="header-inner">
       <a class="brand" href="/">
-        <span class="brand-mark" data-icon="seal"></span>
+        <span class="brand-orb" aria-hidden="true"></span>
         <span class="brand-text">
           <span class="brand-name" data-biz="name"></span>
           <span class="brand-tagline" data-biz="tagline"></span>
@@ -42,12 +42,13 @@
         <button class="icon-btn" id="theme-toggle" type="button"></button>
         <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" data-i18n-attr="aria-label:a11y.menu" data-icon="menu"></button>
       </div>
+      <span class="scroll-progress" aria-hidden="true"></span>
     </div>
   </header>
 
   <main id="main">
     <section class="page-hero container">
-      <p class="kicker" data-biz="tagline"></p>
+      <p class="pill-label" data-biz="tagline"></p>
       <h1 data-i18n="book.title"></h1>
       <p class="lead" data-i18n="book.lead"></p>
     </section>

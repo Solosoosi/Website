@@ -37,17 +37,8 @@ const PATHS = {
   reset: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
 };
 
-// David's seal: a red stamp with his Hebrew initials (ד·נ), drawn as blocks like a carved seal.
-const SEAL =
-  '<svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
-  '<rect class="seal-bg" width="64" height="64" rx="7"/>' +
-  '<rect class="seal-frame" x="5" y="5" width="54" height="54" rx="3" stroke-width="2"/>' +
-  '<g class="seal-ink"><rect x="34" y="17" width="20" height="5.5"/><rect x="45.5" y="17" width="5.5" height="30"/>' +
-  '<rect x="18" y="17" width="10.5" height="5.5"/><rect x="23" y="17" width="5.5" height="30"/><rect x="12" y="41.5" width="16.5" height="5.5"/></g>' +
-  '</svg>';
 
 export function svg(name, extraClass = '') {
-  if (name === 'seal') return SEAL;
   const body = PATHS[name] || PATHS.sparkle;
   const cls = extraClass ? ` class="${extraClass}"` : '';
   return `<svg${cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${body}</svg>`;

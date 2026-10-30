@@ -2,22 +2,23 @@
 
 The website of an acupuncture clinic in Tel Aviv, in Hebrew. Clients see the treatments, find the one that fits them, and send a booking request.
 
-The design is based on an acupuncture chart:
-- **Fonts:** a tall, condensed display font (Karantina) with a precise body font (IBM Plex).
-- **Motifs:** red points, thin "needle" lines, round "cup" frames for photos, and a red seal with David's initials.
-- **Colors:** taken from the clinic photos.
+The design is soft and calm:
+- **Look:** a light palette of mint, sky and a touch of blush with slowly drifting light, frosted-glass cards, rounded shapes, and photos in gently morphing organic frames.
+- **Fonts:** an elegant display font (Bellefair) with a soft, rounded text font (Rubik). Light and dark themes.
+- **Motion:** the headline blurs in on load, a soft glow follows the mouse in the opening section, and sections fade in smoothly as you scroll. Switching the theme ripples a circle out from the button. Everything respects the "reduce motion" setting and the accessibility menu.
 
 - **Pages:** home and booking (`#book` on GitHub Pages, `/book` on the server).
 - **Home page sections, in order:**
   - opening section: an "open now / opens at…" status from the opening hours
-  - band of techniques
+  - a slow stream of the techniques he uses
   - interactive **body map** ("מה כואב לך?"): pick an area, see the matching treatment, book it
-  - treatments
+  - treatments as cards that stack as you scroll; the "43 muscles" number counts up
+  - **breathing exercise** ("בואו ננשום רגע"): a guided 4-4-6 breathing circle
   - about
-  - the process ("כמו באימון")
-  - photo gallery with a full-screen viewer
+  - the process ("כמו באימון"): a line that draws itself through the steps as you scroll
+  - photo carousel (swipe, drag or arrows) with a full-screen viewer
   - visit: address, Waze / Google Maps, an hours table with today marked, how to prepare
-  - FAQ
+  - FAQ with answers that open smoothly
   - contact
 - **Accessibility menu** (the person icon in the header): bigger text, high contrast, underlined links, stop animations, readable font. Also an accessibility statement.
 - **Phones:** a bottom bar with "book", WhatsApp and call.

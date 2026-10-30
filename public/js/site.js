@@ -471,9 +471,27 @@ function initHeader() {
   const toggle = document.getElementById('nav-toggle');
 
   if (header) {
-    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    const progress = header.querySelector('.scroll-progress');
+    let queued = false;
+    const onScroll = () => {
+      queued = false;
+      header.classList.toggle('is-scrolled', window.scrollY > 8);
+      if (progress) {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.setProperty('--progress', String(max > 0 ? Math.min(1, window.scrollY / max) : 0));
+      }
+    };
     onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!queued) {
+          queued = true;
+          requestAnimationFrame(onScroll);
+        }
+      },
+      { passive: true },
+    );
   }
 
   if (nav && toggle) {
@@ -487,9 +505,24 @@ function initHeader() {
     document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
   }
 
-  document.getElementById('theme-toggle')?.addEventListener('click', () =>
-    setTheme(getTheme() === 'dark' ? 'light' : 'dark'),
-  );
+  // Theme switch: a soft circle that ripples out from the button (where supported).
+  document.getElementById('theme-toggle')?.addEventListener('click', (e) => {
+    const next = getTheme() === 'dark' ? 'light' : 'dark';
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || root.classList.contains('a11y-still');
+    if (!document.startViewTransition || still) return setTheme(next);
+    const x = e.clientX || window.innerWidth / 2;
+    const y = e.clientY || 40;
+    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    const transition = document.startViewTransition(() => setTheme(next));
+    transition.ready
+      .then(() =>
+        root.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+          { duration: 750, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' },
+        ),
+      )
+      .catch(() => {});
+  });
   document.getElementById('lang-toggle')?.addEventListener('click', () =>
     setLang(getLang() === 'he' ? 'en' : 'he'),
   );
