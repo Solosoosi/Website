@@ -2040,3 +2040,7 @@ textarea {
   padding-top: 0;
   border-top: 0;
 }
+
+.form-row:has(> .field[hidden]) {
+  grid-template-columns: 1fr;
+}

@@ -23,6 +23,7 @@ const state = {
   date: null,
   time: null,
   loading: false,
+  autoAdvanced: false,
 };
 const cache = new Map(); // `${serviceId}|${month}` → { "YYYY-MM-DD": ["HH:MM"] }
 
@@ -99,7 +100,7 @@ function renderServices() {
             'span',
             { class: 'service-meta' },
             el('span', { class: 'chip', html: svg('clock') }, t('common.minutes', { n: s.duration })),
-            el('span', { class: 'chip chip-accent' }, formatPrice(s.price)),
+            s.price == null ? null : el('span', { class: 'chip chip-accent' }, formatPrice(s.price)),
           ),
         ),
       ),
@@ -140,6 +141,13 @@ async function loadMonth() {
   }
   // Pre-select the first open day of the month for a quicker flow.
   const days = cache.get(key) || {};
+  const anyOpen = Object.values(days).some((s) => s.length);
+  // Near the end of a month there may be no open days left: start on next month instead.
+  if (!anyOpen && !state.autoAdvanced && cache.has(key) && state.month === monthOf(state.config.today) && shiftMonth(state.month, 1) <= monthOf(maxDate())) {
+    state.autoAdvanced = true;
+    state.month = shiftMonth(state.month, 1);
+    return loadMonth();
+  }
   if (!state.date || monthOf(state.date) !== state.month || !days[state.date]?.length) {
     const first = Object.keys(days).sort().find((d) => days[d].length);
     if (first) {
@@ -249,8 +257,8 @@ function renderSummary() {
     ['book.date', state.date && fmtDate(state.date)],
     ['book.time', state.time],
     ['book.duration', s && t('common.minutes', { n: s.duration })],
-    ['book.price', s && formatPrice(s.price)],
-  ];
+    s?.price != null && ['book.price', formatPrice(s.price)],
+  ].filter(Boolean);
   $('summary').replaceChildren(
     ...rows.flatMap(([label, value]) => [
       el('dt', {}, t(label)),
@@ -265,6 +273,29 @@ function renderSummary() {
 
 function setAlert(id, kind, message) {
   $(id).replaceChildren(message ? el('p', { class: `alert alert-${kind}` }, message) : '');
+}
+
+// On a static host (GitHub Pages) there's no server: the request is sent to the
+// practitioner on WhatsApp instead, and they confirm the time with the client.
+const viaWhatsApp = () => state.config?.handoff === 'whatsapp';
+
+function whatsappMessage(data) {
+  const lines = [
+    t('book.waIntro', { name: data.name.trim() }),
+    `${t('book.service')}: ${pick(state.service.name)}`,
+    `${t('book.date')}: ${fmtDate(state.date)}`,
+    `${t('book.time')}: ${state.time}`,
+    `${t('contact.formPhone')}: ${data.phone.trim()}`,
+  ];
+  if (data.notes?.trim()) lines.push(`${t('book.waNotes')}: ${data.notes.trim()}`);
+  return lines.join('\n');
+}
+
+function handOffToWhatsApp(data) {
+  const href = `https://wa.me/${state.config.business.whatsapp}?text=${encodeURIComponent(whatsappMessage(data))}`;
+  window.open(href, '_blank', 'noopener');
+  const booking = { date: state.date, time: state.time, duration: state.service.duration, name: data.name.trim() };
+  showConfirmation(booking, false, href);
 }
 
 const PHONE_RE = /^\+?[\d\s\-()]{7,20}$/;
@@ -283,6 +314,7 @@ async function submit(e) {
   if (data.email && !EMAIL_RE.test(data.email.trim())) bad.push('email');
   if (!data.consent) bad.push('consent');
   if (bad.length) return showFieldErrors(form, bad);
+  if (viaWhatsApp()) return handOffToWhatsApp(data);
 
   const button = $('confirm-btn');
   button.disabled = true;
@@ -316,7 +348,7 @@ async function submit(e) {
     }
   } finally {
     button.disabled = false;
-    button.textContent = t('book.confirm');
+    button.textContent = t(button.dataset.i18n);
   }
 }
 
@@ -324,20 +356,25 @@ let confirmed = null;
 
 function renderConfirmation() {
   if (!confirmed) return;
-  const { booking } = confirmed;
-  $('confirm-text').textContent = t('book.successText', { name: booking.name });
+  const { booking, whatsappHref } = confirmed;
+  const title = $('confirm-title');
+  title.dataset.i18n = whatsappHref ? 'book.waTitle' : 'book.successTitle';
+  title.textContent = t(title.dataset.i18n);
+  $('confirm-text').textContent = whatsappHref ? t('book.waText') : t('book.successText', { name: booking.name });
+  $('confirm-whatsapp').hidden = !whatsappHref;
+  if (whatsappHref) $('confirm-whatsapp').href = whatsappHref;
   const rows = [
-    ['book.ref', el('span', { class: 'ref' }, booking.ref)],
+    booking.ref && ['book.ref', el('span', { class: 'ref' }, booking.ref)],
     ['book.service', pick(state.service.name)],
     ['book.date', fmtDate(booking.date)],
     ['book.time', el('bdi', {}, booking.time)],
     ['book.duration', t('common.minutes', { n: booking.duration })],
-  ];
+  ].filter(Boolean);
   $('confirm-details').replaceChildren(...rows.flatMap(([k, v]) => [el('dt', {}, t(k)), el('dd', {}, v)]));
 }
 
-function showConfirmation(booking, emailed) {
-  confirmed = { booking };
+function showConfirmation(booking, emailed, whatsappHref = null) {
+  confirmed = { booking, whatsappHref };
   $('booking-flow').hidden = true;
   document.querySelector('.page-hero').hidden = true;
   $('confirmation').hidden = false;
@@ -383,6 +420,11 @@ loadConfig()
   .then((config) => {
     state.config = config;
     state.month = monthOf(config.today);
+    if (viaWhatsApp()) {
+      $('b-email').closest('.field').hidden = true;
+      $('confirm-btn').dataset.i18n = 'book.confirmWhatsapp';
+      $('confirm-btn').textContent = t('book.confirmWhatsapp');
+    }
     const preset = config.services.find((s) => s.id === new URLSearchParams(location.search).get('service'));
     if (preset) state.service = preset;
     renderAll();

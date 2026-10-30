@@ -17,7 +17,7 @@ function renderServices() {
           'div',
           { class: 'service-meta' },
           el('span', { class: 'chip', html: svg('clock') }, t('common.minutes', { n: s.duration })),
-          el('span', { class: 'chip chip-accent' }, formatPrice(s.price)),
+          s.price == null ? null : el('span', { class: 'chip chip-accent' }, formatPrice(s.price)),
         ),
         el('p', {}, pick(s.description)),
         el(
@@ -34,6 +34,13 @@ loadConfig()
   .then((cfg) => {
     config = cfg;
     renderServices();
+    if (cfg.handoff === 'whatsapp') {
+      // No server: messages go straight to WhatsApp, so phone/email fields aren't needed.
+      form.elements.phone.closest('.form-row').hidden = true;
+      const button = form.querySelector('[type="submit"]');
+      button.dataset.i18n = 'contact.sendWhatsapp';
+      button.textContent = t('contact.sendWhatsapp');
+    }
   })
   .catch(() => {
     list.replaceChildren(el('p', { class: 'alert alert-error' }, t('common.error')));
@@ -58,6 +65,20 @@ form.addEventListener('submit', async (e) => {
   clearFieldErrors(form);
   setStatus();
 
+  if (config?.handoff === 'whatsapp') {
+    const missing = [];
+    if (data.name.trim().length < 2) missing.push('name');
+    if (data.message.trim().length < 2) missing.push('message');
+    if (missing.length) return showFieldErrors(form, missing);
+    const text = `${t('contact.waIntro', { name: data.name.trim() })}\n${data.message.trim()}`;
+    const href = `https://wa.me/${config.business.whatsapp}?text=${encodeURIComponent(text)}`;
+    window.open(href, '_blank', 'noopener');
+    status.replaceChildren(
+      el('p', { class: 'alert alert-success' }, `${t('contact.waSuccess')} `, el('a', { href, target: '_blank', rel: 'noopener' }, t('contact.waLink'))),
+    );
+    return;
+  }
+
   const bad = [];
   if (data.name.trim().length < 2) bad.push('name');
   if (!data.phone.trim() && !data.email.trim()) {
@@ -79,6 +100,6 @@ form.addEventListener('submit', async (e) => {
     else setStatus('error', t(err.status === 429 ? 'errors.rate' : 'common.error'));
   } finally {
     button.disabled = false;
-    button.textContent = t('contact.send');
+    button.textContent = t(button.dataset.i18n);
   }
 });

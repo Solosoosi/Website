@@ -1,11 +1,20 @@
 {
   "business": {
-    "name": { "he": "מרחב ריפוי", "en": "Healing Space" },
-    "tagline": { "he": "טיפול הוליסטי · ריפוי רגשי", "en": "Holistic therapy · Emotional healing" },
-    "phone": "+972 50-000-0000",
-    "whatsapp": "972500000000",
-    "email": "hello@example.com",
-    "address": { "he": "רחוב הדוגמה 1, תל אביב", "en": "1 Example St., Tel Aviv" },
+    "name": {
+      "he": "דוד נאמן",
+      "en": "David Neeman"
+    },
+    "tagline": {
+      "he": "ייעוץ וטיפול · דיקור יבש ויפני",
+      "en": "Consultation & treatment · Dry and Japanese needling"
+    },
+    "phone": "+972 58-434-4047",
+    "whatsapp": "972584344047",
+    "email": "",
+    "address": {
+      "he": "דרויאנוב 5, תל אביב (בית כלל)",
+      "en": "5 Druyanov St., Tel Aviv (Beit Klal)"
+    },
     "instagram": "",
     "facebook": ""
   },
@@ -13,63 +22,81 @@
   "currency": "ILS",
   "services": [
     {
-      "id": "intro",
-      "name": { "he": "שיחת היכרות", "en": "Introductory call" },
-      "description": {
-        "he": "שיחה קצרה בטלפון או בזום, כדי להכיר, להבין מה מביא אותך ולבדוק יחד אם הטיפול מתאים.",
-        "en": "A short phone or Zoom call to get to know each other, understand what brings you here and see if it's a good fit."
+      "id": "dry-needling",
+      "name": {
+        "he": "דיקור מערבי יבש",
+        "en": "Western dry needling"
       },
-      "duration": 20,
-      "price": 0,
-      "icon": "chat"
-    },
-    {
-      "id": "holistic",
-      "name": { "he": "טיפול רגשי-הוליסטי", "en": "Holistic emotional therapy" },
       "description": {
-        "he": "מפגש אישי המשלב שיחה, עבודה עם הגוף וכלים לוויסות רגשי – לשחרור מתחים ולחיזוק החוסן הפנימי.",
-        "en": "A personal session combining talk, body work and emotional-regulation tools to release tension and build inner resilience."
+        "he": "לטיפול בכאבי שרירים ובמגבלות תנועה אחרי פציעה או עומס. אחרי אבחון מדויק של הגוף ואיתור נקודות הטריגר, הדיקור משחרר ומתיר אותן.",
+        "en": "For muscle pain and limited movement after injury or overload. After an accurate assessment and locating the trigger points, needling releases them."
       },
       "duration": 60,
-      "price": 350,
+      "price": null,
       "icon": "leaf"
     },
     {
-      "id": "energy",
-      "name": { "he": "טיפול אנרגטי", "en": "Energy healing" },
+      "id": "cosmetic",
+      "name": {
+        "he": "דיקור קוסמטי",
+        "en": "Cosmetic acupuncture"
+      },
       "description": {
-        "he": "טיפול עדין ומרגיע לאיזון הגוף והנפש, המאפשר מנוחה עמוקה, שקט ותחושת התחדשות.",
-        "en": "A gentle, calming treatment to rebalance body and mind, allowing deep rest, stillness and renewal."
+        "he": "איזון ושחרור שרירי הפנים והצוואר (הפנים בנויים מ-43 שרירים) לשיפור תפקודם ולמראה בריא, מתוח וחיוני. משפר את זרימת הדם והחמצן לעור ומסייע לחידוש הרקמה וליצירת קולגן ואלסטין.",
+        "en": "Balances and releases the face and neck muscles (the face has 43 muscles) for better function and a healthy, firm, vital look. Improves blood and oxygen flow to the skin and supports skin renewal and collagen and elastin production."
       },
       "duration": 60,
-      "price": 300,
-      "icon": "sun"
+      "price": null,
+      "icon": "sparkle"
     },
     {
-      "id": "online",
-      "name": { "he": "מפגש אונליין", "en": "Online session" },
-      "description": {
-        "he": "מפגש טיפולי מלא בזום, מכל מקום בעולם – עם אותה תשומת לב ואותו מרחב בטוח.",
-        "en": "A full therapy session over Zoom from anywhere in the world – with the same care and safe space."
+      "id": "stress",
+      "name": {
+        "he": "דיקור לסטרס",
+        "en": "Acupuncture for stress"
       },
-      "duration": 50,
-      "price": 300,
-      "icon": "screen"
+      "description": {
+        "he": "שילוב טכניקות מהעולם היפני והסיני. נקודות עוצמתיות שמטפלות ברמות קורטיזול גבוהות ובסטרס, ותורמות לשלוות נפש ולאיזון הורמונלי.",
+        "en": "Combines Japanese and Chinese techniques. Powerful points that address high cortisol and stress, supporting calm and hormonal balance."
+      },
+      "duration": 60,
+      "price": null,
+      "icon": "sun"
     }
   ],
   "defaultSchedule": {
     "weeklyHours": {
-      "0": [["09:00", "14:00"], ["16:00", "20:00"]],
-      "1": [["09:00", "14:00"], ["16:00", "20:00"]],
-      "2": [["09:00", "14:00"], ["16:00", "20:00"]],
-      "3": [["09:00", "14:00"], ["16:00", "20:00"]],
-      "4": [["09:00", "14:00"]],
-      "5": [["09:00", "13:00"]],
+      "0": [
+        [
+          "12:30",
+          "19:00"
+        ]
+      ],
+      "1": [
+        [
+          "08:00",
+          "14:30"
+        ]
+      ],
+      "2": [],
+      "3": [
+        [
+          "13:00",
+          "19:00"
+        ]
+      ],
+      "4": [
+        [
+          "10:00",
+          "19:00"
+        ]
+      ],
+      "5": [],
       "6": []
     },
     "slotInterval": 30,
     "bufferMinutes": 15,
     "minNoticeHours": 12,
-    "maxDaysAhead": 60
+    "maxDaysAhead": 30
   }
 }

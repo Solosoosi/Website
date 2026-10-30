@@ -41,6 +41,22 @@ Requires Node.js 22.13 or newer.
 
 A missing phone, WhatsApp, email, Instagram or Facebook value hides that link automatically.
 
+## GitHub Pages (free hosting, no server)
+
+The `docs/` folder holds a static, single-page version of the site, made for GitHub Pages:
+
+- Free times are calculated in the visitor's browser from the opening hours in `config/site.json`. Nothing is stored, so the site can't know about existing bookings.
+- **Booking requests and contact messages open WhatsApp** with a ready message to the practitioner, who confirms the time with the client.
+- Direct link to the booking page: add `#book` to the address.
+
+**Turn it on (one time):** on GitHub, open the repo → **Settings → Pages** → under **Build and deployment**, choose **Deploy from a branch**, pick this branch and the **`/docs`** folder → **Save**. After a minute or two the site is live at `https://<username>.github.io/<repo>/`.
+
+**After changing content** (`config/site.json`, `public/js/i18n.js`, the HTML or CSS), rebuild and commit `docs/`:
+
+```bash
+npm run build:pages
+```
+
 ## Hosting and domain
 
 ### Recommended: Render (about $7–8 per month)
