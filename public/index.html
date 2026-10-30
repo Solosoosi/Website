@@ -2,25 +2,26 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>טיפול הוליסטי וריפוי רגשי</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>דוד נאמן</title>
   <meta name="description" content="">
-  <meta name="theme-color" content="#4f6b55">
+  <meta name="theme-color" content="#1f3d2e">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="/js/theme-init.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&family=Karantina:wght@300;400;700&display=swap">
   <link rel="stylesheet" href="/css/styles.css">
   <script type="module" src="/js/home.js"></script>
 </head>
 <body data-title-key="meta.homeTitle">
   <a class="skip-link" href="#main" data-i18n="a11y.skip"></a>
 
-  <header class="site-header">
+  <header class="site-header" id="top">
     <div class="container header-inner">
       <a class="brand" href="/">
-        <span class="brand-mark" data-icon="logo"></span>
+        <span class="brand-mark" data-icon="seal"></span>
         <span class="brand-text">
           <span class="brand-name" data-biz="name"></span>
           <span class="brand-tagline" data-biz="tagline"></span>
@@ -28,14 +29,16 @@
       </a>
       <nav class="main-nav" id="main-nav" data-i18n-attr="aria-label:a11y.menu">
         <ul>
-          <li><a href="#about" data-i18n="nav.about"></a></li>
+          <li><a href="#bodymap" data-i18n="nav.bodymap"></a></li>
           <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
-          <li><a href="#process" data-i18n="nav.process"></a></li>
+          <li><a href="#about" data-i18n="nav.about"></a></li>
+          <li><a href="#gallery" data-i18n="nav.gallery"></a></li>
+          <li><a href="#visit" data-i18n="nav.visit"></a></li>
           <li><a href="#faq" data-i18n="nav.faq"></a></li>
-          <li><a href="#contact" data-i18n="nav.contact"></a></li>
         </ul>
       </nav>
       <div class="header-actions">
+        <button class="icon-btn" id="a11y-toggle" type="button" aria-expanded="false" aria-controls="a11y-panel" data-icon="a11y" data-i18n-attr="aria-label:a11y.menuLabel;title:a11y.menuLabel"></button>
         <button class="icon-btn" id="theme-toggle" type="button"></button>
         <a class="btn btn-primary header-cta" href="/book" data-i18n="nav.book"></a>
         <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" data-i18n-attr="aria-label:a11y.menu" data-icon="menu"></button>
@@ -46,76 +49,203 @@
   <main id="main">
     <!-- Hero -->
     <section class="hero">
+      <svg class="hero-lines" viewBox="0 0 1440 760" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <path class="meridian" d="M-20,450 C180,520 320,650 560,700 C800,750 1100,760 1480,610"/>
+        <g class="meridian-points"><circle cx="175" cy="540" r="4"/><circle cx="396" cy="650" r="4"/><circle cx="711" cy="724" r="4"/><circle cx="922" cy="732" r="4"/><circle cx="1159" cy="705" r="4"/><circle cx="1368" cy="650" r="4"/></g>
+      </svg>
       <div class="container hero-grid">
-        <div class="reveal">
-          <span class="eyebrow" data-biz="tagline"></span>
-          <h1 data-i18n="hero.title"></h1>
-          <p class="lead" data-i18n="hero.lead"></p>
+        <div class="hero-text">
+          <p class="kicker" data-i18n="hero.kicker"></p>
+          <h1 class="hero-title">
+            <span data-i18n="hero.line1"></span>
+            <span class="hl" data-i18n="hero.line2"></span>
+            <span><span data-i18n="hero.line3"></span><span class="pt-dot" aria-hidden="true"></span></span>
+          </h1>
+          <p class="hero-lead" data-i18n="hero.lead"></p>
           <div class="hero-ctas">
-            <a class="btn btn-primary" href="/book">
-              <span data-icon="calendar"></span><span data-i18n="hero.ctaBook"></span>
-            </a>
-            <a class="btn btn-outline" href="#treatments" data-i18n="hero.ctaMore"></a>
+            <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
+            <a class="btn btn-outline" href="#bodymap" data-i18n="hero.ctaMap"></a>
           </div>
-          <ul class="hero-points">
-            <li><span data-icon="check"></span><span data-i18n="hero.point1"></span></li>
-            <li><span data-icon="check"></span><span data-i18n="hero.point2"></span></li>
-            <li><span data-icon="check"></span><span data-i18n="hero.point3"></span></li>
+          <p class="status" data-status hidden></p>
+          <ul class="hero-facts">
+            <li data-i18n="hero.point1"></li>
+            <li data-i18n="hero.point2"></li>
+            <li data-i18n="hero.point3"></li>
           </ul>
         </div>
-        <div class="hero-visual reveal">
-          <div class="photo photo-arch">
-            <img src="images/hero.jpg" alt="טיפול בכוסות רוח בקליניקה" width="900" height="1125" fetchpriority="high">
-          </div>
-          <div class="hero-badge">
-            <span class="badge-icon" data-icon="calendar"></span>
-            <span><strong data-i18n="hero.badgeTitle"></strong><span data-i18n="hero.badgeText"></span></span>
-          </div>
+        <div class="hero-visual">
+          <div class="cup-ring" aria-hidden="true"></div>
+          <figure class="cup">
+            <img src="images/hero-circle.jpg" alt="טיפול בכוסות רוח בקליניקה" width="1000" height="1000" fetchpriority="high">
+          </figure>
+          <p class="hero-annot caption" aria-hidden="true" data-i18n="hero.caption"></p>
+          <figure class="portrait-card">
+            <img src="images/portrait.jpg" alt="דוד נאמן" width="600" height="800">
+            <figcaption><span class="pt-dot" aria-hidden="true"></span><span data-biz="name"></span></figcaption>
+          </figure>
+          <span class="seal hero-seal" data-icon="seal" aria-hidden="true"></span>
         </div>
       </div>
     </section>
 
-    <!-- About -->
-    <section class="section section-alt" id="about">
-      <div class="container about-grid">
-        <div class="reveal">
-          <div class="photo photo-round">
-            <img src="images/about.jpg" alt="דוד נאמן בקליניקה" width="900" height="900" loading="lazy">
+    <!-- Techniques -->
+    <div class="band" role="region" data-i18n-attr="aria-label:techniques.label">
+      <div class="band-track">
+        <ul class="band-group">
+          <li class="band-item" data-i18n="techniques.t1"></li>
+          <li class="band-item" data-i18n="techniques.t2"></li>
+          <li class="band-item" data-i18n="techniques.t3"></li>
+          <li class="band-item" data-i18n="techniques.t4"></li>
+          <li class="band-item" data-i18n="techniques.t5"></li>
+        </ul>
+        <ul class="band-group" aria-hidden="true">
+          <li class="band-item" data-i18n="techniques.t1"></li>
+          <li class="band-item" data-i18n="techniques.t2"></li>
+          <li class="band-item" data-i18n="techniques.t3"></li>
+          <li class="band-item" data-i18n="techniques.t4"></li>
+          <li class="band-item" data-i18n="techniques.t5"></li>
+        </ul>
+        <ul class="band-group" aria-hidden="true">
+          <li class="band-item" data-i18n="techniques.t1"></li>
+          <li class="band-item" data-i18n="techniques.t2"></li>
+          <li class="band-item" data-i18n="techniques.t3"></li>
+          <li class="band-item" data-i18n="techniques.t4"></li>
+          <li class="band-item" data-i18n="techniques.t5"></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Body map -->
+    <section class="section" id="bodymap">
+      <div class="container">
+        <header class="section-head reveal">
+          <div>
+            <p class="kicker" data-i18n="bodymap.kicker"></p>
+            <h2 class="section-title" data-i18n="bodymap.title"></h2>
           </div>
-        </div>
-        <div class="about-text reveal">
-          <span class="eyebrow" data-i18n="about.eyebrow"></span>
-          <h2 class="section-title" data-i18n="about.title"></h2>
-          <p data-i18n="about.p1"></p>
-          <p data-i18n="about.p2"></p>
-          <p class="about-quote" data-i18n="about.quote"></p>
+          <p class="section-lead" data-i18n="bodymap.lead"></p>
+        </header>
+        <div class="bodymap">
+          <figure class="bodymap-figure">
+            <svg viewBox="0 0 420 520" role="img" data-i18n-attr="aria-label:a11y.bodymapFigure">
+              <path class="fig-body" d="M197,94 L194,122 C178,130 156,128 138,136 C120,143 110,160 111,182 L130,188 C134,220 146,262 152,296 C156,318 146,340 142,362 C138,392 142,428 150,462 L202,466 C204,430 206,404 210,392 C214,404 216,430 218,466 L270,462 C278,428 282,392 278,362 C274,340 264,318 268,296 C274,262 286,220 290,188 L309,182 C310,160 300,143 282,136 C264,128 242,130 226,122 L223,94"/>
+              <ellipse class="fig-body" cx="210" cy="62" rx="29" ry="35"/>
+              <path class="fig-detail" d="M178,150 C160,160 152,186 168,212 M242,150 C260,160 268,186 252,212 M156,412 C172,426 194,428 206,420 M264,412 C248,426 226,428 214,420 M210,350 L210,392"/>
+              <path class="fig-spine" d="M210,126 L210,334"/>
+              <circle class="fig-detail" cx="198" cy="332" r="1.6"/><circle class="fig-detail" cx="222" cy="332" r="1.6"/>
+              <g class="pt" data-zone="stress" data-x="210" data-y="36"><circle class="hit" cx="210" cy="36" r="16" fill="transparent"/><circle class="halo" cx="210" cy="36" r="6"/><circle class="core" cx="210" cy="36" r="6"/></g>
+              <g class="pt" data-zone="face" data-x="236" data-y="60"><circle class="hit" cx="236" cy="60" r="16" fill="transparent"/><circle class="halo" cx="236" cy="60" r="6"/><circle class="core" cx="236" cy="60" r="6"/></g>
+              <g class="pt" data-zone="neck" data-x="186" data-y="132"><circle class="hit" cx="186" cy="132" r="16" fill="transparent"/><circle class="halo" cx="186" cy="132" r="6"/><circle class="core" cx="186" cy="132" r="6"/></g>
+              <g class="pt" data-zone="neck" data-x="234" data-y="132"><circle class="hit" cx="234" cy="132" r="16" fill="transparent"/><circle class="halo" cx="234" cy="132" r="6"/><circle class="core" cx="234" cy="132" r="6"/></g>
+              <g class="pt" data-zone="upper" data-x="190" data-y="184"><circle class="hit" cx="190" cy="184" r="16" fill="transparent"/><circle class="halo" cx="190" cy="184" r="6"/><circle class="core" cx="190" cy="184" r="6"/></g>
+              <g class="pt" data-zone="upper" data-x="230" data-y="184"><circle class="hit" cx="230" cy="184" r="16" fill="transparent"/><circle class="halo" cx="230" cy="184" r="6"/><circle class="core" cx="230" cy="184" r="6"/></g>
+              <g class="pt" data-zone="lower" data-x="194" data-y="300"><circle class="hit" cx="194" cy="300" r="16" fill="transparent"/><circle class="halo" cx="194" cy="300" r="6"/><circle class="core" cx="194" cy="300" r="6"/></g>
+              <g class="pt" data-zone="lower" data-x="226" data-y="300"><circle class="hit" cx="226" cy="300" r="16" fill="transparent"/><circle class="halo" cx="226" cy="300" r="6"/><circle class="core" cx="226" cy="300" r="6"/></g>
+              <g class="pt" data-zone="hips" data-x="168" data-y="372"><circle class="hit" cx="168" cy="372" r="16" fill="transparent"/><circle class="halo" cx="168" cy="372" r="6"/><circle class="core" cx="168" cy="372" r="6"/></g>
+              <g class="pt" data-zone="hips" data-x="252" data-y="372"><circle class="hit" cx="252" cy="372" r="16" fill="transparent"/><circle class="halo" cx="252" cy="372" r="6"/><circle class="core" cx="252" cy="372" r="6"/></g>
+              <g class="pt" data-zone="legs" data-x="174" data-y="440"><circle class="hit" cx="174" cy="440" r="16" fill="transparent"/><circle class="halo" cx="174" cy="440" r="6"/><circle class="core" cx="174" cy="440" r="6"/></g>
+              <g class="pt" data-zone="legs" data-x="246" data-y="440"><circle class="hit" cx="246" cy="440" r="16" fill="transparent"/><circle class="halo" cx="246" cy="440" r="6"/><circle class="core" cx="246" cy="440" r="6"/></g>
+              <g class="annot" aria-hidden="true"></g>
+            </svg>
+          </figure>
+          <div class="bodymap-panel">
+            <div class="zones" role="group" data-i18n-attr="aria-label:bodymap.zonesLabel">
+              <button class="zone" type="button" data-zone="neck" aria-pressed="false" data-i18n="bodymap.zones.neck.name"></button>
+              <button class="zone" type="button" data-zone="upper" aria-pressed="false" data-i18n="bodymap.zones.upper.name"></button>
+              <button class="zone" type="button" data-zone="lower" aria-pressed="false" data-i18n="bodymap.zones.lower.name"></button>
+              <button class="zone" type="button" data-zone="hips" aria-pressed="false" data-i18n="bodymap.zones.hips.name"></button>
+              <button class="zone" type="button" data-zone="legs" aria-pressed="false" data-i18n="bodymap.zones.legs.name"></button>
+              <button class="zone" type="button" data-zone="face" aria-pressed="false" data-i18n="bodymap.zones.face.name"></button>
+              <button class="zone" type="button" data-zone="stress" aria-pressed="false" data-i18n="bodymap.zones.stress.name"></button>
+            </div>
+            <div class="match" id="bodymap-match" aria-live="polite"></div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Treatments -->
-    <section class="section" id="treatments">
+    <section class="section section-alt" id="treatments">
       <div class="container">
-        <div class="section-head reveal">
-          <span class="eyebrow" data-i18n="treatments.eyebrow"></span>
-          <h2 class="section-title" data-i18n="treatments.title"></h2>
-          <p class="lead" data-i18n="treatments.lead"></p>
+        <header class="section-head reveal">
+          <div>
+            <p class="kicker" data-i18n="treatments.eyebrow"></p>
+            <h2 class="section-title" data-i18n="treatments.title"></h2>
+          </div>
+          <p class="section-lead" data-i18n="treatments.lead"></p>
+        </header>
+        <ol class="treatments" id="services-list" aria-live="polite"></ol>
+        <p class="addons">
+          <span data-i18n="treatments.addons"></span>
+          <span class="tag" data-i18n="techniques.t3"></span>
+          <span class="tag" data-i18n="techniques.t4"></span>
+          <span class="tag" data-i18n="techniques.t5"></span>
+        </p>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="about">
+          <figure class="about-photo reveal">
+            <img src="images/about.jpg" alt="דוד נאמן בקליניקה" width="900" height="1125" loading="lazy">
+            <figcaption class="caption" data-i18n="about.caption"></figcaption>
+          </figure>
+          <div class="about-text">
+            <p class="kicker" data-i18n="about.eyebrow"></p>
+            <h2 class="section-title" data-i18n="about.title"></h2>
+            <p data-i18n="about.p1"></p>
+            <p data-i18n="about.p2"></p>
+            <dl class="facts">
+              <dt data-i18n="about.facts.training"></dt>
+              <dd data-i18n="about.facts.trainingValue"></dd>
+              <dt data-i18n="about.facts.teacher"></dt>
+              <dd data-i18n="about.facts.teacherValue"></dd>
+              <dt data-i18n="about.facts.methods"></dt>
+              <dd data-i18n="about.facts.methodsValue"></dd>
+              <dt data-i18n="about.facts.clinic"></dt>
+              <dd data-biz="address"></dd>
+            </dl>
+          </div>
         </div>
-        <div class="cards" id="services-list" aria-live="polite"></div>
+        <figure class="quote reveal">
+          <span class="seal" data-icon="seal" aria-hidden="true"></span>
+          <blockquote data-i18n="about.quote"></blockquote>
+          <figcaption data-biz="name"></figcaption>
+        </figure>
       </div>
     </section>
 
     <!-- Process -->
-    <section class="section section-alt" id="process">
+    <section class="section section-dark" id="process">
       <div class="container">
-        <div class="section-head reveal">
-          <span class="eyebrow" data-i18n="process.eyebrow"></span>
-          <h2 class="section-title" data-i18n="process.title"></h2>
-        </div>
+        <header class="process-head">
+          <div>
+            <p class="kicker" data-i18n="process.eyebrow"></p>
+            <h2 class="process-title" data-i18n="process.title"></h2>
+          </div>
+          <p class="section-lead" data-i18n="process.lead"></p>
+        </header>
         <ol class="steps reveal">
-          <li class="step"><h3 data-i18n="process.s1t"></h3><p data-i18n="process.s1p"></p></li>
-          <li class="step"><h3 data-i18n="process.s2t"></h3><p data-i18n="process.s2p"></p></li>
-          <li class="step"><h3 data-i18n="process.s3t"></h3><p data-i18n="process.s3p"></p></li>
+          <li class="step">
+            <span class="step-dots" aria-hidden="true"><i></i></span>
+            <span class="step-num">01</span>
+            <h3 data-i18n="process.s1t"></h3>
+            <p data-i18n="process.s1p"></p>
+          </li>
+          <li class="step">
+            <span class="step-dots" aria-hidden="true"><i></i><i></i></span>
+            <span class="step-num">02</span>
+            <h3 data-i18n="process.s2t"></h3>
+            <p data-i18n="process.s2p"></p>
+          </li>
+          <li class="step">
+            <span class="step-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="step-num">03</span>
+            <h3 data-i18n="process.s3t"></h3>
+            <p data-i18n="process.s3p"></p>
+          </li>
         </ol>
       </div>
     </section>
@@ -123,17 +253,20 @@
     <!-- Gallery -->
     <section class="section" id="gallery">
       <div class="container">
-        <div class="section-head reveal">
-          <span class="eyebrow" data-i18n="gallery.eyebrow"></span>
-          <h2 class="section-title" data-i18n="gallery.title"></h2>
-        </div>
-        <div class="gallery reveal">
-          <img src="images/gallery-1.jpg" alt="טיפול בכוסות רוח בקליניקה" width="800" height="800" loading="lazy">
-          <img src="images/gallery-2.jpg" alt="כוסות רוח בגב התחתון" width="800" height="800" loading="lazy">
-          <img src="images/gallery-3.jpg" alt="דיקור קוסמטי בפנים" width="800" height="800" loading="lazy">
-          <img src="images/gallery-4.jpg" alt="כוסות רוח ודיקור בגב העליון" width="800" height="800" loading="lazy">
-          <img src="images/gallery-5.jpg" alt="דיקור יבש לאורך הגב" width="800" height="800" loading="lazy">
-          <img src="images/gallery-6.jpg" alt="טיפול משולב בכוסות רוח" width="800" height="800" loading="lazy">
+        <header class="section-head reveal">
+          <div>
+            <p class="kicker" data-i18n="gallery.eyebrow"></p>
+            <h2 class="section-title" data-i18n="gallery.title"></h2>
+          </div>
+          <p class="section-lead" data-i18n="gallery.lead"></p>
+        </header>
+        <div class="gallery" id="gallery-grid">
+          <button class="gallery-item is-big" type="button" data-large="images/large/gallery-1.jpg"><img src="images/gallery-1.jpg" alt="טיפול בכוסות רוח בקליניקה" width="1000" height="1000" loading="lazy"><span class="cap" data-i18n="gallery.c1"></span></button>
+          <button class="gallery-item" type="button" data-large="images/large/gallery-2.jpg"><img src="images/gallery-2.jpg" alt="דיקור יבש לאורך הגב" width="700" height="700" loading="lazy"><span class="cap" data-i18n="gallery.c2"></span></button>
+          <button class="gallery-item" type="button" data-large="images/large/gallery-3.jpg"><img src="images/gallery-3.jpg" alt="דיקור וסימני כוסות רוח בגב" width="700" height="700" loading="lazy"><span class="cap" data-i18n="gallery.c3"></span></button>
+          <button class="gallery-item is-wide" type="button" data-large="images/large/gallery-4.jpg"><img src="images/gallery-4.jpg" alt="כוסות רוח על הכתפיים" width="1200" height="600" loading="lazy"><span class="cap" data-i18n="gallery.c4"></span></button>
+          <button class="gallery-item is-wide" type="button" data-large="images/large/gallery-5.jpg"><img src="images/gallery-5.jpg" alt="כוסות רוח בגב התחתון" width="1200" height="600" loading="lazy"><span class="cap" data-i18n="gallery.c5"></span></button>
+          <button class="gallery-item is-wide" type="button" data-large="images/large/gallery-6.jpg"><img src="images/gallery-6.jpg" alt="טיפול משולב בכוסות רוח לאורך הגב" width="1200" height="600" loading="lazy"><span class="cap" data-i18n="gallery.c6"></span></button>
         </div>
       </div>
     </section>
@@ -141,35 +274,62 @@
     <!-- Testimonials (placeholders – replace with real client quotes) -->
     <section class="section" id="testimonials" hidden>
       <div class="container">
-        <div class="section-head reveal">
-          <span class="eyebrow" data-i18n="testimonials.eyebrow"></span>
-          <h2 class="section-title" data-i18n="testimonials.title"></h2>
-        </div>
-        <div class="cards reveal">
-          <figure class="card quote-card">
-            <blockquote data-i18n="testimonials.sample"></blockquote>
-            <figcaption><span class="avatar">א</span><div><span data-i18n="testimonials.name"></span><span data-i18n="testimonials.role"></span></div></figcaption>
-          </figure>
-          <figure class="card quote-card">
-            <blockquote data-i18n="testimonials.sample"></blockquote>
-            <figcaption><span class="avatar">ב</span><div><span data-i18n="testimonials.name"></span><span data-i18n="testimonials.role"></span></div></figcaption>
-          </figure>
-          <figure class="card quote-card">
-            <blockquote data-i18n="testimonials.sample"></blockquote>
-            <figcaption><span class="avatar">ג</span><div><span data-i18n="testimonials.name"></span><span data-i18n="testimonials.role"></span></div></figcaption>
-          </figure>
+        <header class="section-head">
+          <div>
+            <p class="kicker" data-i18n="testimonials.eyebrow"></p>
+            <h2 class="section-title" data-i18n="testimonials.title"></h2>
+          </div>
+        </header>
+      </div>
+    </section>
+
+    <!-- Visit -->
+    <section class="section section-alt" id="visit">
+      <div class="container">
+        <header class="section-head reveal">
+          <div>
+            <p class="kicker" data-i18n="visit.kicker"></p>
+            <h2 class="section-title" data-i18n="visit.title"></h2>
+          </div>
+        </header>
+        <div class="visit">
+          <div class="visit-col">
+            <h3 class="visit-h" data-i18n="visit.address"></h3>
+            <p class="visit-address" data-biz="street"></p>
+            <p class="visit-sub"><span data-biz="building"></span> · <span data-i18n="visit.parking"></span></p>
+            <div class="visit-actions">
+              <a class="btn btn-primary" data-biz-href="waze" target="_blank" rel="noopener"><span data-icon="navigate"></span><span data-i18n="visit.waze"></span></a>
+              <a class="btn btn-outline" data-biz-href="maps" target="_blank" rel="noopener"><span data-icon="pin"></span><span data-i18n="visit.maps"></span></a>
+            </div>
+          </div>
+          <div class="visit-col">
+            <h3 class="visit-h" data-i18n="visit.hours"></h3>
+            <table class="hours-table">
+              <tbody id="hours-body"></tbody>
+            </table>
+            <p class="status" data-status hidden></p>
+          </div>
+          <div class="visit-col">
+            <h3 class="visit-h" data-i18n="visit.prep"></h3>
+            <ul class="prep">
+              <li><span class="prep-icon" data-icon="clock"></span><span><strong data-i18n="visit.prep1t"></strong><span data-i18n="visit.prep1"></span></span></li>
+              <li><span class="prep-icon" data-icon="shirt"></span><span><strong data-i18n="visit.prep2t"></strong><span data-i18n="visit.prep2"></span></span></li>
+              <li><span class="prep-icon" data-icon="parking"></span><span><strong data-i18n="visit.prep3t"></strong><span data-i18n="visit.prep3"></span></span></li>
+              <li><span class="prep-icon" data-icon="calendarX"></span><span><strong data-i18n="visit.prep4t"></strong><span data-i18n="visit.prep4"></span></span></li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- FAQ -->
-    <section class="section section-alt" id="faq">
-      <div class="container">
-        <div class="section-head reveal">
-          <span class="eyebrow" data-i18n="faq.eyebrow"></span>
+    <section class="section" id="faq">
+      <div class="container faq-wrap">
+        <header class="reveal">
+          <p class="kicker" data-i18n="faq.eyebrow"></p>
           <h2 class="section-title" data-i18n="faq.title"></h2>
-        </div>
-        <div class="faq reveal">
+        </header>
+        <div class="faq">
           <details><summary data-i18n="faq.q1"></summary><p data-i18n="faq.a1"></p></details>
           <details><summary data-i18n="faq.q2"></summary><p data-i18n="faq.a2"></p></details>
           <details><summary data-i18n="faq.q3"></summary><p data-i18n="faq.a3"></p></details>
@@ -179,44 +339,24 @@
       </div>
     </section>
 
-    <!-- CTA -->
-    <section class="section">
-      <div class="container">
-        <div class="cta-band reveal">
-          <h2 data-i18n="cta.title"></h2>
-          <p data-i18n="cta.text"></p>
-          <a class="btn" href="/book"><span data-i18n="cta.button"></span><span class="flip-rtl" data-icon="arrow"></span></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section class="section section-alt" id="contact">
-      <div class="container contact-grid">
-        <div class="reveal">
-          <span class="eyebrow" data-i18n="contact.eyebrow"></span>
-          <h2 class="section-title" data-i18n="contact.title"></h2>
-          <p class="lead" data-i18n="contact.lead"></p>
-          <ul class="contact-list">
-            <li data-biz-item>
-              <span class="card-icon" data-icon="phone"></span>
-              <span><small data-i18n="contact.phone"></small><a data-biz-href="phone"><bdi data-biz="phone"></bdi></a></span>
-            </li>
-            <li data-biz-item>
-              <span class="card-icon" data-icon="whatsapp"></span>
-              <span><small data-i18n="contact.whatsapp"></small><a data-biz-href="whatsapp" target="_blank" rel="noopener" data-i18n="contact.whatsappText"></a></span>
-            </li>
-            <li data-biz-item>
-              <span class="card-icon" data-icon="mail"></span>
-              <span><small data-i18n="contact.email"></small><a data-biz-href="email"><bdi data-biz="email"></bdi></a></span>
-            </li>
-            <li data-biz-item>
-              <span class="card-icon" data-icon="pin"></span>
-              <span><small data-i18n="contact.address"></small><a data-biz-href="maps" target="_blank" rel="noopener" data-biz="address"></a></span>
-            </li>
+    <!-- Call to action + contact -->
+    <section class="final" id="contact">
+      <div class="container final-grid">
+        <div>
+          <p class="kicker" data-i18n="contact.eyebrow"></p>
+          <h2 class="final-title" data-i18n="cta.title"></h2>
+          <p class="final-lead" data-i18n="cta.text"></p>
+          <a class="btn btn-light btn-arrow" href="/book"><span data-i18n="cta.button"></span><span class="flip-rtl" data-icon="arrow"></span></a>
+          <ul class="final-links">
+            <li data-biz-item><span data-icon="phone"></span><a data-biz-href="phone"><bdi data-biz="phone"></bdi></a></li>
+            <li data-biz-item><span data-icon="whatsapp"></span><a data-biz-href="whatsapp" target="_blank" rel="noopener" data-i18n="contact.whatsappText"></a></li>
+            <li data-biz-item><span data-icon="mail"></span><a data-biz-href="email"><bdi data-biz="email"></bdi></a></li>
+            <li data-biz-item><span data-icon="pin"></span><a data-biz-href="maps" target="_blank" rel="noopener" data-biz="address"></a></li>
           </ul>
         </div>
-        <div class="panel reveal">
+        <div class="contact-card">
+          <h3 data-i18n="contact.title"></h3>
+          <p class="panel-sub" data-i18n="contact.lead"></p>
           <form class="form" id="contact-form" novalidate>
             <div class="field">
               <label for="c-name" data-i18n="contact.formName"></label>
@@ -250,19 +390,14 @@
 
   <footer class="site-footer">
     <div class="container">
+      <p class="footer-word" aria-hidden="true"><span data-biz="name"></span><span class="pt-dot"></span></p>
       <div class="footer-grid">
-        <div>
-          <a class="brand" href="/">
-            <span class="brand-mark" data-icon="logo"></span>
-            <span class="brand-text"><span class="brand-name" data-biz="name"></span></span>
-          </a>
-          <p class="footer-about" data-i18n="footer.about"></p>
-        </div>
         <div>
           <h4 data-i18n="footer.links"></h4>
           <ul>
-            <li><a href="#about" data-i18n="nav.about"></a></li>
+            <li><a href="#bodymap" data-i18n="nav.bodymap"></a></li>
             <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
+            <li><a href="#about" data-i18n="nav.about"></a></li>
             <li><a href="#faq" data-i18n="nav.faq"></a></li>
             <li><a href="/book" data-i18n="nav.book"></a></li>
           </ul>
@@ -271,19 +406,33 @@
           <h4 data-i18n="footer.contact"></h4>
           <ul>
             <li data-biz-item><a data-biz-href="phone"><bdi data-biz="phone"></bdi></a></li>
-            <li data-biz-item><a data-biz-href="email"><bdi data-biz="email"></bdi></a></li>
             <li data-biz-item><a data-biz-href="whatsapp" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li data-biz-item><a data-biz-href="email"><bdi data-biz="email"></bdi></a></li>
             <li data-biz-item><a data-biz-href="instagram" target="_blank" rel="noopener">Instagram</a></li>
             <li data-biz-item><a data-biz-href="facebook" target="_blank" rel="noopener">Facebook</a></li>
           </ul>
         </div>
+        <div>
+          <h4 data-i18n="footer.address"></h4>
+          <p data-biz="address"></p>
+          <a data-biz-href="waze" target="_blank" rel="noopener" data-i18n="visit.waze"></a>
+        </div>
       </div>
       <div class="footer-bottom">
         <span>© <span data-biz="year"></span> <span data-biz="name"></span>. <span data-i18n="footer.rights"></span></span>
+        <span class="footer-links">
+          <button class="linklike" type="button" data-open-statement data-i18n="a11y.statement"></button>
+          <a href="#top" data-i18n="a11y.top"></a>
+        </span>
       </div>
     </div>
   </footer>
 
   <a class="whatsapp-fab" data-biz-href="whatsapp" target="_blank" rel="noopener" data-i18n-attr="aria-label:a11y.whatsapp" data-icon="whatsapp" hidden></a>
+  <nav class="action-bar" data-i18n-attr="aria-label:mobile.bar">
+    <a class="btn btn-primary" href="/book" data-i18n="mobile.book"></a>
+    <a class="icon-btn" data-biz-href="whatsapp" target="_blank" rel="noopener" data-icon="whatsapp" data-i18n-attr="aria-label:a11y.whatsapp"></a>
+    <a class="icon-btn" data-biz-href="phone" data-icon="phone" data-i18n-attr="aria-label:a11y.call"></a>
+  </nav>
 </body>
 </html>

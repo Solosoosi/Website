@@ -2,25 +2,26 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>קביעת פגישה</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>קביעת טיפול</title>
   <meta name="description" content="">
-  <meta name="theme-color" content="#4f6b55">
+  <meta name="theme-color" content="#1f3d2e">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="/js/theme-init.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&family=Karantina:wght@300;400;700&display=swap">
   <link rel="stylesheet" href="/css/styles.css">
   <script type="module" src="/js/book.js"></script>
 </head>
-<body data-title-key="meta.bookTitle">
+<body data-title-key="meta.bookTitle" data-route="book">
   <a class="skip-link" href="#main" data-i18n="a11y.skip"></a>
 
-  <header class="site-header">
+  <header class="site-header" id="top">
     <div class="container header-inner">
       <a class="brand" href="/">
-        <span class="brand-mark" data-icon="logo"></span>
+        <span class="brand-mark" data-icon="seal"></span>
         <span class="brand-text">
           <span class="brand-name" data-biz="name"></span>
           <span class="brand-tagline" data-biz="tagline"></span>
@@ -28,15 +29,16 @@
       </a>
       <nav class="main-nav" id="main-nav" data-i18n-attr="aria-label:a11y.menu">
         <ul>
-          <li><a href="/" data-i18n="nav.home"></a></li>
-          <li><a href="/#about" data-i18n="nav.about"></a></li>
+          <li><a href="/#bodymap" data-i18n="nav.bodymap"></a></li>
           <li><a href="/#treatments" data-i18n="nav.treatments"></a></li>
+          <li><a href="/#about" data-i18n="nav.about"></a></li>
+          <li><a href="/#gallery" data-i18n="nav.gallery"></a></li>
+          <li><a href="/#visit" data-i18n="nav.visit"></a></li>
           <li><a href="/#faq" data-i18n="nav.faq"></a></li>
-          <li><a href="/#contact" data-i18n="nav.contact"></a></li>
-          <li><a href="/book" aria-current="page" data-i18n="nav.book"></a></li>
         </ul>
       </nav>
       <div class="header-actions">
+        <button class="icon-btn" id="a11y-toggle" type="button" aria-expanded="false" aria-controls="a11y-panel" data-icon="a11y" data-i18n-attr="aria-label:a11y.menuLabel;title:a11y.menuLabel"></button>
         <button class="icon-btn" id="theme-toggle" type="button"></button>
         <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" data-i18n-attr="aria-label:a11y.menu" data-icon="menu"></button>
       </div>
@@ -45,7 +47,7 @@
 
   <main id="main">
     <section class="page-hero container">
-      <span class="eyebrow" data-biz="tagline"></span>
+      <p class="kicker" data-biz="tagline"></p>
       <h1 data-i18n="book.title"></h1>
       <p class="lead" data-i18n="book.lead"></p>
     </section>
@@ -157,6 +159,12 @@
         <p id="confirm-text"></p>
         <dl id="confirm-details"></dl>
         <p class="panel-sub" id="confirm-email" data-i18n="book.successEmail" hidden></p>
+        <ul class="prep">
+          <li class="prep-head"><p class="prep-title" data-i18n="book.prepTitle"></p></li>
+          <li><span class="prep-icon" data-icon="clock"></span><span><strong data-i18n="visit.prep1t"></strong><span data-i18n="visit.prep1"></span></span></li>
+          <li><span class="prep-icon" data-icon="shirt"></span><span><strong data-i18n="visit.prep2t"></strong><span data-i18n="visit.prep2"></span></span></li>
+          <li><span class="prep-icon" data-icon="parking"></span><span><strong data-i18n="visit.prep3t"></strong><span data-i18n="visit.prep3"></span></span></li>
+        </ul>
         <div class="hero-ctas center">
           <a class="btn btn-primary" id="confirm-whatsapp" target="_blank" rel="noopener" hidden><span data-icon="whatsapp"></span><span data-i18n="book.waButton"></span></a>
           <a class="btn btn-outline" href="/" data-i18n="book.home"></a>
@@ -170,11 +178,19 @@
     <div class="container">
       <div class="footer-bottom compact">
         <span>© <span data-biz="year"></span> <span data-biz="name"></span>. <span data-i18n="footer.rights"></span></span>
-        <span data-biz-item><a data-biz-href="phone"><bdi data-biz="phone"></bdi></a></span>
+        <span class="footer-links">
+          <span data-biz-item><a data-biz-href="phone"><bdi data-biz="phone"></bdi></a></span>
+          <button class="linklike" type="button" data-open-statement data-i18n="a11y.statement"></button>
+        </span>
       </div>
     </div>
   </footer>
 
   <a class="whatsapp-fab" data-biz-href="whatsapp" target="_blank" rel="noopener" data-i18n-attr="aria-label:a11y.whatsapp" data-icon="whatsapp" hidden></a>
+  <nav class="action-bar" data-i18n-attr="aria-label:mobile.bar">
+    <a class="btn btn-primary" href="/book" data-i18n="mobile.book"></a>
+    <a class="icon-btn" data-biz-href="whatsapp" target="_blank" rel="noopener" data-icon="whatsapp" data-i18n-attr="aria-label:a11y.whatsapp"></a>
+    <a class="icon-btn" data-biz-href="phone" data-icon="phone" data-i18n-attr="aria-label:a11y.call"></a>
+  </nav>
 </body>
 </html>

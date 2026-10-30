@@ -82,6 +82,7 @@ export function applyTranslations(scope = document) {
   if (desc) desc.content = t('meta.description');
   updateToggles();
   renderBusiness();
+  renderStatus();
 }
 
 // ---------------------------------------------------------------------------
@@ -150,12 +151,17 @@ function telHref(phone) {
 function renderBusiness() {
   if (!siteConfig) return;
   const b = siteConfig.business;
+  const address = pick(b.address);
+  // "Street 5, City (Building)" → street line for maps/navigation, building shown separately.
+  const street = address.replace(/\s*\(.*?\)\s*/g, ' ').trim();
   const values = {
     name: pick(b.name),
     tagline: pick(b.tagline),
     phone: b.phone,
     email: b.email,
-    address: pick(b.address),
+    address,
+    street,
+    building: (address.match(/\((.*?)\)/) || [])[1] || '',
     year: String(new Date().getFullYear()),
   };
   for (const el of document.querySelectorAll('[data-biz]')) {
@@ -170,11 +176,75 @@ function renderBusiness() {
       : kind === 'whatsapp' ? b.whatsapp && `https://wa.me/${b.whatsapp}`
       : kind === 'instagram' ? b.instagram
       : kind === 'facebook' ? b.facebook
-      : kind === 'maps' ? values.address && `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(values.address)}`
+      : kind === 'maps' ? street && `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(street)}`
+      : kind === 'waze' ? street && `https://waze.com/ul?q=${encodeURIComponent(street)}&navigate=yes`
       : '';
     const item = el.closest('[data-biz-item]') || el;
     item.hidden = !href;
     if (href) el.href = href;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Opening hours: "open now" / "opens tomorrow at…" from the weekly schedule
+// ---------------------------------------------------------------------------
+
+const hhmmToMinutes = (hhmm) => {
+  const [h, m] = hhmm.split(':').map(Number);
+  return h * 60 + m;
+};
+
+/** Day of week (0 = Sunday) and minute of the day in the clinic's time zone. */
+export function clinicNow(timeZone, at = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(at);
+  const get = (type) => parts.find((p) => p.type === type).value;
+  return {
+    day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday')),
+    minutes: Number(get('hour')) * 60 + Number(get('minute')),
+  };
+}
+
+export function dayName(day, style = 'long') {
+  return new Intl.DateTimeFormat(locale(), { weekday: style, timeZone: 'UTC' }).format(new Date(Date.UTC(2023, 0, 1 + day)));
+}
+
+export function clinicStatus(cfg = siteConfig, at = new Date()) {
+  if (!cfg?.hours) return null;
+  const now = clinicNow(cfg.timezone, at);
+  for (const [from, to] of cfg.hours[now.day] || []) {
+    if (now.minutes >= hhmmToMinutes(from) && now.minutes < hhmmToMinutes(to)) return { open: true, until: to, today: now.day };
+  }
+  for (let offset = 0; offset < 8; offset++) {
+    const day = (now.day + offset) % 7;
+    for (const [from] of cfg.hours[day] || []) {
+      if (offset > 0 || hhmmToMinutes(from) > now.minutes) return { open: false, day, offset, at: from, today: now.day };
+    }
+  }
+  return { open: false, today: now.day };
+}
+
+function renderStatus() {
+  const s = clinicStatus();
+  if (!s) return;
+  const text = s.open
+    ? t('status.open', { time: s.until })
+    : s.at == null
+      ? ''
+      : s.offset === 0
+        ? t('status.today', { time: s.at })
+        : s.offset === 1
+          ? t('status.tomorrow', { time: s.at })
+          : t('status.later', { day: dayName(s.day), time: s.at });
+  for (const node of document.querySelectorAll('[data-status]')) {
+    node.textContent = text;
+    node.classList.toggle('is-open', s.open);
+    node.hidden = !text;
   }
 }
 
@@ -248,6 +318,150 @@ export function toast(message) {
 }
 
 // ---------------------------------------------------------------------------
+// Accessibility menu (text size, contrast, links, motion, font) + statement
+// ---------------------------------------------------------------------------
+
+const a11yState = (() => {
+  try {
+    return JSON.parse(storageGet('a11y')) || {};
+  } catch {
+    return {};
+  }
+})();
+let a11yPanel = null;
+
+function applyA11y() {
+  const c = root.classList;
+  c.remove('a11y-text-1', 'a11y-text-2');
+  if (a11yState.text) c.add(`a11y-text-${a11yState.text}`);
+  for (const k of ['contrast', 'links', 'still', 'font']) c.toggle(`a11y-${k}`, Boolean(a11yState[k]));
+  storageSet('a11y', JSON.stringify(a11yState));
+  if (!a11yPanel) return;
+  for (const b of a11yPanel.querySelectorAll('.a11y-opt')) {
+    const v = a11yState[b.dataset.key];
+    b.setAttribute('aria-pressed', String(Boolean(v)));
+    b.querySelector('.level').textContent = b.dataset.key === 'text' && v ? `+${v}` : '';
+  }
+}
+
+function initA11yMenu() {
+  const toggle = document.getElementById('a11y-toggle');
+  if (!toggle) return;
+  const options = [
+    ['text', 'text'],
+    ['contrast', 'contrast'],
+    ['links', 'link'],
+    ['still', 'pause'],
+    ['font', 'font'],
+  ];
+  a11yPanel = el(
+    'div',
+    { class: 'a11y-panel', id: 'a11y-panel', role: 'dialog', 'aria-labelledby': 'a11y-title', hidden: true },
+    el('h2', { id: 'a11y-title' }, el('span', { html: svg('a11y') }), el('span', { 'data-i18n': 'a11y.panelTitle' }, t('a11y.panelTitle'))),
+    el(
+      'div',
+      { class: 'a11y-grid' },
+      options.map(([key, icon]) =>
+        el(
+          'button',
+          {
+            type: 'button',
+            class: 'a11y-opt',
+            'data-key': key,
+            'aria-pressed': 'false',
+            html: svg(icon),
+            onclick: () => {
+              a11yState[key] = key === 'text' ? ((a11yState.text || 0) + 1) % 3 : !a11yState[key];
+              applyA11y();
+            },
+          },
+          el('span', { 'data-i18n': `a11y.${key}` }, t(`a11y.${key}`)),
+          el('span', { class: 'level' }),
+        ),
+      ),
+    ),
+    el(
+      'div',
+      { class: 'a11y-foot' },
+      el('button', { type: 'button', class: 'linklike', 'data-open-statement': '', 'data-i18n': 'a11y.statement' }, t('a11y.statement')),
+      el(
+        'button',
+        {
+          type: 'button',
+          class: 'btn btn-ghost btn-sm',
+          'data-i18n': 'a11y.reset',
+          onclick: () => {
+            for (const k of Object.keys(a11yState)) delete a11yState[k];
+            applyA11y();
+          },
+        },
+        t('a11y.reset'),
+      ),
+    ),
+  );
+  document.body.append(a11yPanel);
+
+  const setOpen = (open) => {
+    a11yPanel.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) a11yPanel.querySelector('.a11y-opt')?.focus();
+  };
+  toggle.addEventListener('click', () => setOpen(a11yPanel.hidden));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !a11yPanel.hidden) {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (!a11yPanel.hidden && !a11yPanel.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
+  });
+  applyA11y();
+}
+
+let statementDialog = null;
+
+function openStatement() {
+  if (!statementDialog) {
+    const para = (key) => el('p', { 'data-i18n': key }, t(key));
+    statementDialog = el(
+      'dialog',
+      { class: 'dialog', 'aria-labelledby': 'statement-title' },
+      el(
+        'div',
+        { class: 'dialog-inner' },
+        el('button', {
+          type: 'button',
+          class: 'icon-btn dialog-close',
+          html: svg('close'),
+          'aria-label': t('a11y.close'),
+          onclick: () => statementDialog.close(),
+        }),
+        el('h2', { id: 'statement-title', 'data-i18n': 'statement.title' }, t('statement.title')),
+        para('statement.p1'),
+        para('statement.p2'),
+        para('statement.p3'),
+        el('p', { 'data-statement-contact': '' }),
+        el('p', { class: 'caption', 'data-i18n': 'statement.updated' }, t('statement.updated')),
+      ),
+    );
+    statementDialog.addEventListener('click', (e) => e.target === statementDialog && statementDialog.close());
+    document.body.append(statementDialog);
+  }
+  const b = siteConfig?.business;
+  // Isolate the phone number so it stays left-to-right inside Hebrew text.
+  statementDialog.querySelector('[data-statement-contact]').textContent = b
+    ? t('statement.contact', { name: pick(b.name), phone: `\u2066${b.phone}\u2069` })
+    : '';
+  if (a11yPanel) a11yPanel.hidden = true;
+  statementDialog.showModal();
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target.closest('[data-open-statement]')) openStatement();
+});
+
+// ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
 
@@ -281,6 +495,25 @@ function initHeader() {
   );
 }
 
+// Underline the nav link of the section on screen.
+function initScrollSpy() {
+  const links = [...document.querySelectorAll('.main-nav a[href^="#"]')];
+  if (!links.length || !('IntersectionObserver' in window)) return;
+  const byId = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) links.forEach((l) => l.classList.toggle('is-current', l === byId.get(e.target.id)));
+      }
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  for (const id of byId.keys()) {
+    const section = document.getElementById(id);
+    if (section) io.observe(section);
+  }
+}
+
 function initReveal() {
   const items = document.querySelectorAll('.reveal');
   if (!('IntersectionObserver' in window)) {
@@ -303,6 +536,9 @@ function initReveal() {
 
 hydrateIcons();
 initHeader();
+initA11yMenu();
 applyTranslations();
 initReveal();
+initScrollSpy();
 loadConfig().catch(() => {});
+setInterval(renderStatus, 60_000);

@@ -1,9 +1,27 @@
-# Practice website with online booking
+# David Neeman – acupuncture clinic website
 
-A bilingual (Hebrew by default, English optional) website for a therapy or healing practice. Clients can book a session online, and the practitioner manages bookings from a private admin panel.
+The website of an acupuncture clinic in Tel Aviv, in Hebrew. Clients see the treatments, find the one that fits them, and send a booking request.
 
-- **Pages:** home (hero, about, treatments, how it works, testimonials, FAQ, contact), `/book` (booking) and `/admin` (management).
-- **Hebrew / English:** the toggle is in the header. Hebrew is right-to-left and English is left-to-right, and the visitor's choice is remembered. You can link straight to English with `?lang=en`.
+The design is based on an acupuncture chart:
+- **Fonts:** a tall, condensed display font (Karantina) with a precise body font (IBM Plex).
+- **Motifs:** red points, thin "needle" lines, round "cup" frames for photos, and a red seal with David's initials.
+- **Colors:** taken from the clinic photos.
+
+- **Pages:** home and booking (`#book` on GitHub Pages, `/book` on the server).
+- **Home page sections, in order:**
+  - opening section: an "open now / opens at…" status from the opening hours
+  - band of techniques
+  - interactive **body map** ("מה כואב לך?"): pick an area, see the matching treatment, book it
+  - treatments
+  - about
+  - the process ("כמו באימון")
+  - photo gallery with a full-screen viewer
+  - visit: address, Waze / Google Maps, an hours table with today marked, how to prepare
+  - FAQ
+  - contact
+- **Accessibility menu** (the person icon in the header): bigger text, high contrast, underlined links, stop animations, readable font. Also an accessibility statement.
+- **Phones:** a bottom bar with "book", WhatsApp and call.
+- **Link previews:** when the link is shared on WhatsApp or Facebook it shows a picture card (`public/images/og.jpg`), and Google gets the business details (address, phone, hours).
 - **Light / dark theme:** follows the visitor's device setting by default. The toggle in the header overrides it.
 - **Booking:** the client picks a session type, then a day on the calendar, then a free time, then enters their details. The server calculates free times from the weekly hours, session length, a break between sessions, minimum notice, blocked days and existing bookings. Two people can't book the same time.
 - **Admin panel (`/admin`):**
@@ -32,12 +50,17 @@ Requires Node.js 22.13 or newer.
 | Business name, tagline, phone, WhatsApp, email, address, Instagram/Facebook | `config/site.json` → `business` |
 | Treatments: name, description, length in minutes, price (0 = free) | `config/site.json` → `services` |
 | Default opening hours (later edited in `/admin`) | `config/site.json` → `defaultSchedule` |
-| All page text: about, FAQ, testimonials, buttons… (Hebrew and English) | `public/js/i18n.js` |
+| Treatment photo, keywords and a highlighted number (e.g. "43 muscles") | `config/site.json` → `services` → `image`, `tags`, `stat` |
+| Site address (used for link previews) | `config/site.json` → `siteUrl` |
+| All page text: about, FAQ, body map areas, accessibility statement, buttons… | `public/js/i18n.js` |
+| Which body map area leads to which treatment | `public/js/home.js` → `ZONE_SERVICE` |
 | Colors and fonts | top of `public/css/styles.css` (`:root` for light, `[data-theme='dark']` for dark) |
 
-**Photos:** put image files in `public/images/`. In `public/index.html`, find each `<div class="photo …">` block (each one has a comment above it) and replace its inside with an image, for example `<img src="/images/about.jpg" alt="…">`. The block keeps the arch or rounded shape.
+**Photos:** the originals are in `photos/`. The web versions in `public/images/` are cropped and compressed copies (no location data). To use a different photo, replace the file in `public/images/` with one of the same name and shape.
 
-**Testimonials:** the three cards are clearly marked as samples. Replace them with real client quotes, with the clients' permission, or delete the section.
+**Accessibility statement:** the text in `public/js/i18n.js` → `statement` is a starting point. Have the business review it. Add details about the clinic's physical accessibility (entrance, elevator, parking) if it applies.
+
+**Testimonials:** the section is hidden until there are real client quotes (with their permission).
 
 A missing phone, WhatsApp, email, Instagram or Facebook value hides that link automatically.
 

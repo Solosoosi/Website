@@ -47,6 +47,7 @@ export function createApp({ config, store, mailer, env = {}, clock = () => new D
       timezone: tz,
       today: now().date,
       maxDaysAhead: schedule.maxDaysAhead,
+      hours: schedule.weeklyHours,
     });
   });
 

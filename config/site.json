@@ -1,4 +1,5 @@
 {
+  "siteUrl": "https://solosoosi.github.io/Website/",
   "business": {
     "name": {
       "he": "דוד נאמן",
@@ -33,7 +34,22 @@
       },
       "duration": 60,
       "price": null,
-      "icon": "leaf"
+      "icon": "leaf",
+      "image": "images/svc-dry.jpg",
+      "tags": {
+        "he": [
+          "כאבי שרירים",
+          "מגבלות תנועה",
+          "אחרי פציעה או עומס",
+          "נקודות טריגר"
+        ],
+        "en": [
+          "Muscle pain",
+          "Limited movement",
+          "After injury or overload",
+          "Trigger points"
+        ]
+      }
     },
     {
       "id": "cosmetic",
@@ -47,7 +63,27 @@
       },
       "duration": 60,
       "price": null,
-      "icon": "sparkle"
+      "icon": "sparkle",
+      "image": "images/svc-cosmetic.jpg",
+      "tags": {
+        "he": [
+          "פנים וצוואר",
+          "זרימת דם וחמצן",
+          "קולגן ואלסטין"
+        ],
+        "en": [
+          "Face and neck",
+          "Blood and oxygen flow",
+          "Collagen and elastin"
+        ]
+      },
+      "stat": {
+        "value": "43",
+        "label": {
+          "he": "שרירים בפנים",
+          "en": "muscles in the face"
+        }
+      }
     },
     {
       "id": "stress",
@@ -61,7 +97,22 @@
       },
       "duration": 60,
       "price": null,
-      "icon": "sun"
+      "icon": "sun",
+      "image": "images/svc-stress.jpg",
+      "tags": {
+        "he": [
+          "סטרס",
+          "קורטיזול",
+          "איזון הורמונלי",
+          "שלוות נפש"
+        ],
+        "en": [
+          "Stress",
+          "Cortisol",
+          "Hormonal balance",
+          "Calm"
+        ]
+      }
     }
   ],
   "defaultSchedule": {

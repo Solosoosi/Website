@@ -14,6 +14,11 @@ test('GitHub Pages build produces a working single page', () => {
   assert.ok(fs.existsSync(path.join(out, '.nojekyll')));
   assert.ok(!/href="\//.test(html), 'no absolute links (the site lives under /<repo>/)');
   assert.match(html, /handoff: 'whatsapp'/);
+  assert.match(html, /<meta property="og:image" content="https:\/\/[^"]+\/images\/og\.jpg">/);
+  assert.match(html, /<script type="application\/ld\+json">\{"@context"/);
+  for (const img of html.matchAll(/src="(images\/[^"]+)"/g)) {
+    assert.ok(fs.existsSync(path.join(out, img[1])), `missing ${img[1]}`);
+  }
 
   // The inline module must parse.
   const script = html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];

@@ -91,7 +91,9 @@ function renderServices() {
           'aria-pressed': String(state.service?.id === s.id),
           onclick: () => selectService(s),
         },
-        el('span', { class: 'card-icon', html: svg(s.icon) }),
+        s.image
+          ? el('span', { class: 'service-thumb' }, el('img', { src: s.image, alt: '', width: 700, height: 700 }))
+          : el('span', { class: 'card-icon', html: svg(s.icon) }),
         el(
           'span',
           {},
@@ -103,6 +105,7 @@ function renderServices() {
             s.price == null ? null : el('span', { class: 'chip chip-accent' }, formatPrice(s.price)),
           ),
         ),
+        el('span', { class: 'check-mark', 'aria-hidden': 'true' }),
       ),
     ),
   );
@@ -380,8 +383,8 @@ function showConfirmation(booking, emailed, whatsappHref = null) {
   $('confirmation').hidden = false;
   $('confirm-email').hidden = !emailed;
   renderConfirmation();
-  window.scrollTo({ top: 0 });
-  $('confirm-title').focus();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  $('confirm-title').focus({ preventScroll: true });
 }
 
 // ---------------------------------------------------------------------------

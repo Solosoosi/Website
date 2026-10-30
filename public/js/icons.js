@@ -24,9 +24,30 @@ const PATHS = {
   whatsapp:
     '<path fill="currentColor" stroke="none" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91A9.85 9.85 0 0 0 12.04 2Zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23a8.23 8.23 0 0 1 8.23 8.24c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/>',
   logo: '<path d="M12 21c-4.5-2.5-7-6.2-7-10.2C5 7 8 4 12 3c4 1 7 4 7 7.8 0 4-2.5 7.7-7 10.2Z"/><path d="M12 21V9"/><path d="M12 13c-1.8-.4-3.2-1.5-4-3M12 16c2-.4 3.6-1.6 4.5-3.4"/>',
+  a11y: '<circle cx="12" cy="4.6" r="1.9"/><path d="M4.5 8.6c2.5.8 5 1.1 7.5 1.1s5-.3 7.5-1.1M12 9.7v4.6M12 14.3 8.6 21M12 14.3l3.4 6.7"/>',
+  shirt: '<path d="M8.2 3 4 5.6 2.4 10.2l3.6 1.4V21h12v-9.4l3.6-1.4L20 5.6 15.8 3c-.6 1.7-2 2.8-3.8 2.8S8.8 4.7 8.2 3Z"/>',
+  parking: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9.5 17V7h3.6a3 3 0 0 1 0 6H9.5"/>',
+  calendarX: '<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M10 14l4 4M14 14l-4 4"/>',
+  navigate: '<path d="M3 11 22 2l-9 19-2-8-8-2Z"/>',
+  text: '<path d="M3.5 18 8.5 6l5 12M5.2 14h6.6M15.6 18l3-7.4 3 7.4M16.4 16h4.4"/>',
+  contrast: '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/>',
+  link: '<path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/>',
+  pause: '<circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/>',
+  font: '<path d="M5 7V5h14v2M12 5v14M9 19h6"/>',
+  reset: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
 };
 
+// David's seal: a red stamp with his Hebrew initials (ד·נ), drawn as blocks like a carved seal.
+const SEAL =
+  '<svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
+  '<rect class="seal-bg" width="64" height="64" rx="7"/>' +
+  '<rect class="seal-frame" x="5" y="5" width="54" height="54" rx="3" stroke-width="2"/>' +
+  '<g class="seal-ink"><rect x="34" y="17" width="20" height="5.5"/><rect x="45.5" y="17" width="5.5" height="30"/>' +
+  '<rect x="18" y="17" width="10.5" height="5.5"/><rect x="23" y="17" width="5.5" height="30"/><rect x="12" y="41.5" width="16.5" height="5.5"/></g>' +
+  '</svg>';
+
 export function svg(name, extraClass = '') {
+  if (name === 'seal') return SEAL;
   const body = PATHS[name] || PATHS.sparkle;
   const cls = extraClass ? ` class="${extraClass}"` : '';
   return `<svg${cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${body}</svg>`;

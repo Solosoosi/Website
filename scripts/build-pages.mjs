@@ -37,9 +37,11 @@ const index = read('public/index.html');
 const book = read('public/book.html');
 const mainOf = (html, what) => between(html, /<main id="main">([\s\S]*?)\n  <\/main>/, `<main> in ${what}`);
 
-const header = between(index, /( {2}<header class="site-header">[\s\S]*?<\/header>)/, 'header');
+const header = between(index, /( {2}<header class="site-header"[^>]*>[\s\S]*?<\/header>)/, 'header');
 const footer = between(index, /( {2}<footer class="site-footer">[\s\S]*?<\/footer>)/, 'footer');
-const fab = between(index, /( {2}<a class="whatsapp-fab"[^\n]*<\/a>)/, 'WhatsApp button');
+// Everything after the footer (floating WhatsApp button, mobile action bar).
+const tail = between(index, /<\/footer>\n([\s\S]*?)<\/body>/, 'content after the footer').trimEnd();
+const fontsHref = between(index, /<link rel="stylesheet" href="(https:\/\/fonts\.googleapis\.com[^"]+)">/, 'Google Fonts link');
 const bookMain = replaceOnce(
   mainOf(book, 'book.html'),
   '<a class="btn btn-outline" href="/book" data-i18n="book.another">',
@@ -55,7 +57,7 @@ ${header}
     </div>
   </main>
 ${footer}
-${fab}`;
+${tail}`;
 body = body.replaceAll('href="/book"', 'href="#book"').replaceAll('href="/"', 'href="#top"');
 const absolute = body.match(/href="\/[^"]*"/g);
 if (absolute) throw new Error(`build-pages: absolute links left: ${absolute.join(', ')}`);
@@ -69,11 +71,8 @@ site = replaceOnce(site, 'export function loadConfig()', 'function serverLoadCon
 site = replaceOnce(site, 'export async function api(', 'async function serverApi(');
 
 let home = stripModule(read('public/js/home.js'));
-home = replaceOnce(
-  home,
-  "{ class: 'btn btn-outline btn-sm', href: `/book?service=${encodeURIComponent(s.id)}` }",
-  "{ class: 'btn btn-outline btn-sm', href: '#book', 'data-service': s.id }",
-);
+// Booking links point at the #book page; the router reads data-service to preselect a treatment.
+home = replaceOnce(home, 'const bookHref = (id) => `/book?service=${encodeURIComponent(id)}`;', "const bookHref = () => '#book';");
 
 let bookJs = stripModule(read('public/js/book.js'));
 bookJs = replaceOnce(bookJs, "new URLSearchParams(location.search).get('service')", 'null');
@@ -112,6 +111,7 @@ function loadConfig() {
       timezone: STATIC_CONFIG.timezone,
       today: nowInZone(STATIC_CONFIG.timezone).date,
       maxDaysAhead: STATIC_CONFIG.defaultSchedule.maxDaysAhead,
+      hours: STATIC_CONFIG.defaultSchedule.weeklyHours,
       handoff: 'whatsapp',
     };
     applyTranslations();
@@ -155,9 +155,10 @@ const router = `
     home.hidden = isBook;
     bookPage.hidden = !isBook;
     document.body.dataset.titleKey = isBook ? 'meta.bookTitle' : 'meta.homeTitle';
+    document.body.dataset.route = isBook ? 'book' : 'home';
     applyTranslations();
     if (isBook) {
-      window.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0, behavior: 'instant' });
       if (pendingService) {
         const id = pendingService;
         pendingService = null;
@@ -166,7 +167,7 @@ const router = `
     } else if (h && h !== 'top' && h !== 'main') {
       document.getElementById(h)?.scrollIntoView();
     } else {
-      window.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
   }
   document.addEventListener('click', (e) => {
@@ -200,27 +201,69 @@ const script = [
 // Hebrew only; theme from the visitor's saved choice or device setting.
 const themeInit = `(function () {
   var r = document.documentElement, th = null;
-  try { th = localStorage.getItem('theme'); } catch (e) {}
+  r.classList.add('js');
+  try {
+    th = localStorage.getItem('theme');
+    var a = JSON.parse(localStorage.getItem('a11y') || '{}') || {};
+    if (a.text) r.classList.add('a11y-text-' + a.text);
+    ['contrast', 'links', 'still', 'font'].forEach(function (k) { if (a[k]) r.classList.add('a11y-' + k); });
+  } catch (e) {}
   if (th !== 'light' && th !== 'dark') th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   r.setAttribute('data-theme', th);
   r.lang = 'he';
   r.dir = 'rtl';
 })();`;
 
+const he = (await import('../public/js/i18n.js')).dictionaries.he;
+const escapeHtml = (str) => String(str).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const name = config.business.name.he;
+const pageTitle = `${name} | ${he.meta.homeTitle}`;
+const siteUrl = config.siteUrl || '';
+const street = config.business.address.he.replace(/\s*\(.*?\)\s*/g, ' ').trim();
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name,
+  description: he.meta.description,
+  url: siteUrl || undefined,
+  image: siteUrl ? `${siteUrl}images/og.jpg` : undefined,
+  telephone: config.business.phone,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: street.split(',')[0].trim(),
+    addressLocality: (street.split(',')[1] || '').trim(),
+    addressCountry: 'IL',
+  },
+  openingHoursSpecification: Object.entries(config.defaultSchedule.weeklyHours).flatMap(([day, ranges]) =>
+    ranges.map(([opens, closes]) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: DAYS[day], opens, closes })),
+  ),
+};
 const html = `<!doctype html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${name}</title>
-  <meta name="description" content="">
-  <meta name="theme-color" content="#4f6b55">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>${escapeHtml(pageTitle)}</title>
+  <meta name="description" content="${escapeHtml(he.meta.description)}">
+  <meta name="theme-color" content="#1f3d2e">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:site_name" content="${escapeHtml(name)}">
+  <meta property="og:title" content="${escapeHtml(pageTitle)}">
+  <meta property="og:description" content="${escapeHtml(he.meta.description)}">${siteUrl ? `
+  <meta property="og:url" content="${siteUrl}">
+  <meta property="og:image" content="${siteUrl}images/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">` : ''}
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>
   <script>${themeInit}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="${fontsHref}">
   <style>
 ${read('public/css/styles.css')}
   </style>
@@ -236,7 +279,10 @@ ${script}
 
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'index.html'), html);
-fs.copyFileSync(path.join(root, 'public', 'favicon.svg'), path.join(outDir, 'favicon.svg'));
+for (const file of ['favicon.svg', 'apple-touch-icon.png']) {
+  if (fs.existsSync(path.join(root, 'public', file))) fs.copyFileSync(path.join(root, 'public', file), path.join(outDir, file));
+}
+fs.rmSync(path.join(outDir, 'images'), { recursive: true, force: true }); // drop photos that are no longer used
 fs.cpSync(path.join(root, 'public', 'images'), path.join(outDir, 'images'), { recursive: true });
 fs.writeFileSync(path.join(outDir, '.nojekyll'), '');
 console.log(`Built ${path.relative(root, outDir) || '.'}/index.html (${Math.round(html.length / 1024)} KB)`);
