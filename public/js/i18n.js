@@ -71,6 +71,10 @@ export const dictionaries = {
       s3t: 'תהליך',
       s3p: 'כמו באימון, כל טיפול מקדם. יחד בונים תהליך שמגיע לשורש הבעיה.',
     },
+    gallery: {
+      eyebrow: 'מהקליניקה',
+      title: 'הצצה לטיפולים',
+    },
     testimonials: {
       eyebrow: 'המלצות',
       title: 'מה אומרים המטופלים',
@@ -297,6 +301,10 @@ export const dictionaries = {
       s2p: 'A session at your own pace, in a calm and supportive space – in the clinic or online.',
       s3t: 'Ongoing support',
       s3p: 'Together we build a personal process, with tools you can carry into everyday life.',
+    },
+    gallery: {
+      eyebrow: 'From the clinic',
+      title: 'A look at the treatments',
     },
     testimonials: {
       eyebrow: 'Testimonials',

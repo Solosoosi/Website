@@ -237,5 +237,6 @@ ${script}
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'index.html'), html);
 fs.copyFileSync(path.join(root, 'public', 'favicon.svg'), path.join(outDir, 'favicon.svg'));
+fs.cpSync(path.join(root, 'public', 'images'), path.join(outDir, 'images'), { recursive: true });
 fs.writeFileSync(path.join(outDir, '.nojekyll'), '');
 console.log(`Built ${path.relative(root, outDir) || '.'}/index.html (${Math.round(html.length / 1024)} KB)`);

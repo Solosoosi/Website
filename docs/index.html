@@ -2066,6 +2066,30 @@ textarea {
   grid-template-columns: 1fr;
 }
 
+/* ---------- Gallery ---------- */
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.gallery img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+@media (max-width: 560px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
   </style>
 </head>
 <body data-title-key="meta.homeTitle">
@@ -2117,10 +2141,8 @@ textarea {
           </ul>
         </div>
         <div class="hero-visual reveal">
-          <!-- Replace the placeholder with: <img src="/images/hero.jpg" alt="…"> -->
           <div class="photo photo-arch">
-            <div class="photo-leaf" data-icon="leaf"></div>
-            <span class="photo-label" data-i18n="common.photo"></span>
+            <img src="images/hero.jpg" alt="טיפול בכוסות רוח בקליניקה" width="900" height="1125" fetchpriority="high">
           </div>
           <div class="hero-badge">
             <span class="badge-icon" data-icon="calendar"></span>
@@ -2134,10 +2156,8 @@ textarea {
     <section class="section section-alt" id="about">
       <div class="container about-grid">
         <div class="reveal">
-          <!-- Replace the placeholder with: <img src="/images/about.jpg" alt="…"> -->
           <div class="photo photo-round">
-            <div class="photo-leaf" data-icon="heart"></div>
-            <span class="photo-label" data-i18n="common.photo"></span>
+            <img src="images/about.jpg" alt="דוד נאמן בקליניקה" width="900" height="900" loading="lazy">
           </div>
         </div>
         <div class="about-text reveal">
@@ -2174,6 +2194,24 @@ textarea {
           <li class="step"><h3 data-i18n="process.s2t"></h3><p data-i18n="process.s2p"></p></li>
           <li class="step"><h3 data-i18n="process.s3t"></h3><p data-i18n="process.s3p"></p></li>
         </ol>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="section" id="gallery">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow" data-i18n="gallery.eyebrow"></span>
+          <h2 class="section-title" data-i18n="gallery.title"></h2>
+        </div>
+        <div class="gallery reveal">
+          <img src="images/gallery-1.jpg" alt="טיפול בכוסות רוח בקליניקה" width="800" height="800" loading="lazy">
+          <img src="images/gallery-2.jpg" alt="כוסות רוח בגב התחתון" width="800" height="800" loading="lazy">
+          <img src="images/gallery-3.jpg" alt="דיקור קוסמטי בפנים" width="800" height="800" loading="lazy">
+          <img src="images/gallery-4.jpg" alt="כוסות רוח ודיקור בגב העליון" width="800" height="800" loading="lazy">
+          <img src="images/gallery-5.jpg" alt="דיקור יבש לאורך הגב" width="800" height="800" loading="lazy">
+          <img src="images/gallery-6.jpg" alt="טיפול משולב בכוסות רוח" width="800" height="800" loading="lazy">
+        </div>
       </div>
     </section>
 
@@ -2519,6 +2557,10 @@ const dictionaries = {
       s3t: 'תהליך',
       s3p: 'כמו באימון, כל טיפול מקדם. יחד בונים תהליך שמגיע לשורש הבעיה.',
     },
+    gallery: {
+      eyebrow: 'מהקליניקה',
+      title: 'הצצה לטיפולים',
+    },
     testimonials: {
       eyebrow: 'המלצות',
       title: 'מה אומרים המטופלים',
@@ -2745,6 +2787,10 @@ const dictionaries = {
       s2p: 'A session at your own pace, in a calm and supportive space – in the clinic or online.',
       s3t: 'Ongoing support',
       s3p: 'Together we build a personal process, with tools you can carry into everyday life.',
+    },
+    gallery: {
+      eyebrow: 'From the clinic',
+      title: 'A look at the treatments',
     },
     testimonials: {
       eyebrow: 'Testimonials',
