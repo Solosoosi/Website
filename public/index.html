@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>דוד נאמן</title>
   <meta name="description" content="">
-  <meta name="theme-color" content="#2e7d6b">
+  <meta name="theme-color" content="#f6f1e9">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="/js/theme-init.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Bellefair&family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@400;500;700;800&family=Rubik:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Bellefair&family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Heebo:wght@300;400;500;700&family=Rubik:wght@300;400;500;600&display=swap">
   <link rel="stylesheet" href="/css/styles.css">
   <script type="module" src="/js/home.js"></script>
 </head>
@@ -52,7 +52,7 @@
       <span class="intro-name" data-biz="tagline"></span>
     </div>
 
-    <!-- Hero: what he does. The page has three looks to choose from (data-look on <html>). -->
+    <!-- Hero: what he does. The design comes in versions (data-look on <html>). -->
     <section class="hero" id="hero">
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
       <div class="container hero-inner">
@@ -67,7 +67,7 @@
             <p class="status" data-status hidden></p>
           </div>
         </div>
-        <figure class="hero-room" aria-hidden="true">
+        <figure class="hero-room" aria-hidden="true" data-parallax="18">
           <img src="images/room.jpg" alt="" width="960" height="1200" loading="lazy">
         </figure>
       </div>
@@ -113,6 +113,7 @@
             <button class="mosaic-item" type="button" data-large="images/large/gal-9.jpg"><img src="images/gal-9.jpg" alt="דיקור לאורך עמוד השדרה" width="720" height="900" loading="lazy"></button>
           </div>
         </div>
+        <div class="strip-progress" aria-hidden="true"><span></span></div>
       </div>
     </section>
 
@@ -120,7 +121,7 @@
     <section class="section" id="about">
       <div class="container">
         <div class="about">
-          <figure class="about-photo reveal">
+          <figure class="about-photo reveal" data-parallax="16">
             <div class="blob">
               <img src="images/about.jpg" alt="דוד נאמן בקליניקה" width="900" height="1125" loading="lazy">
             </div>
@@ -273,7 +274,7 @@
           <a href="#top" data-i18n="a11y.top"></a>
         </span>
       </div>
-      <div class="footer-mark" aria-hidden="true"><span data-i18n="hero.title"></span></div>
+      <div class="footer-mark reveal" aria-hidden="true"><span data-i18n="hero.title"></span></div>
     </div>
   </footer>
 

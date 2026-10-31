@@ -55,7 +55,7 @@ function renderServices() {
         { class: 'stack-card', id: `svc-${s.id}` },
         el(
           'div',
-          { class: 'stack-img' },
+          { class: 'stack-img', 'data-parallax': '14' },
           s.image ? el('img', { src: s.image, alt: pick(s.name), width: 700, height: 700, loading: 'lazy' }) : null,
         ),
         el(
@@ -163,6 +163,24 @@ function initScrollFx() {
         col.style.setProperty('--shift', on ? `${(d * Number(col.dataset.speed) * vh * 1.5).toFixed(1)}px` : '0px');
       }
     }
+
+    // Photos drift a little inside their frames (--py), and frames can grow as
+    // they come up the screen (--enter: 0 at the bottom edge, 1 at the top).
+    const moving = [...document.querySelectorAll('[data-parallax]')];
+    const rects = moving.map((node) => node.getBoundingClientRect());
+    moving.forEach((node, i) => {
+      const r = rects[i];
+      let py = 0;
+      let enter = 1;
+      if (!still && r.height) {
+        const amp = Math.min(Number(node.dataset.parallax) || 0, r.height * 0.035);
+        const c = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2)));
+        py = -c * amp;
+        enter = clamp01((vh - r.top) / vh);
+      }
+      node.style.setProperty('--py', `${py.toFixed(1)}px`);
+      node.style.setProperty('--enter', enter.toFixed(3));
+    });
   }
 
   const request = () => {
@@ -210,11 +228,23 @@ function initLightbox(items) {
   document.body.append(dialog);
 
   function show(i) {
+    const step = i - index;
     index = (i + items.length) % items.length;
     const item = items[index];
     img.src = item.dataset.large;
     img.alt = item.querySelector('img').alt;
     counter.textContent = t('gallery.count', { n: index + 1, total: items.length });
+    // The next photo slides in from the side you're heading to.
+    if (dialog.open && step && !reducedMotion() && img.animate) {
+      const dx = step > 0 === isRtl() ? -36 : 36;
+      const slide = () =>
+        img.animate([{ opacity: 0, transform: `translateX(${dx}px)` }, { opacity: 1, transform: 'none' }], {
+          duration: 420,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        });
+      if (img.decode) img.decode().then(slide, slide);
+      else slide();
+    }
   }
 
   items.forEach((item, i) =>
@@ -365,8 +395,8 @@ function renderHeroTreatments() {
   const list = $('hero-treatments');
   if (!list || !config) return;
   list.replaceChildren(
-    ...config.services.map((s, i) =>
-      el(
+    ...config.services.map((s, i) => {
+      const item = el(
         'li',
         {},
         el(
@@ -377,9 +407,47 @@ function renderHeroTreatments() {
           el('span', { class: 'ht-name' }, pick(s.name)),
           el('span', { class: 'ht-go flip-rtl', 'aria-hidden': 'true', html: svg('arrow') }),
         ),
-      ),
-    ),
+      );
+      item.style.setProperty('--i', String(i)); // staggers the entrance
+      return item;
+    }),
   );
+}
+
+// Phones: the bottom bar (book · WhatsApp · call) waits until the opening
+// screen's own booking button has scrolled away, so the two never show at once.
+function initActionBar() {
+  const html = document.documentElement;
+  const cta = document.querySelector('.hero-ctas .btn');
+  if (!cta || !('IntersectionObserver' in window)) {
+    html.classList.remove('bar-wait');
+    return;
+  }
+  let answered = false;
+  new IntersectionObserver(
+    ([entry]) => {
+      answered = true;
+      html.classList.toggle('bar-wait', entry.isIntersecting && entry.intersectionRatio > 0.5);
+    },
+    { threshold: [0, 0.5, 1] },
+  ).observe(cta);
+  // Some embedded browsers never report visibility; never hide the bar for good there.
+  setTimeout(() => answered || html.classList.remove('bar-wait'), 3000);
+}
+
+// Phones: a thin line under the swipeable gallery shows how far along you are.
+function initStripProgress() {
+  const mosaic = $('mosaic');
+  const strip = document.querySelector('.strip-progress');
+  if (!mosaic || !strip) return;
+  const update = () => {
+    const total = mosaic.scrollWidth;
+    const p = total ? Math.min(1, (Math.abs(mosaic.scrollLeft) + mosaic.clientWidth) / total) : 1;
+    strip.style.setProperty('--p', p.toFixed(3));
+  };
+  mosaic.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
 }
 
 function renderAll() {
@@ -417,6 +485,8 @@ if (galleryItems.length) initLightbox(galleryItems);
 renderWords();
 initScrollFx();
 initCursorGlow();
+initActionBar();
+initStripProgress();
 
 loadConfig()
   .then((cfg) => {

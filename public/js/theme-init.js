@@ -16,14 +16,18 @@
       if (a11y[k]) root.classList.add('a11y-' + k);
     });
   } catch (e) {}
-  // ?options shows a bar for comparing the design options (and remembers the pick).
+  // The design version. ?options shows a switcher for comparing the versions
+  // (and remembers the pick).
+  root.setAttribute('data-look', '2');
   try {
     if (/[?&]options(=|&|$)/.test(location.search)) {
       root.classList.add('show-looks');
       var look = localStorage.getItem('look');
-      if (look === '2' || look === '3') root.setAttribute('data-look', look);
+      if (/^2[bcd]?$/.test(look || '')) root.setAttribute('data-look', look);
     }
   } catch (e) {}
+  // Phones: on the home page the bottom bar waits until the opening button scrolls away.
+  if (location.pathname === '/' || /\/index\.html$/.test(location.pathname)) root.classList.add('bar-wait');
   // The home page opens with a short intro – once per visit.
   try {
     if (sessionStorage.getItem('intro')) root.classList.add('no-intro');

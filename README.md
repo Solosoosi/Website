@@ -4,35 +4,39 @@ The website of an acupuncture clinic in Tel Aviv, in Hebrew. Clients see the tre
 
 All the text on the site is the practitioner's own wording, lightly proofread. Add new text only when it comes from him.
 
-The design is soft and calm:
-- **Look:** a light palette of mint, sky and a touch of blush with slowly drifting light, frosted-glass cards, rounded shapes, and photos in gently morphing organic frames.
-- **Fonts:** an elegant display font (Bellefair) with a soft, rounded text font (Rubik). Light and dark themes.
+The design is warm and natural:
+- **Look:** warm paper colors with terracotta, serif headings, thin lines, and a photo of the empty treatment room in an arch. Soft sunlight drifts slowly behind the opening screen.
+- **Fonts:** Frank Ruhl Libre for headings and Assistant for text. Light and dark themes.
 - **Motion:**
-  - a short intro (once per visit), then the headline "טיפולי דיקור" rises in large type
-  - treatment cards stack (on screens tall enough), and the ones behind sink back
-  - the About portrait warms from black and white into color, and his quote lights up word by word
-  - the gallery columns drift at different speeds
-  - on computers, buttons lean toward the mouse; the header slides away while scrolling down
+  - a short intro (once per visit); then the header slides in, each word of "טיפולי דיקור" rises out of its own slot, the lines of the treatment list draw in and the rows follow one by one, and the room photo rises, a curtain lifts off it and it slowly "breathes"
+  - section titles rise out of a slot and the short line by their number draws in
+  - each treatment's photo is wiped in from the side, its text follows, and the line under it draws across
+  - photos drift a little inside their frames while scrolling
+  - gallery photos arrive one after another; the full-screen viewer slides between photos
+  - the About portrait: a curtain lifts and it warms from black and white into color; his quote lights up word by word
+  - the big "טיפולי דיקור" at the very bottom rises into view
+  - buttons fill with a darker tone on hover and press in slightly on touch; the header slides away while scrolling down
   - switching the theme ripples a circle out from the button
-  - everything respects the "reduce motion" setting and the accessibility menu
+  - everything respects the "reduce motion" setting and "stop animations" in the accessibility menu
 
 - **Pages:** home and booking (`#book` on GitHub Pages, `/book` on the server).
 - **Home page sections, in order:**
   - opening section: "טיפולי דיקור", links to the three treatments, the address and an "open now / opens at…" status from the opening hours (no large treatment photo)
-  - treatments as cards that stack as you scroll
-  - photo gallery (drifting columns on computers, a swipe strip on phones) with a full-screen viewer
+  - the treatments, each with its photo, description and a booking button
+  - photo gallery (a grid on computers, a swipe strip on phones) with a full-screen viewer
   - about, with his quote
   - address and hours: Waze / Google Maps, an hours table with today marked, and what to know before a treatment
   - contact
-- **Design options:** three looks share the same content.
-  - **1 – soft** (default): mint and glass, an elegant display font, treatment links as small pills.
-  - **2 – natural:** warm paper colors, serif headings, flat lines, a photo of the empty treatment room in an arch.
-  - **3 – modern:** dark green-black, bold type, the treatments as a big numbered list.
+- **Design options:** four versions of the natural design share the same content (`data-look` on `<html>`).
+  - **א – warm and natural** (`2`, the default): terracotta; the text beside an arched photo of the room.
+  - **ב – olive and linen** (`2b`): olive green and a delicate display font (Bellefair); centered, the three treatments as round photos, and a wide arched window of the room that opens up as it scrolls into view; the treatments as three cards.
+  - **ג – sand and honey** (`2c`): honey tones; a very large, light headline across the width, a numbered treatment list beside a framed photo, big outlined numbers.
+  - **ד – quiet and minimal** (`2d`): black on warm white with a touch of terracotta, square black buttons, the treatments in one row and the room photo below as a wide arch.
 
-  Open the site with `?options` at the end of the address (for example `https://solosoosi.github.io/Website/?options`) to get a bar for switching between them; the pick is remembered on that device. Normal visitors never see the bar.
+  Open the site with `?options` at the end of the address (for example `https://solosoosi.github.io/Website/?options`) to get a switcher (a bar at the bottom on computers, a round button on phones); the pick is remembered on that device. Normal visitors never see it and get version א.
 - **Treatment photos:** cosmetic = needles on the face; dry needling = needles along the back; stress = a relaxed client with needles on the forehead and face (best match – confirm with David).
 - **Accessibility menu** (the person icon in the header): bigger text, high contrast, underlined links, stop animations, readable font. Also an accessibility statement.
-- **Phones:** a bottom bar with "book", WhatsApp and call.
+- **Phones:** a bottom bar with "book", WhatsApp and call. It slides up once the opening screen's own booking button has scrolled away, so the two never show at once. The gallery is a swipe strip with a thin progress line under it, and the browser's address bar takes the page's background color.
 - **Link previews:** when the link is shared on WhatsApp or Facebook it shows a picture card (`public/images/og.jpg`), and Google gets the business details (address, phone, hours).
 - **Light / dark theme:** follows the visitor's device setting by default. The toggle in the header overrides it.
 - **Booking:** the client picks a session type, then a day on the calendar, then a free time, then enters their details. The server calculates free times from the weekly hours, session length, a break between sessions, minimum notice, blocked days and existing bookings. Two people can't book the same time.

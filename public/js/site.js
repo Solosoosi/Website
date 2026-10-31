@@ -97,6 +97,14 @@ function setTheme(theme) {
   root.dataset.theme = theme;
   storageSet('theme', theme);
   updateToggles();
+  syncThemeColor();
+}
+
+// Phone browsers tint their address bar with the page's background color.
+function syncThemeColor() {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const bg = getComputedStyle(root).getPropertyValue('--bg').trim();
+  if (meta && bg) meta.setAttribute('content', bg);
 }
 
 function updateToggles() {
@@ -579,37 +587,62 @@ function initMagneticButtons() {
 }
 
 // ---------------------------------------------------------------------------
-// Design options: open the site with ?options to compare the three looks.
-// The bar never shows on the normal site.
+// Design options: open the site with ?options to compare the versions of the
+// design (data-look on <html>). The switcher never shows on the normal site.
 // ---------------------------------------------------------------------------
 
 const LOOKS = [
-  ['1', 'רך ובהיר', 'light'],
-  ['2', 'טבעי וחם', 'light'],
-  ['3', 'מודרני וכהה', 'dark'],
+  ['2', 'א', 'טבעי וחם'],
+  ['2b', 'ב', 'זית ופשתן'],
+  ['2c', 'ג', 'חול ודבש'],
+  ['2d', 'ד', 'שקט ומינימלי'],
 ];
 
 function initLookSwitcher() {
   if (!root.classList.contains('show-looks')) return;
-  const current = () => root.dataset.look || '1';
-  const buttons = LOOKS.map(([id, name]) =>
-    el('button', { type: 'button', 'data-look-id': id }, el('b', {}, id), ` ${name}`),
+  const current = () => LOOKS.find(([id]) => id === root.dataset.look) || LOOKS[0];
+  const buttons = LOOKS.map(([id, letter, name]) =>
+    el('button', { type: 'button', 'data-look-id': id }, el('b', {}, letter), name),
   );
-  const bar = el('div', { class: 'look-switcher', role: 'group', 'aria-label': 'בחירת עיצוב' }, ...buttons);
-  const sync = () => buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lookId === current())));
-  bar.addEventListener('click', (e) => {
+  // On phones the list folds into one round button.
+  const toggle = el('button', { type: 'button', class: 'look-toggle', 'aria-expanded': 'false', 'aria-label': 'בחירת עיצוב' });
+  const list = el('div', { class: 'look-list' }, ...buttons);
+  const bar = el('div', { class: 'look-switcher', role: 'group', 'aria-label': 'בחירת עיצוב' }, toggle, list);
+  const setOpen = (open) => {
+    bar.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+  };
+  const sync = () => {
+    const [id, letter] = current();
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lookId === id)));
+    toggle.replaceChildren(letter, el('span', {}, 'עיצוב'));
+  };
+  toggle.addEventListener('click', () => setOpen(!bar.classList.contains('is-open')));
+  list.addEventListener('click', (e) => {
     const button = e.target.closest('button');
     if (!button) return;
-    const [id, , theme] = LOOKS.find(([lookId]) => lookId === button.dataset.lookId);
-    if (id === '1') delete root.dataset.look;
-    else root.dataset.look = id;
-    storageSet('look', id);
-    setTheme(theme);
+    root.dataset.look = button.dataset.lookId;
+    storageSet('look', button.dataset.lookId);
+    setTheme('light');
     sync();
+    setOpen(false);
+    replayHero();
     window.dispatchEvent(new Event('resize'));
   });
+  document.addEventListener('click', (e) => bar.contains(e.target) || setOpen(false));
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
   sync();
   document.body.append(bar);
+}
+
+// After switching versions, play the opening animation again.
+function replayHero() {
+  const hero = document.querySelector('.hero');
+  if (!hero?.getAnimations) return;
+  for (const animation of hero.getAnimations({ subtree: true })) {
+    animation.cancel();
+    animation.play();
+  }
 }
 
 // Underline the nav link of the section on screen.
@@ -665,5 +698,6 @@ initReveal();
 initScrollSpy();
 initMagneticButtons();
 initLookSwitcher();
+syncThemeColor();
 loadConfig().catch(() => {});
 setInterval(renderStatus, 60_000);

@@ -212,13 +212,15 @@ const themeInit = `(function () {
     if (sessionStorage.getItem('intro')) r.classList.add('no-intro');
     else sessionStorage.setItem('intro', '1');
   } catch (e) {}
+  r.setAttribute('data-look', '2');
   try {
     if (/[?&]options(=|&|$)/.test(location.search)) {
       r.classList.add('show-looks');
       var lk = localStorage.getItem('look');
-      if (lk === '2' || lk === '3') r.setAttribute('data-look', lk);
+      if (/^2[bcd]?$/.test(lk || '')) r.setAttribute('data-look', lk);
     }
   } catch (e) {}
+  if (location.hash !== '#book') r.classList.add('bar-wait');
   if (th !== 'light' && th !== 'dark') th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   r.setAttribute('data-theme', th);
   r.lang = 'he';
@@ -257,7 +259,7 @@ const html = `<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>${escapeHtml(pageTitle)}</title>
   <meta name="description" content="${escapeHtml(he.meta.description)}">
-  <meta name="theme-color" content="#2e7d6b">
+  <meta name="theme-color" content="#f6f1e9">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="he_IL">
   <meta property="og:site_name" content="${escapeHtml(name)}">
