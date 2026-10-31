@@ -16,6 +16,11 @@
       if (a11y[k]) root.classList.add('a11y-' + k);
     });
   } catch (e) {}
+  // The home page opens with a short intro – once per visit.
+  try {
+    if (sessionStorage.getItem('intro')) root.classList.add('no-intro');
+    else sessionStorage.setItem('intro', '1');
+  } catch (e) {}
   if (lang !== 'en') lang = 'he';
   root.setAttribute('data-theme', theme);
   root.lang = lang;

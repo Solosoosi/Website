@@ -208,6 +208,10 @@ const themeInit = `(function () {
     if (a.text) r.classList.add('a11y-text-' + a.text);
     ['contrast', 'links', 'still', 'font'].forEach(function (k) { if (a[k]) r.classList.add('a11y-' + k); });
   } catch (e) {}
+  try {
+    if (sessionStorage.getItem('intro')) r.classList.add('no-intro');
+    else sessionStorage.setItem('intro', '1');
+  } catch (e) {}
   if (th !== 'light' && th !== 'dark') th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   r.setAttribute('data-theme', th);
   r.lang = 'he';

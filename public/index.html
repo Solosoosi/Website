@@ -46,53 +46,55 @@
   </header>
 
   <main id="main">
-    <!-- Hero -->
+    <!-- Intro: a short curtain with the name, once per visit -->
+    <div class="intro" aria-hidden="true">
+      <span class="intro-orb"></span>
+      <span class="intro-name" data-biz="name"></span>
+    </div>
+
+    <!-- Hero: big name, then his clinic in a frame that opens up as you scroll -->
     <section class="hero" id="hero">
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <div class="container hero-grid">
-        <div class="hero-text">
-          <p class="pill-label" data-biz="street"></p>
-          <h1 class="hero-title">
-            <span class="line" data-i18n="hero.line1"></span>
-            <span class="line grad" data-i18n="hero.line2"></span>
-          </h1>
-          <div class="hero-ctas">
-            <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
-            <a class="btn btn-soft" href="#treatments" data-i18n="hero.ctaMore"></a>
-          </div>
-          <div class="hero-meta">
-            <p class="status" data-status hidden></p>
-          </div>
+      <div class="container hero-head">
+        <p class="pill-label" data-biz="street"></p>
+        <h1 class="hero-title">
+          <span class="line"><span data-i18n="hero.line1"></span></span>
+          <span class="line line-2"><span class="grad" data-i18n="hero.line2"></span></span>
+        </h1>
+        <div class="hero-ctas">
+          <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
+          <a class="btn btn-soft" href="#treatments" data-i18n="hero.ctaMore"></a>
+          <p class="status" data-status hidden></p>
         </div>
-        <div class="hero-visual">
-          <div class="hero-halo" aria-hidden="true"></div>
-          <div class="blob hero-photo">
-            <img src="images/hero-circle.jpg" alt="טיפול בכוסות רוח בקליניקה" width="1000" height="1000" fetchpriority="high">
-          </div>
-        </div>
+      </div>
+      <div class="hero-media" id="hero-media">
+        <picture>
+          <source media="(max-width: 700px)" srcset="images/hero-tall.jpg" width="1080" height="1440">
+          <img src="images/hero-wide.jpg" alt="דוד נאמן בקליניקה" width="2400" height="1350" fetchpriority="high">
+        </picture>
       </div>
     </section>
 
-    <!-- Techniques -->
-    <div class="stream" role="region" data-i18n-attr="aria-label:techniques.label">
-      <div class="stream-track">
-        <ul class="stream-group">
-          <li class="stream-item" data-i18n="techniques.t1"></li>
-          <li class="stream-item" data-i18n="techniques.t3"></li>
-          <li class="stream-item" data-i18n="techniques.t4"></li>
-          <li class="stream-item" data-i18n="techniques.t5"></li>
+    <!-- Techniques: large, slow type that reacts to scrolling -->
+    <div class="marquee" role="region" data-i18n-attr="aria-label:techniques.label">
+      <div class="marquee-track" id="marquee-track">
+        <ul class="marquee-group">
+          <li data-i18n="techniques.t1"></li>
+          <li data-i18n="techniques.t3"></li>
+          <li data-i18n="techniques.t4"></li>
+          <li data-i18n="techniques.t5"></li>
         </ul>
-        <ul class="stream-group" aria-hidden="true">
-          <li class="stream-item" data-i18n="techniques.t1"></li>
-          <li class="stream-item" data-i18n="techniques.t3"></li>
-          <li class="stream-item" data-i18n="techniques.t4"></li>
-          <li class="stream-item" data-i18n="techniques.t5"></li>
+        <ul class="marquee-group" aria-hidden="true">
+          <li data-i18n="techniques.t1"></li>
+          <li data-i18n="techniques.t3"></li>
+          <li data-i18n="techniques.t4"></li>
+          <li data-i18n="techniques.t5"></li>
         </ul>
-        <ul class="stream-group" aria-hidden="true">
-          <li class="stream-item" data-i18n="techniques.t1"></li>
-          <li class="stream-item" data-i18n="techniques.t3"></li>
-          <li class="stream-item" data-i18n="techniques.t4"></li>
-          <li class="stream-item" data-i18n="techniques.t5"></li>
+        <ul class="marquee-group" aria-hidden="true">
+          <li data-i18n="techniques.t1"></li>
+          <li data-i18n="techniques.t3"></li>
+          <li data-i18n="techniques.t4"></li>
+          <li data-i18n="techniques.t5"></li>
         </ul>
       </div>
     </div>
@@ -101,7 +103,10 @@
     <section class="section section-alt" id="treatments">
       <div class="container">
         <header class="section-head reveal">
-          <h2 class="section-title" data-i18n="treatments.title"></h2>
+          <div>
+            <span class="sec-num" aria-hidden="true">01</span>
+            <h2 class="section-title" data-i18n="treatments.title"></h2>
+          </div>
           <p class="section-lead" data-i18n="treatments.lead"></p>
         </header>
         <ol class="stack" id="services-list" aria-live="polite"></ol>
@@ -118,41 +123,45 @@
             </div>
           </figure>
           <div class="about-text reveal">
+            <span class="sec-num" aria-hidden="true">02</span>
             <h2 class="section-title" data-i18n="about.title"></h2>
-            <p data-i18n="about.p1"></p>
+            <p class="about-lead" data-i18n="about.p1"></p>
             <p data-i18n="about.p2"></p>
             <p data-i18n="about.p3"></p>
           </div>
         </div>
-        <figure class="quote reveal">
-          <blockquote data-i18n="about.quote"></blockquote>
+        <figure class="statement">
+          <blockquote class="words" data-words="about.quote"></blockquote>
           <figcaption data-biz="name"></figcaption>
         </figure>
       </div>
     </section>
 
-    <!-- Gallery -->
+    <!-- Gallery: three columns that drift at different speeds -->
     <section class="section" id="gallery">
       <div class="container">
         <header class="section-head reveal">
-          <h2 class="section-title" data-i18n="gallery.title"></h2>
+          <div>
+            <span class="sec-num" aria-hidden="true">03</span>
+            <h2 class="section-title" data-i18n="gallery.title"></h2>
+          </div>
         </header>
-      </div>
-      <div class="carousel-wrap reveal">
-        <div class="carousel" id="carousel" tabindex="0" data-i18n-attr="aria-label:gallery.title">
-          <button class="carousel-item" type="button" data-large="images/large/gal-1.jpg"><img src="images/gal-1.jpg" alt="טיפול בכוסות רוח בקליניקה" width="720" height="900" loading="lazy" draggable="false"></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-2.jpg"><img src="images/gal-2.jpg" alt="כוסות רוח על הכתפיים" width="720" height="900" loading="lazy" draggable="false"></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-3.jpg"><img src="images/gal-3.jpg" alt="דיקור יבש לאורך הגב" width="720" height="900" loading="lazy" draggable="false"></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-4.jpg"><img src="images/gal-4.jpg" alt="טיפול משולב בכוסות רוח לאורך הגב" width="720" height="900" loading="lazy" draggable="false"></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-5.jpg"><img src="images/gal-5.jpg" alt="דיקור וסימני כוסות רוח בגב" width="720" height="900" loading="lazy" draggable="false"></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-6.jpg"><img src="images/gal-6.jpg" alt="כוסות רוח בגב התחתון" width="720" height="900" loading="lazy" draggable="false"></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-7.jpg"><img src="images/gal-7.jpg" alt="דיקור לאורך עמוד השדרה" width="720" height="900" loading="lazy" draggable="false"></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-8.jpg"><img src="images/gal-8.jpg" alt="דיקור בגב העליון" width="720" height="900" loading="lazy" draggable="false"></button>
-        </div>
-        <div class="container carousel-controls">
-          <button class="icon-btn" type="button" id="carousel-prev" data-i18n-attr="aria-label:gallery.prev"><span class="flip-rtl" data-icon="chevronPrev"></span></button>
-          <div class="carousel-progress" aria-hidden="true"><span></span></div>
-          <button class="icon-btn" type="button" id="carousel-next" data-i18n-attr="aria-label:gallery.next"><span class="flip-rtl" data-icon="chevronNext"></span></button>
+        <div class="mosaic reveal" id="mosaic" role="group" data-i18n-attr="aria-label:gallery.title">
+          <div class="mosaic-col" data-speed="0.08">
+            <button class="mosaic-item" type="button" data-large="images/large/gal-1.jpg"><img src="images/gal-1.jpg" alt="טיפול בכוסות רוח בקליניקה" width="720" height="900" loading="lazy"></button>
+            <button class="mosaic-item" type="button" data-large="images/large/gal-2.jpg"><img src="images/gal-2.jpg" alt="כוסות רוח על הכתפיים" width="720" height="900" loading="lazy"></button>
+            <button class="mosaic-item" type="button" data-large="images/large/gal-3.jpg"><img src="images/gal-3.jpg" alt="דיקור בגב" width="720" height="900" loading="lazy"></button>
+          </div>
+          <div class="mosaic-col" data-speed="-0.1">
+            <button class="mosaic-item" type="button" data-large="images/large/gal-4.jpg"><img src="images/gal-4.jpg" alt="טיפול משולב בכוסות רוח לאורך הגב" width="720" height="900" loading="lazy"></button>
+            <button class="mosaic-item" type="button" data-large="images/large/gal-5.jpg"><img src="images/gal-5.jpg" alt="כוסות רוח לאורך הגב" width="720" height="900" loading="lazy"></button>
+            <button class="mosaic-item" type="button" data-large="images/large/gal-6.jpg"><img src="images/gal-6.jpg" alt="דיקור יבש לאורך הגב" width="720" height="900" loading="lazy"></button>
+          </div>
+          <div class="mosaic-col" data-speed="0.05">
+            <button class="mosaic-item" type="button" data-large="images/large/gal-7.jpg"><img src="images/gal-7.jpg" alt="דיקור וסימני כוסות רוח בגב" width="720" height="900" loading="lazy"></button>
+            <button class="mosaic-item" type="button" data-large="images/large/gal-8.jpg"><img src="images/gal-8.jpg" alt="כוסות רוח בגב התחתון" width="720" height="900" loading="lazy"></button>
+            <button class="mosaic-item" type="button" data-large="images/large/gal-9.jpg"><img src="images/gal-9.jpg" alt="דיקור לאורך עמוד השדרה" width="720" height="900" loading="lazy"></button>
+          </div>
         </div>
       </div>
     </section>
@@ -161,7 +170,10 @@
     <section class="section section-alt" id="visit">
       <div class="container">
         <header class="section-head reveal">
-          <h2 class="section-title" data-i18n="visit.title"></h2>
+          <div>
+            <span class="sec-num" aria-hidden="true">04</span>
+            <h2 class="section-title" data-i18n="visit.title"></h2>
+          </div>
         </header>
         <div class="visit">
           <div class="visit-card glass reveal">
@@ -199,6 +211,7 @@
         <div class="final-card reveal">
           <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
           <div>
+            <span class="sec-num" aria-hidden="true">05</span>
             <h2 class="final-title" data-i18n="contact.title"></h2>
             <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="cta.button"></span><span class="flip-rtl" data-icon="arrow"></span></a>
             <ul class="final-links">
@@ -286,6 +299,7 @@
           <a href="#top" data-i18n="a11y.top"></a>
         </span>
       </div>
+      <div class="footer-mark" aria-hidden="true"><span data-biz="name"></span></div>
     </div>
   </footer>
 

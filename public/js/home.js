@@ -20,12 +20,30 @@ const reducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-still');
 const isRtl = () => document.documentElement.dir === 'rtl';
 let config = null;
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+let refreshScrollFx = () => {};
 
 const arrow = () => el('span', { class: 'flip-rtl', html: svg('arrow') });
 
 // ---------------------------------------------------------------------------
 // Treatments: cards that stack as you scroll
 // ---------------------------------------------------------------------------
+
+// Each card's photo opens like a curtain the first time it comes into view.
+const cardObserver =
+  'IntersectionObserver' in window
+    ? new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-in');
+              cardObserver.unobserve(e.target);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -12% 0px' },
+      )
+    : null;
 
 function renderServices() {
   if (!config) return;
@@ -43,7 +61,7 @@ function renderServices() {
         el(
           'div',
           { class: 'stack-body' },
-          el('span', { class: 'stack-num' }, `0${i + 1} / 0${config.services.length}`),
+          el('span', { class: 'stack-num', 'aria-hidden': 'true' }, `0${i + 1}`),
           el('h3', { class: 'stack-name' }, pick(s.name)),
           el('p', { class: 'stack-desc' }, pick(s.description)),
           el(
@@ -63,78 +81,168 @@ function renderServices() {
       return card;
     }),
   );
+  for (const card of list.children) {
+    if (cardObserver && !reducedMotion()) cardObserver.observe(card);
+    else card.classList.add('is-in');
+  }
+  refreshScrollFx();
 }
 
 // ---------------------------------------------------------------------------
-// Gallery: draggable carousel + full-screen viewer
+// His quote: each word lights up as it scrolls through the screen
 // ---------------------------------------------------------------------------
 
-function initCarousel() {
-  const strip = $('carousel');
-  if (!strip) return;
-  const items = [...strip.querySelectorAll('.carousel-item')];
-  const bar = document.querySelector('.carousel-progress span');
-  const prev = $('carousel-prev');
-  const next = $('carousel-next');
-
-  const update = () => {
-    const max = strip.scrollWidth - strip.clientWidth;
-    const pos = Math.abs(strip.scrollLeft);
-    bar.style.setProperty('--p', String(max > 0 ? 0.12 + 0.88 * (pos / max) : 1));
-    prev.disabled = pos < 4;
-    next.disabled = pos > max - 4;
-  };
-  const stepSize = () => items[0].getBoundingClientRect().width + 18;
-  next.addEventListener('click', () => strip.scrollBy({ left: (isRtl() ? -1 : 1) * stepSize(), behavior: 'smooth' }));
-  prev.addEventListener('click', () => strip.scrollBy({ left: (isRtl() ? 1 : -1) * stepSize(), behavior: 'smooth' }));
-  strip.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
-
-  // Drag with the mouse (touch screens scroll natively).
-  let drag = null;
-  let dragged = false;
-  strip.addEventListener('pointerdown', (e) => {
-    if (e.pointerType !== 'mouse' || e.button !== 0) return;
-    drag = { x: e.clientX, left: strip.scrollLeft };
-    dragged = false;
-  });
-  window.addEventListener('pointermove', (e) => {
-    if (!drag) return;
-    const dx = e.clientX - drag.x;
-    if (!dragged && Math.abs(dx) > 6) {
-      dragged = true;
-      strip.classList.add('is-dragging');
-    }
-    if (dragged) strip.scrollLeft = drag.left - dx;
-  });
-  window.addEventListener('pointerup', () => {
-    if (!drag) return;
-    drag = null;
-    if (dragged) {
-      strip.classList.remove('is-dragging');
-      // Let snapping settle on the nearest photo.
-      const center = strip.getBoundingClientRect().left + strip.clientWidth / 2;
-      const nearest = items.reduce((a, b) => {
-        const da = Math.abs(a.getBoundingClientRect().left + a.offsetWidth / 2 - center);
-        const db = Math.abs(b.getBoundingClientRect().left + b.offsetWidth / 2 - center);
-        return db < da ? b : a;
+function renderWords() {
+  for (const node of document.querySelectorAll('[data-words]')) {
+    const parts = [];
+    t(node.dataset.words)
+      .split(/\s+/)
+      .filter(Boolean)
+      .forEach((word, i) => {
+        if (i) parts.push(' ');
+        parts.push(el('span', { class: 'w' }, word));
       });
-      nearest.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    }
-  });
-  strip.addEventListener(
-    'click',
-    (e) => {
-      if (dragged) {
-        e.preventDefault();
-        e.stopPropagation();
-        dragged = false;
-      }
-    },
-    true,
-  );
-  update();
-  initLightbox(items);
+    node.replaceChildren(...parts);
+    node.dataset.lit = '-1';
+  }
+  refreshScrollFx();
 }
+
+// ---------------------------------------------------------------------------
+// Scroll effects: the hero frame opens to the full width, treatment cards sink
+// back as the next one covers them, the quote lights up, gallery columns drift.
+// ---------------------------------------------------------------------------
+
+function initScrollFx() {
+  const hero = document.querySelector('.hero');
+  const media = $('hero-media');
+  const list = $('services-list');
+  const mosaic = $('mosaic');
+  const cols = [...document.querySelectorAll('.mosaic-col')];
+  const stacked = window.matchMedia('(min-width: 861px)');
+  const wide = window.matchMedia('(min-width: 761px)');
+  let queued = false;
+
+  function update() {
+    queued = false;
+    const vh = window.innerHeight;
+    const still = reducedMotion();
+
+    if (hero && media) {
+      const top = media.getBoundingClientRect().top + window.scrollY;
+      const p = still ? 0 : clamp01(window.scrollY / Math.max(1, top - 72));
+      hero.style.setProperty('--hero-p', p.toFixed(4));
+    }
+
+    if (list) {
+      const cards = [...list.children];
+      cards.forEach((card, i) => {
+        let depth = 0;
+        const next = cards[i + 1];
+        if (next && stacked.matches && !still) {
+          const top = card.getBoundingClientRect().top;
+          const h = card.offsetHeight;
+          depth = clamp01((top + h - next.getBoundingClientRect().top) / Math.max(1, h - 16));
+        }
+        card.style.setProperty('--depth', depth.toFixed(3));
+      });
+    }
+
+    for (const node of document.querySelectorAll('.words')) {
+      const words = node.children;
+      if (!words.length) continue;
+      let lit = words.length;
+      if (!still) {
+        const r = node.getBoundingClientRect();
+        lit = Math.round(clamp01((vh * 0.88 - r.top) / (r.height + vh * 0.4)) * words.length);
+      }
+      if (Number(node.dataset.lit) !== lit) {
+        node.dataset.lit = String(lit);
+        for (let i = 0; i < words.length; i++) words[i].classList.toggle('is-lit', i < lit);
+      }
+    }
+
+    if (mosaic && cols.length) {
+      const on = wide.matches && !still;
+      const r = mosaic.getBoundingClientRect();
+      const d = (r.top + r.height / 2 - vh / 2) / vh;
+      for (const col of cols) {
+        col.style.setProperty('--shift', on ? `${(d * Number(col.dataset.speed) * vh * 1.5).toFixed(1)}px` : '0px');
+      }
+    }
+  }
+
+  const request = () => {
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(update);
+    }
+  };
+  window.addEventListener('scroll', request, { passive: true });
+  window.addEventListener('resize', request);
+  refreshScrollFx = request;
+  update();
+}
+
+// ---------------------------------------------------------------------------
+// Techniques: the big type drifts slowly, speeds up with the scroll and turns
+// around when you scroll back up
+// ---------------------------------------------------------------------------
+
+function initMarquee() {
+  const track = $('marquee-track');
+  if (!track) return;
+  const group = track.firstElementChild;
+  let x = 0;
+  let dir = 1;
+  let boost = 0;
+  let lastY = window.scrollY;
+  let lastT = 0;
+  let frame = null;
+  let visible = true;
+
+  function tick(now) {
+    frame = null;
+    if (reducedMotion()) {
+      track.style.transform = '';
+      return;
+    }
+    const dt = lastT ? Math.min(64, now - lastT) : 16;
+    lastT = now;
+    const y = window.scrollY;
+    const dy = y - lastY;
+    lastY = y;
+    if (dy) {
+      dir = dy > 0 ? 1 : -1;
+      boost = Math.min(10, boost + Math.abs(dy) * 0.06);
+    }
+    boost *= 0.93;
+    const width = group.offsetWidth;
+    if (width) {
+      x = (x + (0.045 + boost * 0.025) * dt * dir + width) % width;
+      track.style.transform = `translate3d(${((isRtl() ? 1 : -1) * x).toFixed(2)}px, 0, 0)`;
+    }
+    if (visible) frame = requestAnimationFrame(tick);
+  }
+
+  const start = () => {
+    lastT = 0;
+    lastY = window.scrollY;
+    frame ??= requestAnimationFrame(tick);
+  };
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible) start();
+    }).observe(track.parentElement);
+  }
+  start();
+}
+
+
+// ---------------------------------------------------------------------------
+// Gallery: full-screen viewer
+// ---------------------------------------------------------------------------
 
 function initLightbox(items) {
   let index = 0;
@@ -316,10 +424,28 @@ form.addEventListener('submit', async (e) => {
 
 function renderAll() {
   renderServices();
+  renderWords();
   renderHours();
 }
 
-initCarousel();
+// The intro curtain is a one-off: once the hero has settled, take it out so
+// it doesn't replay when the page is shown again.
+const intro = document.querySelector('.intro');
+const media = $('hero-media');
+if (intro && media) {
+  const settle = () => {
+    intro.remove();
+    document.documentElement.classList.add('no-intro');
+  };
+  if (getComputedStyle(intro).display === 'none') settle();
+  else media.addEventListener('animationend', settle, { once: true });
+}
+
+const galleryItems = [...document.querySelectorAll('.mosaic-item')];
+if (galleryItems.length) initLightbox(galleryItems);
+renderWords();
+initScrollFx();
+initMarquee();
 initCursorGlow();
 
 loadConfig()

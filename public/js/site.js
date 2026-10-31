@@ -472,16 +472,35 @@ function initHeader() {
 
   if (header) {
     const progress = header.querySelector('.scroll-progress');
+    const a11yToggle = document.getElementById('a11y-toggle');
     let queued = false;
+    let anchorY = window.scrollY;
     const onScroll = () => {
       queued = false;
-      header.classList.toggle('is-scrolled', window.scrollY > 8);
+      const y = window.scrollY;
+      header.classList.toggle('is-scrolled', y > 8);
+      // Slide the header away while reading down the page; bring it back on the way up.
+      const busy =
+        nav?.classList.contains('is-open') ||
+        a11yToggle?.getAttribute('aria-expanded') === 'true' ||
+        header.contains(document.activeElement);
+      if (y < 320 || busy) {
+        header.classList.remove('is-hidden');
+        anchorY = y;
+      } else if (y - anchorY > 12) {
+        header.classList.add('is-hidden');
+        anchorY = y;
+      } else if (anchorY - y > 12) {
+        header.classList.remove('is-hidden');
+        anchorY = y;
+      }
       if (progress) {
         const max = document.documentElement.scrollHeight - window.innerHeight;
         progress.style.setProperty('--progress', String(max > 0 ? Math.min(1, window.scrollY / max) : 0));
       }
     };
     onScroll();
+    header.addEventListener('focusin', () => header.classList.remove('is-hidden'));
     window.addEventListener(
       'scroll',
       () => {
@@ -526,6 +545,77 @@ function initHeader() {
   document.getElementById('lang-toggle')?.addEventListener('click', () =>
     setLang(getLang() === 'he' ? 'en' : 'he'),
   );
+}
+
+// ---------------------------------------------------------------------------
+// Desktop only: a soft ring that follows the pointer (it grows over links and
+// turns into a "+" over photos), and buttons that lean toward the pointer.
+// ---------------------------------------------------------------------------
+
+function initPointerFx() {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const still = () => root.classList.contains('a11y-still');
+  const ring = el('div', { class: 'cursor', 'aria-hidden': 'true', html: svg('plus') });
+  document.body.append(ring);
+  root.classList.add('has-cursor');
+  let x = -100;
+  let y = -100;
+  let cx = -100;
+  let cy = -100;
+  let frame = null;
+  let pulled = null;
+
+  const loop = () => {
+    cx += (x - cx) * 0.22;
+    cy += (y - cy) * 0.22;
+    ring.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
+    frame = Math.abs(x - cx) + Math.abs(y - cy) > 0.2 ? requestAnimationFrame(loop) : null;
+  };
+  const release = () => {
+    if (pulled) pulled.style.translate = '';
+    pulled = null;
+  };
+
+  document.addEventListener(
+    'pointermove',
+    (e) => {
+      if (e.pointerType !== 'mouse') return;
+      if (still()) {
+        ring.classList.remove('is-on');
+        return release();
+      }
+      x = e.clientX;
+      y = e.clientY;
+      if (!ring.classList.contains('is-on')) {
+        cx = x;
+        cy = y;
+      }
+      const target = e.target instanceof Element ? e.target : null;
+      const view = !!target?.closest('.mosaic-item');
+      ring.classList.add('is-on');
+      ring.classList.toggle('is-view', view);
+      ring.classList.toggle('is-link', !view && !!target?.closest('a, button, label, summary, [role="button"]'));
+      ring.classList.toggle('is-text', !!target?.closest('input, textarea, select'));
+      frame ??= requestAnimationFrame(loop);
+
+      const button = target?.closest('.btn');
+      if (button !== pulled) release();
+      if (button && !button.disabled) {
+        const r = button.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) * 0.18;
+        const dy = (e.clientY - (r.top + r.height / 2)) * 0.28;
+        button.style.translate = `${dx.toFixed(1)}px ${dy.toFixed(1)}px`;
+        pulled = button;
+      }
+    },
+    { passive: true },
+  );
+  root.addEventListener('mouseleave', () => {
+    ring.classList.remove('is-on');
+    release();
+  });
+  window.addEventListener('blur', () => ring.classList.remove('is-on'));
 }
 
 // Underline the nav link of the section on screen.
@@ -573,5 +663,6 @@ initA11yMenu();
 applyTranslations();
 initReveal();
 initScrollSpy();
+initPointerFx();
 loadConfig().catch(() => {});
 setInterval(renderStatus, 60_000);

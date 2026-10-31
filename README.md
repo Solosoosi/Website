@@ -7,15 +7,24 @@ All the text on the site is the practitioner's own wording, lightly proofread. A
 The design is soft and calm:
 - **Look:** a light palette of mint, sky and a touch of blush with slowly drifting light, frosted-glass cards, rounded shapes, and photos in gently morphing organic frames.
 - **Fonts:** an elegant display font (Bellefair) with a soft, rounded text font (Rubik). Light and dark themes.
-- **Motion:** the headline blurs in on load, a soft glow follows the mouse in the opening section, and sections fade in smoothly as you scroll. Switching the theme ripples a circle out from the button. Everything respects the "reduce motion" setting and the accessibility menu.
+- **Motion:**
+  - a short intro with his name (once per visit), then his name rises in large type
+  - the clinic photo sits in a frame that opens to the full width as you scroll
+  - the techniques move across in large type, faster while scrolling, and turn around when you scroll back up
+  - treatment cards stack, and the ones behind sink back; each photo opens like a curtain
+  - the About portrait warms from black and white into color, and his quote lights up word by word
+  - the gallery columns drift at different speeds
+  - on computers, a soft ring follows the mouse and buttons lean toward it; the header slides away while scrolling down
+  - switching the theme ripples a circle out from the button
+  - everything respects the "reduce motion" setting and the accessibility menu
 
 - **Pages:** home and booking (`#book` on GitHub Pages, `/book` on the server).
 - **Home page sections, in order:**
-  - opening section: name, address and an "open now / opens at…" status from the opening hours
+  - opening section: name, address, an "open now / opens at…" status from the opening hours, and the clinic photo
   - a slow stream of the techniques he uses
   - treatments as cards that stack as you scroll
   - about, with his quote
-  - photo carousel (swipe, drag or arrows) with a full-screen viewer
+  - photo gallery (drifting columns on computers, a swipe strip on phones) with a full-screen viewer
   - address and hours: Waze / Google Maps, an hours table with today marked, and what to know before a treatment
   - contact
 - **Accessibility menu** (the person icon in the header): bigger text, high contrast, underlined links, stop animations, readable font. Also an accessibility statement.
