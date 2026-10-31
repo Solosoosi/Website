@@ -1120,60 +1120,6 @@ html.a11y-still .intro {
   }
 }
 
-/* ---------- Techniques: large, slow type that reacts to scrolling ---------- */
-
-.marquee {
-  position: relative;
-  overflow: hidden;
-  padding-block: clamp(30px, 4.5vw, 60px);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-
-.marquee-track {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-}
-
-.marquee-group {
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.marquee-group li {
-  display: flex;
-  align-items: center;
-  gap: clamp(28px, 3.6vw, 56px);
-  padding-inline-end: clamp(28px, 3.6vw, 56px);
-  font-family: var(--font-display);
-  font-size: clamp(2.6rem, 6.2vw, 5.8rem);
-  line-height: 1.15;
-  white-space: nowrap;
-}
-
-.marquee-group li:nth-child(even) {
-  color: transparent;
-  -webkit-text-stroke: 1.2px color-mix(in srgb, var(--accent-ink) 70%, transparent);
-}
-
-.marquee-group li::after {
-  content: '';
-  flex: none;
-  width: 0.2em;
-  height: 0.2em;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-}
-
-html.a11y-contrast .marquee-group li:nth-child(even) {
-  color: var(--ink);
-  -webkit-text-stroke: 0;
-}
-
 /* ==========================================================================
    Treatments: cards that stack as you scroll
    ========================================================================== */
@@ -1397,6 +1343,10 @@ html.a11y-contrast .stack-num {
 
 html.js .words .w:not(.is-lit) {
   opacity: 0.14;
+}
+
+html.a11y-contrast .words .w {
+  opacity: 1;
 }
 
 .statement figcaption {
@@ -3412,30 +3362,6 @@ html.js .reveal:not(.is-visible) {
       </div>
     </section>
 
-    <!-- Techniques: large, slow type that reacts to scrolling -->
-    <div class="marquee" role="region" data-i18n-attr="aria-label:techniques.label">
-      <div class="marquee-track" id="marquee-track">
-        <ul class="marquee-group">
-          <li data-i18n="techniques.t1"></li>
-          <li data-i18n="techniques.t3"></li>
-          <li data-i18n="techniques.t4"></li>
-          <li data-i18n="techniques.t5"></li>
-        </ul>
-        <ul class="marquee-group" aria-hidden="true">
-          <li data-i18n="techniques.t1"></li>
-          <li data-i18n="techniques.t3"></li>
-          <li data-i18n="techniques.t4"></li>
-          <li data-i18n="techniques.t5"></li>
-        </ul>
-        <ul class="marquee-group" aria-hidden="true">
-          <li data-i18n="techniques.t1"></li>
-          <li data-i18n="techniques.t3"></li>
-          <li data-i18n="techniques.t4"></li>
-          <li data-i18n="techniques.t5"></li>
-        </ul>
-      </div>
-    </div>
-
     <!-- Treatments -->
     <section class="section section-alt" id="treatments">
       <div class="container">
@@ -3486,17 +3412,17 @@ html.js .reveal:not(.is-visible) {
         <div class="mosaic reveal" id="mosaic" role="group" data-i18n-attr="aria-label:gallery.title">
           <div class="mosaic-col" data-speed="0.08">
             <button class="mosaic-item" type="button" data-large="images/large/gal-1.jpg"><img src="images/gal-1.jpg" alt="טיפול בכוסות רוח בקליניקה" width="720" height="900" loading="lazy"></button>
-            <button class="mosaic-item" type="button" data-large="images/large/gal-2.jpg"><img src="images/gal-2.jpg" alt="כוסות רוח על הכתפיים" width="720" height="900" loading="lazy"></button>
+            <button class="mosaic-item" type="button" data-large="images/large/gal-2.jpg"><img src="images/gal-2.jpg" alt="סימני כוסות רוח ודיקור בגב העליון" width="720" height="900" loading="lazy"></button>
             <button class="mosaic-item" type="button" data-large="images/large/gal-3.jpg"><img src="images/gal-3.jpg" alt="דיקור בגב" width="720" height="900" loading="lazy"></button>
           </div>
           <div class="mosaic-col" data-speed="-0.1">
-            <button class="mosaic-item" type="button" data-large="images/large/gal-4.jpg"><img src="images/gal-4.jpg" alt="טיפול משולב בכוסות רוח לאורך הגב" width="720" height="900" loading="lazy"></button>
+            <button class="mosaic-item" type="button" data-large="images/large/gal-4.jpg"><img src="images/gal-4.jpg" alt="כוסות רוח לאורך עמוד השדרה" width="720" height="900" loading="lazy"></button>
             <button class="mosaic-item" type="button" data-large="images/large/gal-5.jpg"><img src="images/gal-5.jpg" alt="כוסות רוח לאורך הגב" width="720" height="900" loading="lazy"></button>
-            <button class="mosaic-item" type="button" data-large="images/large/gal-6.jpg"><img src="images/gal-6.jpg" alt="דיקור יבש לאורך הגב" width="720" height="900" loading="lazy"></button>
+            <button class="mosaic-item" type="button" data-large="images/large/gal-6.jpg"><img src="images/gal-6.jpg" alt="דיקור לאורך הגב" width="720" height="900" loading="lazy"></button>
           </div>
           <div class="mosaic-col" data-speed="0.05">
             <button class="mosaic-item" type="button" data-large="images/large/gal-7.jpg"><img src="images/gal-7.jpg" alt="דיקור וסימני כוסות רוח בגב" width="720" height="900" loading="lazy"></button>
-            <button class="mosaic-item" type="button" data-large="images/large/gal-8.jpg"><img src="images/gal-8.jpg" alt="כוסות רוח בגב התחתון" width="720" height="900" loading="lazy"></button>
+            <button class="mosaic-item" type="button" data-large="images/large/gal-8.jpg"><img src="images/gal-8.jpg" alt="כוסות רוח בגב התחתון ודיקור לאורך הגב" width="720" height="900" loading="lazy"></button>
             <button class="mosaic-item" type="button" data-large="images/large/gal-9.jpg"><img src="images/gal-9.jpg" alt="דיקור לאורך עמוד השדרה" width="720" height="900" loading="lazy"></button>
           </div>
         </div>
@@ -3835,13 +3761,6 @@ const dictionaries = {
       today: 'סגור כרגע · נפתח היום ב-{time}',
       tomorrow: 'סגור כרגע · נפתח מחר ב-{time}',
       later: 'סגור כרגע · נפתח ב{day} ב-{time}',
-    },
-    techniques: {
-      label: 'שיטות טיפול',
-      t1: 'דיקור מערבי יבש',
-      t3: 'כוסות רוח',
-      t4: 'עיסוי לימפטי',
-      t5: 'עיסוי תאילנדי',
     },
     about: {
       title: 'קצת עליי',
@@ -5289,62 +5208,6 @@ function initScrollFx() {
 }
 
 // ---------------------------------------------------------------------------
-// Techniques: the big type drifts slowly, speeds up with the scroll and turns
-// around when you scroll back up
-// ---------------------------------------------------------------------------
-
-function initMarquee() {
-  const track = $('marquee-track');
-  if (!track) return;
-  const group = track.firstElementChild;
-  let x = 0;
-  let dir = 1;
-  let boost = 0;
-  let lastY = window.scrollY;
-  let lastT = 0;
-  let frame = null;
-  let visible = true;
-
-  function tick(now) {
-    frame = null;
-    if (reducedMotion()) {
-      track.style.transform = '';
-      return;
-    }
-    const dt = lastT ? Math.min(64, now - lastT) : 16;
-    lastT = now;
-    const y = window.scrollY;
-    const dy = y - lastY;
-    lastY = y;
-    if (dy) {
-      dir = dy > 0 ? 1 : -1;
-      boost = Math.min(10, boost + Math.abs(dy) * 0.06);
-    }
-    boost *= 0.93;
-    const width = group.offsetWidth;
-    if (width) {
-      x = (x + (0.045 + boost * 0.025) * dt * dir + width) % width;
-      track.style.transform = `translate3d(${((isRtl() ? 1 : -1) * x).toFixed(2)}px, 0, 0)`;
-    }
-    if (visible) frame = requestAnimationFrame(tick);
-  }
-
-  const start = () => {
-    lastT = 0;
-    lastY = window.scrollY;
-    frame ??= requestAnimationFrame(tick);
-  };
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting;
-      if (visible) start();
-    }).observe(track.parentElement);
-  }
-  start();
-}
-
-
-// ---------------------------------------------------------------------------
 // Gallery: full-screen viewer
 // ---------------------------------------------------------------------------
 
@@ -5549,7 +5412,6 @@ const galleryItems = [...document.querySelectorAll('.mosaic-item')];
 if (galleryItems.length) initLightbox(galleryItems);
 renderWords();
 initScrollFx();
-initMarquee();
 initCursorGlow();
 
 loadConfig()

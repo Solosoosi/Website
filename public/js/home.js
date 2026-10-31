@@ -185,62 +185,6 @@ function initScrollFx() {
 }
 
 // ---------------------------------------------------------------------------
-// Techniques: the big type drifts slowly, speeds up with the scroll and turns
-// around when you scroll back up
-// ---------------------------------------------------------------------------
-
-function initMarquee() {
-  const track = $('marquee-track');
-  if (!track) return;
-  const group = track.firstElementChild;
-  let x = 0;
-  let dir = 1;
-  let boost = 0;
-  let lastY = window.scrollY;
-  let lastT = 0;
-  let frame = null;
-  let visible = true;
-
-  function tick(now) {
-    frame = null;
-    if (reducedMotion()) {
-      track.style.transform = '';
-      return;
-    }
-    const dt = lastT ? Math.min(64, now - lastT) : 16;
-    lastT = now;
-    const y = window.scrollY;
-    const dy = y - lastY;
-    lastY = y;
-    if (dy) {
-      dir = dy > 0 ? 1 : -1;
-      boost = Math.min(10, boost + Math.abs(dy) * 0.06);
-    }
-    boost *= 0.93;
-    const width = group.offsetWidth;
-    if (width) {
-      x = (x + (0.045 + boost * 0.025) * dt * dir + width) % width;
-      track.style.transform = `translate3d(${((isRtl() ? 1 : -1) * x).toFixed(2)}px, 0, 0)`;
-    }
-    if (visible) frame = requestAnimationFrame(tick);
-  }
-
-  const start = () => {
-    lastT = 0;
-    lastY = window.scrollY;
-    frame ??= requestAnimationFrame(tick);
-  };
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting;
-      if (visible) start();
-    }).observe(track.parentElement);
-  }
-  start();
-}
-
-
-// ---------------------------------------------------------------------------
 // Gallery: full-screen viewer
 // ---------------------------------------------------------------------------
 
@@ -445,7 +389,6 @@ const galleryItems = [...document.querySelectorAll('.mosaic-item')];
 if (galleryItems.length) initLightbox(galleryItems);
 renderWords();
 initScrollFx();
-initMarquee();
 initCursorGlow();
 
 loadConfig()
