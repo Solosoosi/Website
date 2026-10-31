@@ -109,17 +109,14 @@ function renderWords() {
 }
 
 // ---------------------------------------------------------------------------
-// Scroll effects: the hero frame opens to the full width, treatment cards sink
-// back as the next one covers them, the quote lights up, gallery columns drift.
+// Scroll effects: treatment cards sink back as the next one covers them, the
+// quote lights up word by word, gallery columns drift.
 // ---------------------------------------------------------------------------
 
 function initScrollFx() {
-  const hero = document.querySelector('.hero');
-  const media = $('hero-media');
   const list = $('services-list');
   const mosaic = $('mosaic');
   const cols = [...document.querySelectorAll('.mosaic-col')];
-  const stacked = window.matchMedia('(min-width: 861px) and (min-height: 700px)');
   const wide = window.matchMedia('(min-width: 761px)');
   let queued = false;
 
@@ -128,18 +125,14 @@ function initScrollFx() {
     const vh = window.innerHeight;
     const still = reducedMotion();
 
-    if (hero && media) {
-      const top = media.getBoundingClientRect().top + window.scrollY;
-      const p = still ? 0 : clamp01(window.scrollY / Math.max(1, top - 72));
-      hero.style.setProperty('--hero-p', p.toFixed(4));
-    }
-
     if (list) {
       const cards = [...list.children];
+      // Only where the cards actually stack (depends on the look and the screen).
+      const stacked = cards.length > 1 && getComputedStyle(cards[0]).position === 'sticky';
       cards.forEach((card, i) => {
         let depth = 0;
         const next = cards[i + 1];
-        if (next && stacked.matches && !still) {
+        if (next && stacked && !still) {
           const top = card.getBoundingClientRect().top;
           const h = card.offsetHeight;
           depth = clamp01((top + h - next.getBoundingClientRect().top) / Math.max(1, h - 16));
@@ -372,15 +365,17 @@ function renderHeroTreatments() {
   const list = $('hero-treatments');
   if (!list || !config) return;
   list.replaceChildren(
-    ...config.services.map((s) =>
+    ...config.services.map((s, i) =>
       el(
         'li',
         {},
         el(
           'a',
           { href: `#svc-${s.id}` },
+          el('span', { class: 'ht-num', 'aria-hidden': 'true' }, `0${i + 1}`),
           s.image ? el('img', { src: s.image, alt: '', width: 76, height: 76 }) : null,
-          el('span', {}, pick(s.name)),
+          el('span', { class: 'ht-name' }, pick(s.name)),
+          el('span', { class: 'ht-go flip-rtl', 'aria-hidden': 'true', html: svg('arrow') }),
         ),
       ),
     ),
@@ -397,21 +392,23 @@ function renderAll() {
 // The intro curtain is a one-off: once the hero has settled, take it out so
 // it doesn't replay when the page is shown again.
 const intro = document.querySelector('.intro');
-const media = $('hero-media');
-if (intro && media) {
+const heroCtas = document.querySelector('.hero-ctas');
+if (intro && heroCtas) {
   const settle = () => {
     intro.remove();
     document.documentElement.classList.add('no-intro');
   };
   if (getComputedStyle(intro).display === 'none') settle();
-  else media.addEventListener('animationend', settle, { once: true });
+  else heroCtas.addEventListener('animationend', (e) => e.target === heroCtas && settle());
 }
 
 // Lazy photos load as you scroll; shortly after the page is ready, fetch any
 // that are still waiting so none can stay empty (some in-app browsers stall).
 window.addEventListener('load', () => {
   setTimeout(() => {
-    for (const img of document.querySelectorAll('img[loading="lazy"]')) img.loading = 'eager';
+    for (const img of document.querySelectorAll('img[loading="lazy"]')) {
+      if (img.getClientRects().length) img.loading = 'eager';
+    }
   }, 2500);
 });
 

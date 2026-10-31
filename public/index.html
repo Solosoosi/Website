@@ -11,7 +11,7 @@
   <script src="/js/theme-init.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bellefair&family=Rubik:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Bellefair&family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@400;500;700;800&family=Rubik:wght@300;400;500;600&display=swap">
   <link rel="stylesheet" href="/css/styles.css">
   <script type="module" src="/js/home.js"></script>
 </head>
@@ -52,25 +52,24 @@
       <span class="intro-name" data-biz="tagline"></span>
     </div>
 
-    <!-- Hero: what he does, then a treatment photo in a frame that opens up as you scroll -->
+    <!-- Hero: what he does. The page has three looks to choose from (data-look on <html>). -->
     <section class="hero" id="hero">
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <div class="container hero-head">
-        <p class="pill-label" data-biz="street"></p>
-        <h1 class="hero-title">
-          <span class="line"><span data-i18n="hero.titleA"></span> <span class="grad" data-i18n="hero.titleB"></span></span>
-        </h1>
-        <ul class="hero-treatments" id="hero-treatments" data-i18n-attr="aria-label:nav.treatments"></ul>
-        <div class="hero-ctas">
-          <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
-          <p class="status" data-status hidden></p>
+      <div class="container hero-inner">
+        <div class="hero-head">
+          <p class="pill-label" data-biz="street"></p>
+          <h1 class="hero-title">
+            <span class="line"><span data-i18n="hero.titleA"></span> <span class="grad" data-i18n="hero.titleB"></span></span>
+          </h1>
+          <ul class="hero-treatments" id="hero-treatments" data-i18n-attr="aria-label:nav.treatments"></ul>
+          <div class="hero-ctas">
+            <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
+            <p class="status" data-status hidden></p>
+          </div>
         </div>
-      </div>
-      <div class="hero-media" id="hero-media">
-        <picture>
-          <source media="(max-width: 700px)" srcset="images/hero-tall.jpg" width="1080" height="1440">
-          <img src="images/hero-wide.jpg" alt="דיקור לאורך הגב" width="2400" height="1350" fetchpriority="high">
-        </picture>
+        <figure class="hero-room" aria-hidden="true">
+          <img src="images/room.jpg" alt="" width="960" height="1200" loading="lazy">
+        </figure>
       </div>
     </section>
 

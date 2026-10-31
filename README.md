@@ -9,7 +9,6 @@ The design is soft and calm:
 - **Fonts:** an elegant display font (Bellefair) with a soft, rounded text font (Rubik). Light and dark themes.
 - **Motion:**
   - a short intro (once per visit), then the headline "טיפולי דיקור" rises in large type
-  - a treatment photo sits in a frame that opens to the full width as you scroll
   - treatment cards stack (on screens tall enough), and the ones behind sink back
   - the About portrait warms from black and white into color, and his quote lights up word by word
   - the gallery columns drift at different speeds
@@ -19,12 +18,19 @@ The design is soft and calm:
 
 - **Pages:** home and booking (`#book` on GitHub Pages, `/book` on the server).
 - **Home page sections, in order:**
-  - opening section: "טיפולי דיקור", links to the three treatments (each with a small photo), the address, an "open now / opens at…" status from the opening hours, and a treatment photo
+  - opening section: "טיפולי דיקור", links to the three treatments, the address and an "open now / opens at…" status from the opening hours (no large treatment photo)
   - treatments as cards that stack as you scroll
   - photo gallery (drifting columns on computers, a swipe strip on phones) with a full-screen viewer
   - about, with his quote
   - address and hours: Waze / Google Maps, an hours table with today marked, and what to know before a treatment
   - contact
+- **Design options:** three looks share the same content.
+  - **1 – soft** (default): mint and glass, an elegant display font, treatment links as small pills.
+  - **2 – natural:** warm paper colors, serif headings, flat lines, a photo of the empty treatment room in an arch.
+  - **3 – modern:** dark green-black, bold type, the treatments as a big numbered list.
+
+  Open the site with `?options` at the end of the address (for example `https://solosoosi.github.io/Website/?options`) to get a bar for switching between them; the pick is remembered on that device. Normal visitors never see the bar.
+- **Treatment photos:** cosmetic = needles on the face; dry needling = needles along the back; stress = a relaxed client with needles on the forehead and face (best match – confirm with David).
 - **Accessibility menu** (the person icon in the header): bigger text, high contrast, underlined links, stop animations, readable font. Also an accessibility statement.
 - **Phones:** a bottom bar with "book", WhatsApp and call.
 - **Link previews:** when the link is shared on WhatsApp or Facebook it shows a picture card (`public/images/og.jpg`), and Google gets the business details (address, phone, hours).

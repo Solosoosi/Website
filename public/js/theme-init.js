@@ -16,6 +16,14 @@
       if (a11y[k]) root.classList.add('a11y-' + k);
     });
   } catch (e) {}
+  // ?options shows a bar for comparing the design options (and remembers the pick).
+  try {
+    if (/[?&]options(=|&|$)/.test(location.search)) {
+      root.classList.add('show-looks');
+      var look = localStorage.getItem('look');
+      if (look === '2' || look === '3') root.setAttribute('data-look', look);
+    }
+  } catch (e) {}
   // The home page opens with a short intro – once per visit.
   try {
     if (sessionStorage.getItem('intro')) root.classList.add('no-intro');

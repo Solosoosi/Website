@@ -33,6 +33,13 @@
     if (sessionStorage.getItem('intro')) r.classList.add('no-intro');
     else sessionStorage.setItem('intro', '1');
   } catch (e) {}
+  try {
+    if (/[?&]options(=|&|$)/.test(location.search)) {
+      r.classList.add('show-looks');
+      var lk = localStorage.getItem('look');
+      if (lk === '2' || lk === '3') r.setAttribute('data-look', lk);
+    }
+  } catch (e) {}
   if (th !== 'light' && th !== 'dark') th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   r.setAttribute('data-theme', th);
   r.lang = 'he';
@@ -40,7 +47,7 @@
 })();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bellefair&family=Rubik:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Bellefair&family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@400;500;700;800&family=Rubik:wght@300;400;500;600&display=swap">
   <style>
 /* ==========================================================================
    David Neeman – acupuncture clinic, Tel Aviv
@@ -1025,14 +1032,13 @@ html.a11y-still .intro {
 }
 
 /* ==========================================================================
-   Hero: his name, then the clinic in a frame that opens up as you scroll
+   Hero: what he does – the headline, his three treatments, the booking button
    ========================================================================== */
 
 .hero {
-  --hero-p: 0;
   position: relative;
   margin-top: calc(-64px - 12px);
-  padding-top: calc(64px + clamp(40px, 5.5vw, 80px));
+  padding-block: calc(64px + clamp(48px, 8vw, 120px)) clamp(56px, 8vw, 110px);
   overflow: hidden;
   isolation: isolate;
 }
@@ -1046,14 +1052,19 @@ html.a11y-still .intro {
   pointer-events: none;
   transition: opacity 0.6s;
 }
-.hero-head {
+
+.hero-inner {
   position: relative;
   z-index: 1;
   display: grid;
+  align-content: center;
+  min-height: min(62vh, 600px);
+}
+
+.hero-head {
+  display: grid;
   justify-items: center;
   text-align: center;
-  opacity: calc(1 - var(--hero-p) * 0.9);
-  transform: translateY(calc(var(--hero-p) * -48px));
 }
 
 .hero-head .pill-label {
@@ -1131,6 +1142,11 @@ html.a11y-still .intro {
   object-fit: cover;
 }
 
+.hero-treatments .ht-num,
+.hero-treatments .ht-go {
+  display: none;
+}
+
 @media (max-width: 560px) {
   .hero-treatments a {
     padding-inline-end: 16px;
@@ -1160,42 +1176,8 @@ html.a11y-still .intro {
   margin-inline-start: 4px;
 }
 
-.hero-media {
-  --media-inset: max(var(--gutter), (100% - var(--container)) / 2 + var(--gutter));
-  position: relative;
-  z-index: 1;
-  height: min(86vh, 60vw);
-  margin-top: clamp(40px, 5vw, 72px);
-  overflow: hidden;
-  background: var(--photo-bg);
-  clip-path: inset(0 calc(var(--media-inset) * (1 - var(--hero-p))) round calc(var(--radius-xl) * (1 - var(--hero-p))));
-  animation: media-in 1.5s var(--ease) calc(var(--intro) + 0.28s) both;
-}
-
-.hero-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 42%;
-  transform: scale(calc(1.14 - var(--hero-p) * 0.14));
-  transform-origin: 50% 35%;
-}
-
-[data-theme='dark'] .hero-media img {
-  filter: brightness(0.9);
-}
-
-@media (max-width: 700px) {
-  .hero-media {
-    --media-inset: var(--gutter);
-    height: min(72vh, 165vw);
-    height: min(72svh, 165vw);
-    margin-top: 36px;
-  }
-
-  .hero-media img {
-    object-position: 40% 50%;
-  }
+.hero-room {
+  display: none;
 }
 
 /* ==========================================================================
@@ -2855,6 +2837,540 @@ html.a11y-contrast .words .w {
 }
 
 /* ==========================================================================
+   Design options. Look 1 ("soft") is everything above. Looks 2 and 3 are
+   switched on with data-look on <html>; open the site with ?options to compare.
+   ========================================================================== */
+
+/* ---------- Look 2: natural – warm paper, serif headings, flat and calm ---------- */
+
+:root[data-look='2'] {
+  --bg: #f6f1e9;
+  --bg-2: #efe7db;
+  --surface: #fffdf9;
+  --glass: #fffdf9;
+  --glass-strong: #fffdf9;
+  --glass-border: #e6dccd;
+  --ink: #2b2923;
+  --ink-2: #4a453b;
+  --muted: #736b5e;
+  --line: rgb(43 41 35 / 0.12);
+  --line-strong: rgb(43 41 35 / 0.24);
+  --accent: #a3562f;
+  --accent-2: #c07a4f;
+  --accent-ink: #8a4524;
+  --on-accent: #ffffff;
+  --accent-soft: #f1e1d4;
+  --glow-1: #eedbc6;
+  --glow-2: #e7e1d0;
+  --glow-3: #f2d8cc;
+  --glow-4: #ece2cd;
+  --open: #3f8a5a;
+  --photo-bg: #e9dfd0;
+  --cursor-glow: rgb(255 249 240 / 0.5);
+  --shadow-soft: 0 10px 30px -18px rgb(70 50 25 / 0.25);
+  --shadow-lift: 0 26px 60px -30px rgb(70 50 25 / 0.35);
+  --header-bg: rgb(246 241 233 / 0.92);
+  --font-display: 'Frank Ruhl Libre', 'Times New Roman', serif;
+  --font-body: 'Assistant', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --font-label: var(--font-body);
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+}
+
+:root[data-look='2'][data-theme='dark'] {
+  --bg: #1a1714;
+  --bg-2: #211d18;
+  --surface: #29241e;
+  --glass: #29241e;
+  --glass-strong: #29241e;
+  --glass-border: #3a332a;
+  --ink: #f1e9dc;
+  --ink-2: #d6cbbb;
+  --muted: #a69a88;
+  --line: rgb(241 233 220 / 0.12);
+  --line-strong: rgb(241 233 220 / 0.24);
+  --accent: #e3a073;
+  --accent-2: #ecb58f;
+  --accent-ink: #eaa87c;
+  --on-accent: #2a1508;
+  --accent-soft: #3a2a1e;
+  --glow-1: #3a2c1f;
+  --glow-2: #2c2a22;
+  --glow-3: #3a2522;
+  --glow-4: #342d1e;
+  --open: #7fc79a;
+  --photo-bg: #2e2821;
+  --cursor-glow: rgb(227 160 115 / 0.08);
+  --shadow-soft: 0 10px 30px -18px rgb(0 0 0 / 0.6);
+  --shadow-lift: 0 26px 60px -30px rgb(0 0 0 / 0.7);
+  --header-bg: rgb(26 23 20 / 0.92);
+}
+
+[data-look='2'] .aurora,
+[data-look='2'] .hero::after {
+  display: none;
+}
+
+[data-look='2'] .glass,
+[data-look='2'] .header-inner {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-look='2'] .header-inner {
+  border-radius: var(--radius-lg);
+}
+
+[data-look='2'] .btn,
+[data-look='2'] .pill-label,
+[data-look='2'] .status {
+  border-radius: var(--radius-sm);
+}
+
+[data-look='2'] .hero-inner {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: center;
+}
+
+[data-look='2'] .hero-head {
+  justify-items: start;
+  text-align: start;
+}
+
+[data-look='2'] .hero-title {
+  font-weight: 500;
+}
+
+[data-look='2'] .hero-title .line {
+  font-size: clamp(3rem, 8.5vw, 7rem);
+}
+
+[data-look='2'] .hero-title .line > .grad {
+  background: none;
+  color: var(--accent);
+  animation: rise 1.3s var(--ease) calc(var(--intro) + 0.16s) both;
+}
+
+[data-look='2'] .hero-treatments {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-content: stretch;
+  gap: 0;
+  width: 100%;
+  max-width: 520px;
+  margin: 6px 0 34px;
+  border-top: 1px solid var(--line-strong);
+}
+
+[data-look='2'] .hero-treatments a {
+  display: flex;
+  gap: 16px;
+  padding: 14px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 500;
+  transition: padding 0.35s var(--ease), color 0.25s;
+}
+
+[data-look='2'] .hero-treatments a:hover {
+  transform: none;
+  padding-inline-start: 12px;
+}
+
+[data-look='2'] .hero-treatments img {
+  width: 46px;
+  height: 46px;
+}
+
+[data-look='2'] .hero-treatments .ht-go {
+  display: inline-flex;
+  margin-inline-start: auto;
+  color: var(--accent);
+}
+
+[data-look='2'] .hero-treatments .ht-go svg {
+  width: 20px;
+  height: 20px;
+}
+
+[data-look='2'] .hero-ctas {
+  justify-content: flex-start;
+}
+
+[data-look='2'] .hero-room {
+  display: block;
+  margin: 0;
+}
+
+[data-look='2'] .hero-room img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
+  box-shadow: var(--shadow-lift);
+  animation: blur-in 1.4s var(--ease) calc(var(--intro) + 0.2s) both;
+}
+
+[data-look='2'] .stack {
+  gap: 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+[data-look='2'] .stack-card,
+[data-look='2'] .stack-card:nth-child(n) {
+  position: relative;
+  top: auto;
+  min-height: 0;
+  padding: clamp(28px, 4vw, 52px) 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  transform: none;
+}
+
+[data-look='2'] .stack-card::after {
+  display: none;
+}
+
+[data-look='2'] .stack-card:nth-child(even) .stack-img {
+  order: 2;
+}
+
+[data-look='2'] .stack-num {
+  margin-bottom: 14px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  -webkit-text-stroke: 0;
+}
+
+[data-look='2'] .stack-name {
+  font-weight: 500;
+}
+
+[data-look='2'] .mosaic-col {
+  transform: none;
+}
+
+[data-look='2'] .mosaic-col:nth-child(2) {
+  margin-top: 0;
+}
+
+[data-look='2'] .mosaic-item {
+  border-radius: var(--radius);
+}
+
+[data-look='2'] .about-photo .blob {
+  border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
+  animation: none;
+}
+
+[data-look='2'] .final-card {
+  border: 1px solid var(--line);
+}
+
+@media (max-width: 900px) {
+  [data-look='2'] .hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  [data-look='2'] .hero-room {
+    justify-self: center;
+    width: min(100%, 360px);
+  }
+}
+
+@media (max-width: 860px) {
+  [data-look='2'] .stack-card:nth-child(even) .stack-img {
+    order: 0;
+  }
+}
+
+/* ---------- Look 3: modern – dark, bold type, a big numbered list ---------- */
+
+:root[data-look='3'] {
+  --bg: #f6f8f7;
+  --bg-2: #edf1ef;
+  --surface: #ffffff;
+  --glass: #ffffff;
+  --glass-strong: #ffffff;
+  --glass-border: #e1e7e4;
+  --ink: #0b1210;
+  --ink-2: #26302c;
+  --muted: #56635e;
+  --line: rgb(11 18 16 / 0.1);
+  --line-strong: rgb(11 18 16 / 0.2);
+  --accent: #0e7a55;
+  --accent-2: #17a374;
+  --accent-ink: #0a6445;
+  --on-accent: #ffffff;
+  --accent-soft: #dcf2e8;
+  --glow-1: #cdeedf;
+  --glow-2: #d6e4f5;
+  --glow-3: #ece0f3;
+  --glow-4: #eef3d6;
+  --photo-bg: #e2e9e6;
+  --shadow-soft: 0 12px 34px -20px rgb(10 30 22 / 0.3);
+  --shadow-lift: 0 30px 70px -34px rgb(10 30 22 / 0.4);
+  --header-bg: rgb(246 248 247 / 0.8);
+  --font-display: 'Heebo', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --font-body: 'Heebo', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --font-label: var(--font-body);
+  --radius-sm: 10px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+}
+
+:root[data-look='3'][data-theme='dark'] {
+  --bg: #0a0f0d;
+  --bg-2: #0f1613;
+  --surface: #131c18;
+  --glass: rgb(255 255 255 / 0.04);
+  --glass-strong: #131c18;
+  --glass-border: rgb(255 255 255 / 0.09);
+  --ink: #f1f5f3;
+  --ink-2: #c6d1cc;
+  --muted: #8b9a94;
+  --line: rgb(255 255 255 / 0.1);
+  --line-strong: rgb(255 255 255 / 0.2);
+  --accent: #8ff0c4;
+  --accent-2: #c3f8de;
+  --accent-ink: #8ff0c4;
+  --on-accent: #052219;
+  --accent-soft: rgb(143 240 196 / 0.12);
+  --glow-1: #15503d;
+  --glow-2: #142f4d;
+  --glow-3: #33203f;
+  --glow-4: #2a3517;
+  --open: #6fe3a8;
+  --photo-bg: #17221e;
+  --cursor-glow: rgb(143 240 196 / 0.1);
+  --shadow-soft: 0 12px 34px -20px rgb(0 0 0 / 0.7);
+  --shadow-lift: 0 30px 70px -34px rgb(0 0 0 / 0.8);
+  --header-bg: rgb(10 15 13 / 0.72);
+}
+
+[data-look='3'] .hero-title,
+[data-look='3'] .section-title,
+[data-look='3'] .stack-name,
+[data-look='3'] .final-title,
+[data-look='3'] .words,
+[data-look='3'] .visit-address,
+[data-look='3'] .footer-mark,
+[data-look='3'] .brand-name,
+[data-look='3'] .footer-name,
+[data-look='3'] .intro-name {
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+[data-look='3'] .glass {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-look='3'] .aurora {
+  opacity: 0.6;
+}
+
+[data-look='3'] .hero-inner {
+  min-height: 0;
+}
+
+[data-look='3'] .hero-head {
+  justify-items: start;
+  text-align: start;
+}
+
+[data-look='3'] .hero-title .line {
+  padding-bottom: 0.1em;
+  font-size: clamp(3.2rem, 14vw, 11.5rem);
+  line-height: 0.92;
+}
+
+[data-look='3'] .hero-title .line > .grad {
+  background: none;
+  color: var(--accent);
+  animation: rise 1.3s var(--ease) calc(var(--intro) + 0.16s) both;
+}
+
+[data-look='3'] .hero-treatments {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-content: stretch;
+  gap: 0;
+  width: 100%;
+  margin: 18px 0 40px;
+  border-top: 1px solid var(--line-strong);
+}
+
+[data-look='3'] .hero-treatments a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: clamp(16px, 3vw, 44px);
+  padding: clamp(16px, 2.2vw, 26px) 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4.2vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-align: start;
+  transition: color 0.25s, padding 0.4s var(--ease);
+}
+
+[data-look='3'] .hero-treatments a:hover {
+  transform: none;
+  padding-inline-start: 14px;
+  color: var(--accent);
+}
+
+[data-look='3'] .hero-treatments .ht-num {
+  display: inline;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+[data-look='3'] .hero-treatments img {
+  display: none;
+}
+
+[data-look='3'] .hero-treatments .ht-go {
+  display: inline-grid;
+  place-items: center;
+  width: clamp(40px, 4vw, 56px);
+  height: clamp(40px, 4vw, 56px);
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+}
+
+[data-look='3'] .hero-treatments .ht-go svg {
+  width: 22px;
+  height: 22px;
+}
+
+[data-look='3'] .hero-treatments a:hover .ht-go {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+[data-look='3'] .hero-ctas {
+  justify-content: flex-start;
+}
+
+[data-look='3'] .stack-card,
+[data-look='3'] .stack-card:nth-child(n) {
+  position: relative;
+  top: auto;
+  min-height: 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: none;
+  transform: none;
+}
+
+[data-look='3'] .stack-card::after {
+  display: none;
+}
+
+[data-look='3'] .stack-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  -webkit-text-stroke: 0;
+}
+
+[data-look='3'] .mosaic-col {
+  transform: none;
+}
+
+[data-look='3'] .mosaic-col:nth-child(2) {
+  margin-top: 0;
+}
+
+[data-look='3'] .mosaic-item {
+  aspect-ratio: 1;
+  border-radius: var(--radius);
+}
+
+[data-look='3'] .about-photo .blob {
+  border-radius: var(--radius-xl);
+  animation: none;
+}
+
+/* ---------- The bar for switching between the looks (only with ?options) ---------- */
+
+.look-switcher {
+  position: fixed;
+  inset-inline: 0;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  z-index: 95;
+  display: flex;
+  gap: 4px;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  margin-inline: auto;
+  padding: 5px;
+  border-radius: 999px;
+  background: #0d1512;
+  box-shadow: 0 16px 40px -14px rgb(0 0 0 / 0.55);
+}
+
+.look-switcher button {
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #e9f1ee;
+  font: 400 0.92rem/1.2 'Rubik', system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.look-switcher button b {
+  font-weight: 600;
+}
+
+.look-switcher button[aria-pressed='true'] {
+  background: #e9f1ee;
+  color: #0d1512;
+}
+
+@media (max-width: 700px) {
+  .look-switcher {
+    bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .look-switcher button {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ==========================================================================
    Finishing touches: film grain
    ========================================================================== */
 
@@ -3364,25 +3880,24 @@ html.js .reveal:not(.is-visible) {
       <span class="intro-name" data-biz="tagline"></span>
     </div>
 
-    <!-- Hero: what he does, then a treatment photo in a frame that opens up as you scroll -->
+    <!-- Hero: what he does. The page has three looks to choose from (data-look on <html>). -->
     <section class="hero" id="hero">
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <div class="container hero-head">
-        <p class="pill-label" data-biz="street"></p>
-        <h1 class="hero-title">
-          <span class="line"><span data-i18n="hero.titleA"></span> <span class="grad" data-i18n="hero.titleB"></span></span>
-        </h1>
-        <ul class="hero-treatments" id="hero-treatments" data-i18n-attr="aria-label:nav.treatments"></ul>
-        <div class="hero-ctas">
-          <a class="btn btn-primary btn-arrow" href="#book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
-          <p class="status" data-status hidden></p>
+      <div class="container hero-inner">
+        <div class="hero-head">
+          <p class="pill-label" data-biz="street"></p>
+          <h1 class="hero-title">
+            <span class="line"><span data-i18n="hero.titleA"></span> <span class="grad" data-i18n="hero.titleB"></span></span>
+          </h1>
+          <ul class="hero-treatments" id="hero-treatments" data-i18n-attr="aria-label:nav.treatments"></ul>
+          <div class="hero-ctas">
+            <a class="btn btn-primary btn-arrow" href="#book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
+            <p class="status" data-status hidden></p>
+          </div>
         </div>
-      </div>
-      <div class="hero-media" id="hero-media">
-        <picture>
-          <source media="(max-width: 700px)" srcset="images/hero-tall.jpg" width="1080" height="1440">
-          <img src="images/hero-wide.jpg" alt="דיקור לאורך הגב" width="2400" height="1350" fetchpriority="high">
-        </picture>
+        <figure class="hero-room" aria-hidden="true">
+          <img src="images/room.jpg" alt="" width="960" height="1200" loading="lazy">
+        </figure>
       </div>
     </section>
 
@@ -4970,6 +5485,40 @@ function initMagneticButtons() {
   window.addEventListener('blur', release);
 }
 
+// ---------------------------------------------------------------------------
+// Design options: open the site with ?options to compare the three looks.
+// The bar never shows on the normal site.
+// ---------------------------------------------------------------------------
+
+const LOOKS = [
+  ['1', 'רך ובהיר', 'light'],
+  ['2', 'טבעי וחם', 'light'],
+  ['3', 'מודרני וכהה', 'dark'],
+];
+
+function initLookSwitcher() {
+  if (!root.classList.contains('show-looks')) return;
+  const current = () => root.dataset.look || '1';
+  const buttons = LOOKS.map(([id, name]) =>
+    el('button', { type: 'button', 'data-look-id': id }, el('b', {}, id), ` ${name}`),
+  );
+  const bar = el('div', { class: 'look-switcher', role: 'group', 'aria-label': 'בחירת עיצוב' }, ...buttons);
+  const sync = () => buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lookId === current())));
+  bar.addEventListener('click', (e) => {
+    const button = e.target.closest('button');
+    if (!button) return;
+    const [id, , theme] = LOOKS.find(([lookId]) => lookId === button.dataset.lookId);
+    if (id === '1') delete root.dataset.look;
+    else root.dataset.look = id;
+    storageSet('look', id);
+    setTheme(theme);
+    sync();
+    window.dispatchEvent(new Event('resize'));
+  });
+  sync();
+  document.body.append(bar);
+}
+
 // Underline the nav link of the section on screen.
 function initScrollSpy() {
   const links = [...document.querySelectorAll('.main-nav a[href^="#"]')];
@@ -5022,6 +5571,7 @@ applyTranslations();
 initReveal();
 initScrollSpy();
 initMagneticButtons();
+initLookSwitcher();
 loadConfig().catch(() => {});
 setInterval(renderStatus, 60_000);
 
@@ -5122,17 +5672,14 @@ function renderWords() {
 }
 
 // ---------------------------------------------------------------------------
-// Scroll effects: the hero frame opens to the full width, treatment cards sink
-// back as the next one covers them, the quote lights up, gallery columns drift.
+// Scroll effects: treatment cards sink back as the next one covers them, the
+// quote lights up word by word, gallery columns drift.
 // ---------------------------------------------------------------------------
 
 function initScrollFx() {
-  const hero = document.querySelector('.hero');
-  const media = $('hero-media');
   const list = $('services-list');
   const mosaic = $('mosaic');
   const cols = [...document.querySelectorAll('.mosaic-col')];
-  const stacked = window.matchMedia('(min-width: 861px) and (min-height: 700px)');
   const wide = window.matchMedia('(min-width: 761px)');
   let queued = false;
 
@@ -5141,18 +5688,14 @@ function initScrollFx() {
     const vh = window.innerHeight;
     const still = reducedMotion();
 
-    if (hero && media) {
-      const top = media.getBoundingClientRect().top + window.scrollY;
-      const p = still ? 0 : clamp01(window.scrollY / Math.max(1, top - 72));
-      hero.style.setProperty('--hero-p', p.toFixed(4));
-    }
-
     if (list) {
       const cards = [...list.children];
+      // Only where the cards actually stack (depends on the look and the screen).
+      const stacked = cards.length > 1 && getComputedStyle(cards[0]).position === 'sticky';
       cards.forEach((card, i) => {
         let depth = 0;
         const next = cards[i + 1];
-        if (next && stacked.matches && !still) {
+        if (next && stacked && !still) {
           const top = card.getBoundingClientRect().top;
           const h = card.offsetHeight;
           depth = clamp01((top + h - next.getBoundingClientRect().top) / Math.max(1, h - 16));
@@ -5385,15 +5928,17 @@ function renderHeroTreatments() {
   const list = $('hero-treatments');
   if (!list || !config) return;
   list.replaceChildren(
-    ...config.services.map((s) =>
+    ...config.services.map((s, i) =>
       el(
         'li',
         {},
         el(
           'a',
           { href: `#svc-${s.id}` },
+          el('span', { class: 'ht-num', 'aria-hidden': 'true' }, `0${i + 1}`),
           s.image ? el('img', { src: s.image, alt: '', width: 76, height: 76 }) : null,
-          el('span', {}, pick(s.name)),
+          el('span', { class: 'ht-name' }, pick(s.name)),
+          el('span', { class: 'ht-go flip-rtl', 'aria-hidden': 'true', html: svg('arrow') }),
         ),
       ),
     ),
@@ -5410,21 +5955,23 @@ function renderAll() {
 // The intro curtain is a one-off: once the hero has settled, take it out so
 // it doesn't replay when the page is shown again.
 const intro = document.querySelector('.intro');
-const media = $('hero-media');
-if (intro && media) {
+const heroCtas = document.querySelector('.hero-ctas');
+if (intro && heroCtas) {
   const settle = () => {
     intro.remove();
     document.documentElement.classList.add('no-intro');
   };
   if (getComputedStyle(intro).display === 'none') settle();
-  else media.addEventListener('animationend', settle, { once: true });
+  else heroCtas.addEventListener('animationend', (e) => e.target === heroCtas && settle());
 }
 
 // Lazy photos load as you scroll; shortly after the page is ready, fetch any
 // that are still waiting so none can stay empty (some in-app browsers stall).
 window.addEventListener('load', () => {
   setTimeout(() => {
-    for (const img of document.querySelectorAll('img[loading="lazy"]')) img.loading = 'eager';
+    for (const img of document.querySelectorAll('img[loading="lazy"]')) {
+      if (img.getClientRects().length) img.loading = 'eager';
+    }
   }, 2500);
 });
 

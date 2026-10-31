@@ -212,6 +212,13 @@ const themeInit = `(function () {
     if (sessionStorage.getItem('intro')) r.classList.add('no-intro');
     else sessionStorage.setItem('intro', '1');
   } catch (e) {}
+  try {
+    if (/[?&]options(=|&|$)/.test(location.search)) {
+      r.classList.add('show-looks');
+      var lk = localStorage.getItem('look');
+      if (lk === '2' || lk === '3') r.setAttribute('data-look', lk);
+    }
+  } catch (e) {}
   if (th !== 'light' && th !== 'dark') th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   r.setAttribute('data-theme', th);
   r.lang = 'he';

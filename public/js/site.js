@@ -578,6 +578,40 @@ function initMagneticButtons() {
   window.addEventListener('blur', release);
 }
 
+// ---------------------------------------------------------------------------
+// Design options: open the site with ?options to compare the three looks.
+// The bar never shows on the normal site.
+// ---------------------------------------------------------------------------
+
+const LOOKS = [
+  ['1', 'רך ובהיר', 'light'],
+  ['2', 'טבעי וחם', 'light'],
+  ['3', 'מודרני וכהה', 'dark'],
+];
+
+function initLookSwitcher() {
+  if (!root.classList.contains('show-looks')) return;
+  const current = () => root.dataset.look || '1';
+  const buttons = LOOKS.map(([id, name]) =>
+    el('button', { type: 'button', 'data-look-id': id }, el('b', {}, id), ` ${name}`),
+  );
+  const bar = el('div', { class: 'look-switcher', role: 'group', 'aria-label': 'בחירת עיצוב' }, ...buttons);
+  const sync = () => buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lookId === current())));
+  bar.addEventListener('click', (e) => {
+    const button = e.target.closest('button');
+    if (!button) return;
+    const [id, , theme] = LOOKS.find(([lookId]) => lookId === button.dataset.lookId);
+    if (id === '1') delete root.dataset.look;
+    else root.dataset.look = id;
+    storageSet('look', id);
+    setTheme(theme);
+    sync();
+    window.dispatchEvent(new Event('resize'));
+  });
+  sync();
+  document.body.append(bar);
+}
+
 // Underline the nav link of the section on screen.
 function initScrollSpy() {
   const links = [...document.querySelectorAll('.main-nav a[href^="#"]')];
@@ -630,5 +664,6 @@ applyTranslations();
 initReveal();
 initScrollSpy();
 initMagneticButtons();
+initLookSwitcher();
 loadConfig().catch(() => {});
 setInterval(renderStatus, 60_000);
