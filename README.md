@@ -8,8 +8,8 @@ The design is soft and calm:
 - **Look:** a light palette of mint, sky and a touch of blush with slowly drifting light, frosted-glass cards, rounded shapes, and photos in gently morphing organic frames.
 - **Fonts:** an elegant display font (Bellefair) with a soft, rounded text font (Rubik). Light and dark themes.
 - **Motion:**
-  - a short intro with his name (once per visit), then his name rises in large type
-  - the clinic photo sits in a frame that opens to the full width as you scroll
+  - a short intro (once per visit), then the headline "טיפולי דיקור" rises in large type
+  - a treatment photo sits in a frame that opens to the full width as you scroll
   - treatment cards stack (on screens tall enough), and the ones behind sink back
   - the About portrait warms from black and white into color, and his quote lights up word by word
   - the gallery columns drift at different speeds
@@ -19,11 +19,10 @@ The design is soft and calm:
 
 - **Pages:** home and booking (`#book` on GitHub Pages, `/book` on the server).
 - **Home page sections, in order:**
-  - opening section: name, address, an "open now / opens at…" status from the opening hours, and the clinic photo
-  - a slow stream of the techniques he uses
+  - opening section: "טיפולי דיקור", links to the three treatments (each with a small photo), the address, an "open now / opens at…" status from the opening hours, and a treatment photo
   - treatments as cards that stack as you scroll
-  - about, with his quote
   - photo gallery (drifting columns on computers, a swipe strip on phones) with a full-screen viewer
+  - about, with his quote
   - address and hours: Waze / Google Maps, an hours table with today marked, and what to know before a treatment
   - contact
 - **Accessibility menu** (the person icon in the header): bigger text, high contrast, underlined links, stop animations, readable font. Also an accessibility statement.
@@ -74,7 +73,7 @@ The `docs/` folder holds a static, single-page version of the site, made for Git
 
 - Free times are calculated in the visitor's browser from the opening hours in `config/site.json`. Nothing is stored, so the site can't know about existing bookings.
 - **Booking requests and contact messages open WhatsApp** with a ready message to the practitioner, who confirms the time with the client.
-- Direct link to the booking page: add `#book` to the address.
+- Direct link to the booking page: add `#book` to the address. An old or mistyped address (for example `.../book`) is sent to the right place by `docs/404.html`.
 
 **Turn it on (one time):** on GitHub, open the repo → **Settings → Pages** → under **Build and deployment**, choose **Deploy from a branch**, pick this branch and the **`/docs`** folder → **Save**. After a minute or two the site is live at `https://<username>.github.io/<repo>/`.
 

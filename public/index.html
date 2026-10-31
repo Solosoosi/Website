@@ -30,8 +30,8 @@
       <nav class="main-nav" id="main-nav" data-i18n-attr="aria-label:a11y.menu">
         <ul>
           <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
-          <li><a href="#about" data-i18n="nav.about"></a></li>
           <li><a href="#gallery" data-i18n="nav.gallery"></a></li>
+          <li><a href="#about" data-i18n="nav.about"></a></li>
           <li><a href="#visit" data-i18n="nav.visit"></a></li>
         </ul>
       </nav>
@@ -46,31 +46,30 @@
   </header>
 
   <main id="main">
-    <!-- Intro: a short curtain with the name, once per visit -->
+    <!-- Intro: a short curtain, once per visit -->
     <div class="intro" aria-hidden="true">
       <span class="intro-orb"></span>
-      <span class="intro-name" data-biz="name"></span>
+      <span class="intro-name" data-biz="tagline"></span>
     </div>
 
-    <!-- Hero: big name, then his clinic in a frame that opens up as you scroll -->
+    <!-- Hero: what he does, then a treatment photo in a frame that opens up as you scroll -->
     <section class="hero" id="hero">
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
       <div class="container hero-head">
         <p class="pill-label" data-biz="street"></p>
         <h1 class="hero-title">
-          <span class="line"><span data-i18n="hero.line1"></span></span>
-          <span class="line line-2"><span class="grad" data-i18n="hero.line2"></span></span>
+          <span class="line"><span data-i18n="hero.titleA"></span> <span class="grad" data-i18n="hero.titleB"></span></span>
         </h1>
+        <ul class="hero-treatments" id="hero-treatments" data-i18n-attr="aria-label:nav.treatments"></ul>
         <div class="hero-ctas">
           <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
-          <a class="btn btn-soft" href="#treatments" data-i18n="hero.ctaMore"></a>
           <p class="status" data-status hidden></p>
         </div>
       </div>
       <div class="hero-media" id="hero-media">
         <picture>
           <source media="(max-width: 700px)" srcset="images/hero-tall.jpg" width="1080" height="1440">
-          <img src="images/hero-wide.jpg" alt="דוד נאמן בקליניקה" width="2400" height="1350" fetchpriority="high">
+          <img src="images/hero-wide.jpg" alt="דיקור לאורך הגב" width="2400" height="1350" fetchpriority="high">
         </picture>
       </div>
     </section>
@@ -89,36 +88,12 @@
       </div>
     </section>
 
-    <!-- About -->
-    <section class="section" id="about">
-      <div class="container">
-        <div class="about">
-          <figure class="about-photo reveal">
-            <div class="blob">
-              <img src="images/about.jpg" alt="דוד נאמן בקליניקה" width="900" height="1125" loading="lazy">
-            </div>
-          </figure>
-          <div class="about-text reveal">
-            <span class="sec-num" aria-hidden="true">02</span>
-            <h2 class="section-title" data-i18n="about.title"></h2>
-            <p class="about-lead" data-i18n="about.p1"></p>
-            <p data-i18n="about.p2"></p>
-            <p data-i18n="about.p3"></p>
-          </div>
-        </div>
-        <figure class="statement">
-          <blockquote class="words" data-words="about.quote"></blockquote>
-          <figcaption data-biz="name"></figcaption>
-        </figure>
-      </div>
-    </section>
-
     <!-- Gallery: three columns that drift at different speeds -->
     <section class="section" id="gallery">
       <div class="container">
         <header class="section-head reveal">
           <div>
-            <span class="sec-num" aria-hidden="true">03</span>
+            <span class="sec-num" aria-hidden="true">02</span>
             <h2 class="section-title" data-i18n="gallery.title"></h2>
           </div>
         </header>
@@ -139,6 +114,30 @@
             <button class="mosaic-item" type="button" data-large="images/large/gal-9.jpg"><img src="images/gal-9.jpg" alt="דיקור לאורך עמוד השדרה" width="720" height="900" loading="lazy"></button>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="about">
+          <figure class="about-photo reveal">
+            <div class="blob">
+              <img src="images/about.jpg" alt="דוד נאמן בקליניקה" width="900" height="1125" loading="lazy">
+            </div>
+          </figure>
+          <div class="about-text reveal">
+            <span class="sec-num" aria-hidden="true">03</span>
+            <h2 class="section-title" data-i18n="about.title"></h2>
+            <p class="about-lead" data-i18n="about.p1"></p>
+            <p data-i18n="about.p2"></p>
+            <p data-i18n="about.p3"></p>
+          </div>
+        </div>
+        <figure class="statement">
+          <blockquote class="words" data-words="about.quote"></blockquote>
+          <figcaption data-biz="name"></figcaption>
+        </figure>
       </div>
     </section>
 
@@ -247,8 +246,8 @@
           <h4 data-i18n="footer.links"></h4>
           <ul>
             <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
-            <li><a href="#about" data-i18n="nav.about"></a></li>
             <li><a href="#gallery" data-i18n="nav.gallery"></a></li>
+            <li><a href="#about" data-i18n="nav.about"></a></li>
             <li><a href="#visit" data-i18n="nav.visit"></a></li>
           </ul>
         </div>
@@ -275,7 +274,7 @@
           <a href="#top" data-i18n="a11y.top"></a>
         </span>
       </div>
-      <div class="footer-mark" aria-hidden="true"><span data-biz="name"></span></div>
+      <div class="footer-mark" aria-hidden="true"><span data-i18n="hero.title"></span></div>
     </div>
   </footer>
 

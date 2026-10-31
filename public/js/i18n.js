@@ -5,7 +5,7 @@
 export const dictionaries = {
   he: {
     meta: {
-      homeTitle: 'יעוץ וטיפול',
+      homeTitle: 'טיפולי דיקור',
       bookTitle: 'קביעת טיפול',
       adminTitle: 'ניהול',
       description: 'דוד נאמן יעוץ וטיפול. טיפולי דיקור מערבי יבש, כוסות רוח, עיסוי לימפטי ועיסוי תאילנדי. דרויאנוב 5, תל אביב.',
@@ -49,10 +49,10 @@ export const dictionaries = {
       error: 'משהו השתבש. אפשר לנסות שוב או ליצור קשר בטלפון.',
     },
     hero: {
-      line1: 'דוד נאמן',
-      line2: 'יעוץ וטיפול',
+      title: 'טיפולי דיקור',
+      titleA: 'טיפולי',
+      titleB: 'דיקור',
       ctaBook: 'לקביעת טיפול',
-      ctaMore: 'לסוגי הטיפולים',
     },
     status: {
       open: 'פתוח עכשיו · עד {time}',

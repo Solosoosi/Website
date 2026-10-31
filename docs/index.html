@@ -3,14 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>דוד נאמן | יעוץ וטיפול</title>
+  <title>טיפולי דיקור | דוד נאמן</title>
   <meta name="description" content="דוד נאמן יעוץ וטיפול. טיפולי דיקור מערבי יבש, כוסות רוח, עיסוי לימפטי ועיסוי תאילנדי. דרויאנוב 5, תל אביב.">
   <meta name="theme-color" content="#2e7d6b">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="he_IL">
   <meta property="og:site_name" content="דוד נאמן">
-  <meta property="og:title" content="דוד נאמן | יעוץ וטיפול">
+  <meta property="og:title" content="טיפולי דיקור | דוד נאמן">
   <meta property="og:description" content="דוד נאמן יעוץ וטיפול. טיפולי דיקור מערבי יבש, כוסות רוח, עיסוי לימפטי ועיסוי תאילנדי. דרויאנוב 5, תל אביב.">
+  <link rel="canonical" href="https://solosoosi.github.io/Website/">
   <meta property="og:url" content="https://solosoosi.github.io/Website/">
   <meta property="og:image" content="https://solosoosi.github.io/Website/images/og.jpg">
   <meta property="og:image:width" content="1200">
@@ -1061,7 +1062,7 @@ html.a11y-still .intro {
 }
 
 .hero-title {
-  margin: 0 0 30px;
+  margin: 0 0 24px;
   font-family: var(--font-display);
   font-weight: 400;
   line-height: 0.92;
@@ -1072,7 +1073,7 @@ html.a11y-still .intro {
   overflow: hidden;
   padding: 0.04em 0.08em 0.16em;
   margin-bottom: -0.12em;
-  font-size: clamp(4.4rem, 11.5vw, 11rem);
+  font-size: clamp(2.6rem, 17vw, 9.5rem);
   letter-spacing: -0.005em;
 }
 
@@ -1081,14 +1082,65 @@ html.a11y-still .intro {
   animation: rise 1.3s var(--ease) calc(var(--intro) + 0.06s) both;
 }
 
-.hero-title .line-2 {
-  font-size: clamp(2.1rem, 4.6vw, 4.4rem);
+.hero-title .line > .grad {
+  animation:
+    rise 1.3s var(--ease) calc(var(--intro) + 0.16s) both,
+    sheen 9s ease-in-out infinite;
 }
 
-.hero-title .line-2 > .grad {
-  animation:
-    rise 1.3s var(--ease) calc(var(--intro) + 0.22s) both,
-    sheen 9s ease-in-out infinite;
+/* The three treatments under the headline */
+.hero-treatments {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 12px;
+  margin: 0 0 30px;
+  padding: 0;
+  list-style: none;
+  animation: blur-in 1.1s var(--ease) calc(var(--intro) + 0.3s) both;
+}
+
+.hero-treatments a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 6px;
+  padding-inline: 6px 20px;
+  border-radius: 999px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: transform 0.35s var(--ease), border-color 0.25s, color 0.25s;
+}
+
+.hero-treatments a:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent-ink);
+}
+
+.hero-treatments img {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@media (max-width: 560px) {
+  .hero-treatments a {
+    padding-inline-end: 16px;
+    font-size: 0.98rem;
+  }
+
+  .hero-treatments img {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 .hero-ctas {
@@ -1176,6 +1228,10 @@ html.a11y-still .intro {
 }
 
 /* Cards further down the stack sink back as the next one slides over them. */
+.stack-card {
+  scroll-margin-top: calc(var(--header-h) + 16px);
+}
+
 .stack-card::after {
   content: '';
   position: absolute;
@@ -3286,8 +3342,8 @@ html.js .reveal:not(.is-visible) {
       <nav class="main-nav" id="main-nav" data-i18n-attr="aria-label:a11y.menu">
         <ul>
           <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
-          <li><a href="#about" data-i18n="nav.about"></a></li>
           <li><a href="#gallery" data-i18n="nav.gallery"></a></li>
+          <li><a href="#about" data-i18n="nav.about"></a></li>
           <li><a href="#visit" data-i18n="nav.visit"></a></li>
         </ul>
       </nav>
@@ -3302,31 +3358,30 @@ html.js .reveal:not(.is-visible) {
   </header>
   <main id="main">
     <div id="page-home">
-    <!-- Intro: a short curtain with the name, once per visit -->
+    <!-- Intro: a short curtain, once per visit -->
     <div class="intro" aria-hidden="true">
       <span class="intro-orb"></span>
-      <span class="intro-name" data-biz="name"></span>
+      <span class="intro-name" data-biz="tagline"></span>
     </div>
 
-    <!-- Hero: big name, then his clinic in a frame that opens up as you scroll -->
+    <!-- Hero: what he does, then a treatment photo in a frame that opens up as you scroll -->
     <section class="hero" id="hero">
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
       <div class="container hero-head">
         <p class="pill-label" data-biz="street"></p>
         <h1 class="hero-title">
-          <span class="line"><span data-i18n="hero.line1"></span></span>
-          <span class="line line-2"><span class="grad" data-i18n="hero.line2"></span></span>
+          <span class="line"><span data-i18n="hero.titleA"></span> <span class="grad" data-i18n="hero.titleB"></span></span>
         </h1>
+        <ul class="hero-treatments" id="hero-treatments" data-i18n-attr="aria-label:nav.treatments"></ul>
         <div class="hero-ctas">
           <a class="btn btn-primary btn-arrow" href="#book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
-          <a class="btn btn-soft" href="#treatments" data-i18n="hero.ctaMore"></a>
           <p class="status" data-status hidden></p>
         </div>
       </div>
       <div class="hero-media" id="hero-media">
         <picture>
           <source media="(max-width: 700px)" srcset="images/hero-tall.jpg" width="1080" height="1440">
-          <img src="images/hero-wide.jpg" alt="דוד נאמן בקליניקה" width="2400" height="1350" fetchpriority="high">
+          <img src="images/hero-wide.jpg" alt="דיקור לאורך הגב" width="2400" height="1350" fetchpriority="high">
         </picture>
       </div>
     </section>
@@ -3345,36 +3400,12 @@ html.js .reveal:not(.is-visible) {
       </div>
     </section>
 
-    <!-- About -->
-    <section class="section" id="about">
-      <div class="container">
-        <div class="about">
-          <figure class="about-photo reveal">
-            <div class="blob">
-              <img src="images/about.jpg" alt="דוד נאמן בקליניקה" width="900" height="1125" loading="lazy">
-            </div>
-          </figure>
-          <div class="about-text reveal">
-            <span class="sec-num" aria-hidden="true">02</span>
-            <h2 class="section-title" data-i18n="about.title"></h2>
-            <p class="about-lead" data-i18n="about.p1"></p>
-            <p data-i18n="about.p2"></p>
-            <p data-i18n="about.p3"></p>
-          </div>
-        </div>
-        <figure class="statement">
-          <blockquote class="words" data-words="about.quote"></blockquote>
-          <figcaption data-biz="name"></figcaption>
-        </figure>
-      </div>
-    </section>
-
     <!-- Gallery: three columns that drift at different speeds -->
     <section class="section" id="gallery">
       <div class="container">
         <header class="section-head reveal">
           <div>
-            <span class="sec-num" aria-hidden="true">03</span>
+            <span class="sec-num" aria-hidden="true">02</span>
             <h2 class="section-title" data-i18n="gallery.title"></h2>
           </div>
         </header>
@@ -3395,6 +3426,30 @@ html.js .reveal:not(.is-visible) {
             <button class="mosaic-item" type="button" data-large="images/large/gal-9.jpg"><img src="images/gal-9.jpg" alt="דיקור לאורך עמוד השדרה" width="720" height="900" loading="lazy"></button>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="about">
+          <figure class="about-photo reveal">
+            <div class="blob">
+              <img src="images/about.jpg" alt="דוד נאמן בקליניקה" width="900" height="1125" loading="lazy">
+            </div>
+          </figure>
+          <div class="about-text reveal">
+            <span class="sec-num" aria-hidden="true">03</span>
+            <h2 class="section-title" data-i18n="about.title"></h2>
+            <p class="about-lead" data-i18n="about.p1"></p>
+            <p data-i18n="about.p2"></p>
+            <p data-i18n="about.p3"></p>
+          </div>
+        </div>
+        <figure class="statement">
+          <blockquote class="words" data-words="about.quote"></blockquote>
+          <figcaption data-biz="name"></figcaption>
+        </figure>
       </div>
     </section>
 
@@ -3630,8 +3685,8 @@ html.js .reveal:not(.is-visible) {
           <h4 data-i18n="footer.links"></h4>
           <ul>
             <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
-            <li><a href="#about" data-i18n="nav.about"></a></li>
             <li><a href="#gallery" data-i18n="nav.gallery"></a></li>
+            <li><a href="#about" data-i18n="nav.about"></a></li>
             <li><a href="#visit" data-i18n="nav.visit"></a></li>
           </ul>
         </div>
@@ -3658,7 +3713,7 @@ html.js .reveal:not(.is-visible) {
           <a href="#top" data-i18n="a11y.top"></a>
         </span>
       </div>
-      <div class="footer-mark" aria-hidden="true"><span data-biz="name"></span></div>
+      <div class="footer-mark" aria-hidden="true"><span data-i18n="hero.title"></span></div>
     </div>
   </footer>
 
@@ -3676,7 +3731,7 @@ html.js .reveal:not(.is-visible) {
 const dictionaries = {
   he: {
     meta: {
-      homeTitle: 'יעוץ וטיפול',
+      homeTitle: 'טיפולי דיקור',
       bookTitle: 'קביעת טיפול',
       adminTitle: 'ניהול',
       description: 'דוד נאמן יעוץ וטיפול. טיפולי דיקור מערבי יבש, כוסות רוח, עיסוי לימפטי ועיסוי תאילנדי. דרויאנוב 5, תל אביב.',
@@ -3720,10 +3775,10 @@ const dictionaries = {
       error: 'משהו השתבש. אפשר לנסות שוב או ליצור קשר בטלפון.',
     },
     hero: {
-      line1: 'דוד נאמן',
-      line2: 'יעוץ וטיפול',
+      title: 'טיפולי דיקור',
+      titleA: 'טיפולי',
+      titleB: 'דיקור',
       ctaBook: 'לקביעת טיפול',
-      ctaMore: 'לסוגי הטיפולים',
     },
     status: {
       open: 'פתוח עכשיו · עד {time}',
@@ -5010,7 +5065,7 @@ function renderServices() {
     ...config.services.map((s, i) => {
       const card = el(
         'li',
-        { class: 'stack-card' },
+        { class: 'stack-card', id: `svc-${s.id}` },
         el(
           'div',
           { class: 'stack-img' },
@@ -5324,7 +5379,29 @@ form.addEventListener('submit', async (e) => {
 // Boot
 // ---------------------------------------------------------------------------
 
+// The treatments, right under the headline: a small photo and the name,
+// each jumping to its card below.
+function renderHeroTreatments() {
+  const list = $('hero-treatments');
+  if (!list || !config) return;
+  list.replaceChildren(
+    ...config.services.map((s) =>
+      el(
+        'li',
+        {},
+        el(
+          'a',
+          { href: `#svc-${s.id}` },
+          s.image ? el('img', { src: s.image, alt: '', width: 76, height: 76 }) : null,
+          el('span', {}, pick(s.name)),
+        ),
+      ),
+    ),
+  );
+}
+
 function renderAll() {
+  renderHeroTreatments();
   renderServices();
   renderWords();
   renderHours();

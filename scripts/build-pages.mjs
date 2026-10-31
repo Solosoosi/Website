@@ -221,7 +221,7 @@ const themeInit = `(function () {
 const he = (await import('../public/js/i18n.js')).dictionaries.he;
 const escapeHtml = (str) => String(str).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const name = config.business.name.he;
-const pageTitle = `${name} | ${he.meta.homeTitle}`;
+const pageTitle = `${he.meta.homeTitle} | ${name}`;
 const siteUrl = config.siteUrl || '';
 const street = config.business.address.he.replace(/\s*\(.*?\)\s*/g, ' ').trim();
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -256,6 +256,7 @@ const html = `<!doctype html>
   <meta property="og:site_name" content="${escapeHtml(name)}">
   <meta property="og:title" content="${escapeHtml(pageTitle)}">
   <meta property="og:description" content="${escapeHtml(he.meta.description)}">${siteUrl ? `
+  <link rel="canonical" href="${siteUrl}">
   <meta property="og:url" content="${siteUrl}">
   <meta property="og:image" content="${siteUrl}images/og.jpg">
   <meta property="og:image:width" content="1200">
@@ -289,4 +290,26 @@ for (const file of ['favicon.svg', 'apple-touch-icon.png']) {
 fs.rmSync(path.join(outDir, 'images'), { recursive: true, force: true }); // drop photos that are no longer used
 fs.cpSync(path.join(root, 'public', 'images'), path.join(outDir, 'images'), { recursive: true });
 fs.writeFileSync(path.join(outDir, '.nojekyll'), '');
+
+// GitHub Pages shows 404.html for any address that doesn't exist. Send visitors to the
+// site instead (an old ".../book" link opens the booking page).
+const base = siteUrl ? new URL(siteUrl).pathname : '/';
+fs.writeFileSync(
+  path.join(outDir, '404.html'),
+  `<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>${escapeHtml(he.notFound.title)} | ${escapeHtml(name)}</title>
+  <script>location.replace(${JSON.stringify(base)} + (/\\/book\\/?$/.test(location.pathname) ? '#book' : ''));</script>
+  <noscript><meta http-equiv="refresh" content="0; url=${base}"></noscript>
+</head>
+<body>
+  <p><a href="${base}">${escapeHtml(he.notFound.home)}</a></p>
+</body>
+</html>
+`,
+);
 console.log(`Built ${path.relative(root, outDir) || '.'}/index.html (${Math.round(html.length / 1024)} KB)`);

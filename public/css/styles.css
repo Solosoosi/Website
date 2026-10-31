@@ -1018,7 +1018,7 @@ html.a11y-still .intro {
 }
 
 .hero-title {
-  margin: 0 0 30px;
+  margin: 0 0 24px;
   font-family: var(--font-display);
   font-weight: 400;
   line-height: 0.92;
@@ -1029,7 +1029,7 @@ html.a11y-still .intro {
   overflow: hidden;
   padding: 0.04em 0.08em 0.16em;
   margin-bottom: -0.12em;
-  font-size: clamp(4.4rem, 11.5vw, 11rem);
+  font-size: clamp(2.6rem, 17vw, 9.5rem);
   letter-spacing: -0.005em;
 }
 
@@ -1038,14 +1038,65 @@ html.a11y-still .intro {
   animation: rise 1.3s var(--ease) calc(var(--intro) + 0.06s) both;
 }
 
-.hero-title .line-2 {
-  font-size: clamp(2.1rem, 4.6vw, 4.4rem);
+.hero-title .line > .grad {
+  animation:
+    rise 1.3s var(--ease) calc(var(--intro) + 0.16s) both,
+    sheen 9s ease-in-out infinite;
 }
 
-.hero-title .line-2 > .grad {
-  animation:
-    rise 1.3s var(--ease) calc(var(--intro) + 0.22s) both,
-    sheen 9s ease-in-out infinite;
+/* The three treatments under the headline */
+.hero-treatments {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 12px;
+  margin: 0 0 30px;
+  padding: 0;
+  list-style: none;
+  animation: blur-in 1.1s var(--ease) calc(var(--intro) + 0.3s) both;
+}
+
+.hero-treatments a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 6px;
+  padding-inline: 6px 20px;
+  border-radius: 999px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: transform 0.35s var(--ease), border-color 0.25s, color 0.25s;
+}
+
+.hero-treatments a:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent-ink);
+}
+
+.hero-treatments img {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@media (max-width: 560px) {
+  .hero-treatments a {
+    padding-inline-end: 16px;
+    font-size: 0.98rem;
+  }
+
+  .hero-treatments img {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 .hero-ctas {
@@ -1133,6 +1184,10 @@ html.a11y-still .intro {
 }
 
 /* Cards further down the stack sink back as the next one slides over them. */
+.stack-card {
+  scroll-margin-top: calc(var(--header-h) + 16px);
+}
+
 .stack-card::after {
   content: '';
   position: absolute;

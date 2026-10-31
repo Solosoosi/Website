@@ -52,7 +52,7 @@ function renderServices() {
     ...config.services.map((s, i) => {
       const card = el(
         'li',
-        { class: 'stack-card' },
+        { class: 'stack-card', id: `svc-${s.id}` },
         el(
           'div',
           { class: 'stack-img' },
@@ -366,7 +366,29 @@ form.addEventListener('submit', async (e) => {
 // Boot
 // ---------------------------------------------------------------------------
 
+// The treatments, right under the headline: a small photo and the name,
+// each jumping to its card below.
+function renderHeroTreatments() {
+  const list = $('hero-treatments');
+  if (!list || !config) return;
+  list.replaceChildren(
+    ...config.services.map((s) =>
+      el(
+        'li',
+        {},
+        el(
+          'a',
+          { href: `#svc-${s.id}` },
+          s.image ? el('img', { src: s.image, alt: '', width: 76, height: 76 }) : null,
+          el('span', {}, pick(s.name)),
+        ),
+      ),
+    ),
+  );
+}
+
 function renderAll() {
+  renderHeroTreatments();
   renderServices();
   renderWords();
   renderHours();
