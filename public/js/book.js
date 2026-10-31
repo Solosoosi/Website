@@ -284,7 +284,6 @@ function whatsappMessage(data) {
     `${t('book.service')}: ${pick(state.service.name)}`,
     `${t('book.date')}: ${fmtDate(state.date)}`,
     `${t('book.time')}: ${state.time}`,
-    `${t('contact.formPhone')}: ${data.phone.trim()}`,
   ];
   if (data.notes?.trim()) lines.push(`${t('book.waNotes')}: ${data.notes.trim()}`);
   return lines.join('\n');
@@ -309,8 +308,10 @@ async function submit(e) {
 
   const bad = [];
   if ((data.name || '').trim().length < 2) bad.push('name');
-  if (!PHONE_RE.test((data.phone || '').trim())) bad.push('phone');
-  if (data.email && !EMAIL_RE.test(data.email.trim())) bad.push('email');
+  if (!viaWhatsApp()) {
+    if (!PHONE_RE.test((data.phone || '').trim())) bad.push('phone');
+    if (data.email && !EMAIL_RE.test(data.email.trim())) bad.push('email');
+  }
   if (!data.consent) bad.push('consent');
   if (bad.length) return showFieldErrors(form, bad);
   if (viaWhatsApp()) return handOffToWhatsApp(data);
@@ -419,7 +420,9 @@ loadConfig()
     state.config = config;
     state.month = monthOf(config.today);
     if (viaWhatsApp()) {
-      $('b-email').closest('.field').hidden = true;
+      // The request is sent from the client's own WhatsApp, so the practitioner
+      // already sees their number: no phone or email fields.
+      $('b-phone').closest('.form-row').hidden = true;
       $('confirm-btn').dataset.i18n = 'book.confirmWhatsapp';
       $('confirm-btn').textContent = t('book.confirmWhatsapp');
     }

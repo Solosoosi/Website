@@ -78,7 +78,7 @@ A missing phone, WhatsApp, email, Instagram or Facebook value hides that link au
 The `docs/` folder holds a static, single-page version of the site, made for GitHub Pages:
 
 - Free times are calculated in the visitor's browser from the opening hours in `config/site.json`. Nothing is stored, so the site can't know about existing bookings.
-- **Booking requests and contact messages open WhatsApp** with a ready message to the practitioner, who confirms the time with the client.
+- **Booking requests and contact messages open WhatsApp** with a ready message to the practitioner, who confirms the time with the client. The booking form only asks for a name (and optional notes): the message comes from the client's own WhatsApp, so the practitioner already has their number.
 - Direct link to the booking page: add `#book` to the address. An old or mistyped address (for example `.../book`) is sent to the right place by `docs/404.html`.
 
 **Turn it on (one time):** on GitHub, open the repo → **Settings → Pages** → under **Build and deployment**, choose **Deploy from a branch**, pick this branch and the **`/docs`** folder → **Save**. After a minute or two the site is live at `https://<username>.github.io/<repo>/`.
@@ -150,7 +150,7 @@ All data is in one file: `$DATA_DIR/site.db`. On Render, disk snapshots are take
   - reduced motion when the device asks for it
 
   The statement itself must come from the business.
-- [ ] **Privacy notice:** the booking form collects names and phone numbers, so add a short privacy policy page.
+- [ ] **Privacy notice:** on the server version the booking form collects names and phone numbers, so add a short privacy policy page. (The GitHub Pages version stores nothing; the request goes out from the client's own WhatsApp.)
 
 ## Project layout
 
