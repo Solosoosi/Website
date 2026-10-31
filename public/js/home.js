@@ -450,6 +450,51 @@ function initStripProgress() {
   update();
 }
 
+// The treatment video beside his quote: silent and looping, it plays only while
+// on screen – never when motion is turned off or the phone is saving data – and
+// a button pauses or plays it.
+function initClinicVideo() {
+  const box = document.querySelector('.statement-media');
+  const video = box?.querySelector('video');
+  const button = box?.querySelector('.video-toggle');
+  if (!video || !button || !('IntersectionObserver' in window)) return;
+  video.muted = true;
+  let wanted = !reducedMotion() && !navigator.connection?.saveData;
+  let onScreen = false;
+  const render = () => {
+    const playing = !video.paused;
+    button.innerHTML = svg(playing ? 'pause' : 'play');
+    button.setAttribute('aria-label', t(playing ? 'a11y.videoPause' : 'a11y.videoPlay'));
+  };
+  const sync = () => {
+    if (wanted && onScreen) video.play().catch(render);
+    else video.pause();
+  };
+  video.addEventListener('play', render);
+  video.addEventListener('pause', render);
+  button.addEventListener('click', () => {
+    wanted = video.paused;
+    sync();
+  });
+  new IntersectionObserver(
+    ([entry]) => {
+      onScreen = entry.isIntersecting;
+      sync();
+    },
+    { threshold: 0.2 },
+  ).observe(box);
+  // Turning on "stop animations" in the accessibility menu stops the video too.
+  new MutationObserver(() => {
+    if (reducedMotion() && !video.paused) {
+      wanted = false;
+      video.pause();
+    }
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  onLangChange(render);
+  button.hidden = false;
+  render();
+}
+
 function renderAll() {
   renderHeroTreatments();
   renderServices();
@@ -487,6 +532,7 @@ initScrollFx();
 initCursorGlow();
 initActionBar();
 initStripProgress();
+initClinicVideo();
 
 loadConfig()
   .then((cfg) => {

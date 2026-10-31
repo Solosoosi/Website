@@ -30,6 +30,8 @@ export const dictionaries = {
       close: 'סגירה',
       call: 'התקשרות',
       top: 'חזרה למעלה',
+      videoPlay: 'הפעלת הסרטון',
+      videoPause: 'עצירת הסרטון',
     },
     nav: {
       home: 'בית',
@@ -253,6 +255,8 @@ export const dictionaries = {
       whatsapp: 'Message on WhatsApp',
       prevMonth: 'Previous month',
       nextMonth: 'Next month',
+      videoPlay: 'Play the video',
+      videoPause: 'Pause the video',
     },
     nav: {
       home: 'Home',

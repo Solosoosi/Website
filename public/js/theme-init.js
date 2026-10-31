@@ -23,7 +23,7 @@
     if (/[?&]options(=|&|$)/.test(location.search)) {
       root.classList.add('show-looks');
       var look = localStorage.getItem('look');
-      if (/^2[bcd]?$/.test(look || '')) root.setAttribute('data-look', look);
+      if (/^2[b-e]?$/.test(look || '')) root.setAttribute('data-look', look);
     }
   } catch (e) {}
   // Phones: on the home page the bottom bar waits until the opening button scrolls away.

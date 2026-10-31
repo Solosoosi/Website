@@ -2861,6 +2861,7 @@ html.a11y-contrast .words .w {
   --on-accent: #ffffff;
   --accent-soft: #f1e1d4;
   --spark: var(--accent);
+  --curtain: var(--accent-soft);
   --glow-1: #eedbc6;
   --glow-2: #e7e1d0;
   --glow-3: #f2d8cc;
@@ -3107,7 +3108,7 @@ html.a11y-contrast .words .w {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--accent-soft);
+  background: var(--curtain);
   transform: scaleY(0);
   transform-origin: 50% 0;
   animation: curtain 1.3s var(--ease) calc(var(--intro) + 0.35s) both;
@@ -3289,11 +3290,13 @@ html.a11y-contrast .words .w {
   animation: none;
 }
 
-[data-look^='2'] .about-photo .blob::after {
+[data-look^='2'] .about-photo .blob::after,
+[data-look^='2'] .statement-media::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--accent-soft);
+  z-index: 1;
+  background: var(--curtain);
   transform: scaleY(0);
   transform-origin: 50% 0;
   transition: transform 1.3s var(--ease) 0.1s;
@@ -3326,6 +3329,106 @@ html.a11y-contrast .words .w {
   background: radial-gradient(circle, color-mix(in srgb, var(--glow-3) 85%, transparent), transparent 65%);
   pointer-events: none;
   animation: sun 22s ease-in-out infinite alternate;
+}
+
+/* His quote with a short silent video of a treatment beside it */
+.statement {
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
+  grid-template-areas:
+    '. media'
+    'quote media'
+    'caption media'
+    '. media';
+  grid-template-rows: 1fr auto auto 1fr;
+  column-gap: clamp(32px, 6vw, 96px);
+  text-align: start;
+}
+
+.statement .words {
+  grid-area: quote;
+  font-size: clamp(2rem, 3.4vw, 3.3rem);
+}
+
+.statement figcaption {
+  grid-area: caption;
+}
+
+.statement-media {
+  grid-area: media;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
+  background: var(--photo-bg);
+  box-shadow: var(--shadow-lift);
+}
+
+.statement-media video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-toggle {
+  position: absolute;
+  bottom: 14px;
+  inset-inline-end: 14px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 0.4);
+  border-radius: 50%;
+  background: rgb(20 18 15 / 0.35);
+  color: #fff;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: background-color 0.25s, transform 0.35s var(--ease);
+}
+
+.video-toggle:hover {
+  background: rgb(20 18 15 / 0.55);
+}
+
+.video-toggle:active {
+  transform: scale(0.94);
+}
+
+.video-toggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+@media (max-width: 760px) {
+  .statement {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'media' 'quote' 'caption';
+    grid-template-rows: auto;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .statement-media {
+    width: min(100%, 340px);
+    margin-bottom: 40px;
+  }
+}
+
+[data-look='2c'] .statement-media {
+  border-radius: var(--radius);
+  outline: 1px solid var(--line-strong);
+  outline-offset: 14px;
+  box-shadow: none;
+}
+
+[data-look='2d'] .statement-media {
+  border-radius: 0;
+  box-shadow: none;
 }
 
 /* The big name at the very bottom rises into view */
@@ -3403,6 +3506,7 @@ html.a11y-contrast .words .w {
   html.js:not(.a11y-still)[data-look^='2'] .about-text.reveal:not(.is-visible),
   html.js:not(.a11y-still)[data-look^='2'] .about-photo.reveal:not(.is-visible),
   html.js:not(.a11y-still)[data-look^='2'] .mosaic.reveal:not(.is-visible),
+  html.js:not(.a11y-still)[data-look^='2'] .statement-media.reveal:not(.is-visible),
   html.js:not(.a11y-still)[data-look^='2'] .footer-mark.reveal:not(.is-visible) {
     opacity: 1;
     transform: none;
@@ -3451,7 +3555,8 @@ html.a11y-contrast .words .w {
     transform: translateY(44px) scale(0.96);
   }
 
-  html.js:not(.a11y-still)[data-look^='2'] .about-photo.reveal:not(.is-visible) .blob::after {
+  html.js:not(.a11y-still)[data-look^='2'] .about-photo.reveal:not(.is-visible) .blob::after,
+  html.js:not(.a11y-still)[data-look^='2'] .statement-media.reveal:not(.is-visible)::after {
     transform: none;
   }
 
@@ -4305,6 +4410,103 @@ html.a11y-contrast[data-look='2c'] .stack-num {
   html.js:not(.a11y-still)[data-look='2d'] .stack-card:nth-child(n):not(.is-in) .stack-img {
     clip-path: inset(0 0 0 100%);
   }
+}
+
+/* ---------- Version ה: sage and clay – the colors from the palettes folder ----------
+   Cream and sand as the base, calm sage green for buttons and links, soft clay
+   (a lighter terracotta) for small warm touches, blush and pale blue as light glows. */
+
+:root[data-look='2e'] {
+  --bg: #f6f2ec;
+  --bg-2: #ece6dc;
+  --surface: #fffdfa;
+  --glass: #fffdfa;
+  --glass-strong: #fffdfa;
+  --glass-border: #e2dccf;
+  --ink: #2a2d27;
+  --ink-2: #4a4c43;
+  --muted: #6c6b60;
+  --line: rgb(42 45 39 / 0.12);
+  --line-strong: rgb(42 45 39 / 0.24);
+  --accent: #5e705f;
+  --accent-2: #8fa08b;
+  --accent-ink: #4a5b4b;
+  --on-accent: #ffffff;
+  --accent-soft: #e3e9df;
+  --spark: #a86a52;
+  --spark-ink: #8c533e;
+  --blush: #f5e2d7;
+  --curtain: var(--blush);
+  --glow-1: #e1e8d8;
+  --glow-2: #e0ebee;
+  --glow-3: #f4ddd1;
+  --glow-4: #efe6d6;
+  --open: #4f7a52;
+  --photo-bg: #e7e1d5;
+  --shadow-soft: 0 10px 30px -18px rgb(50 55 45 / 0.25);
+  --shadow-lift: 0 26px 60px -30px rgb(50 55 45 / 0.35);
+  --header-bg: rgb(246 242 236 / 0.92);
+}
+
+:root[data-look='2e'][data-theme='dark'] {
+  --bg: #151916;
+  --bg-2: #1a1f1b;
+  --surface: #212722;
+  --glass: #212722;
+  --glass-strong: #212722;
+  --glass-border: #323a33;
+  --ink: #eef0e8;
+  --ink-2: #d1d6ca;
+  --muted: #9fa597;
+  --line: rgb(238 240 232 / 0.12);
+  --line-strong: rgb(238 240 232 / 0.24);
+  --accent: #a9c0a5;
+  --accent-2: #c2d4be;
+  --accent-ink: #b7cbb3;
+  --on-accent: #142016;
+  --accent-soft: #273028;
+  --spark: #e2a58b;
+  --spark-ink: #e7b29b;
+  --blush: #33261f;
+  --glow-1: #243026;
+  --glow-2: #1e282b;
+  --glow-3: #32241e;
+  --glow-4: #2a2a22;
+  --open: #93cf9b;
+  --photo-bg: #262c27;
+  --shadow-soft: 0 10px 30px -18px rgb(0 0 0 / 0.6);
+  --shadow-lift: 0 26px 60px -30px rgb(0 0 0 / 0.7);
+  --header-bg: rgb(21 25 22 / 0.92);
+}
+
+[data-look='2e'] .hero-title .line > .grad,
+[data-look='2e'] .hero-treatments .ht-go {
+  color: var(--spark);
+}
+
+[data-look='2e'] .stack-num {
+  color: var(--spark-ink);
+}
+
+[data-look='2e'] .pill-label::before {
+  background: var(--spark);
+  box-shadow: 0 0 0 4px var(--blush);
+}
+
+/* A second, pale-blue light drifts on the other side of the opening screen */
+[data-look='2e'] .hero::after {
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: 0;
+  inset: auto;
+  top: 18%;
+  inset-inline-start: -18vmax;
+  width: 46vmax;
+  height: 46vmax;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--glow-2) 90%, transparent) 0%, transparent 66%);
+  animation: sun 30s ease-in-out -8s infinite alternate-reverse;
 }
 
 /* ---------- Phones: the bottom bar waits until the opening button has scrolled away ---------- */

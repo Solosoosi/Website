@@ -24,7 +24,7 @@ The design is warm and natural:
   - opening section: "טיפולי דיקור", links to the three treatments, the address and an "open now / opens at…" status from the opening hours (no large treatment photo)
   - the treatments, each with its photo, description and a booking button
   - photo gallery (a grid on computers, a swipe strip on phones) with a full-screen viewer
-  - about, with his quote
+  - about, with his quote beside a short silent video of a treatment (it plays only while on screen, never with "reduce motion", "stop animations" or data saver on, and a button pauses it)
   - address and hours: Waze / Google Maps, an hours table with today marked, and what to know before a treatment
   - contact
 - **Design options:** four versions of the natural design share the same content (`data-look` on `<html>`).
@@ -32,8 +32,10 @@ The design is warm and natural:
   - **ב – olive and linen** (`2b`): olive green and a delicate display font (Bellefair); centered, the three treatments as round photos, and a wide arched window of the room that opens up as it scrolls into view; the treatments as three cards.
   - **ג – sand and honey** (`2c`): honey tones; a very large, light headline across the width, a numbered treatment list beside a framed photo, big outlined numbers.
   - **ד – quiet and minimal** (`2d`): black on warm white with a touch of terracotta, square black buttons, the treatments in one row and the room photo below as a wide arch.
+  - **ה – sage and clay** (`2e`): the layout of א with colors from the `Color palettes` folder – cream and sand as the base, calm sage green for buttons and links, soft clay (a lighter terracotta) for small warm touches, and blush and pale blue as light glows.
 
   Open the site with `?options` at the end of the address (for example `https://solosoosi.github.io/Website/?options`) to get a switcher (a bar at the bottom on computers, a round button on phones); the pick is remembered on that device. Normal visitors never see it and get version א.
+- **The treatment video:** `public/images/clinic.mp4` (12 seconds, silent, 720×900, about 270 KB) and its still `clinic-poster.jpg` are made from `Videos/WhatsApp Video 2026-10-30 at 10.49.57 AM.mp4`: cropped to 4:5, cut between two near-identical moments (4.0 s and 17.0 s) and joined with a short fade so it loops smoothly.
 - **Treatment photos:** cosmetic = needles on the face; dry needling = needles along the back; stress = a relaxed client with needles on the forehead and face (best match – confirm with David).
 - **Accessibility menu** (the person icon in the header): bigger text, high contrast, underlined links, stop animations, readable font. Also an accessibility statement.
 - **Phones:** a bottom bar with "book", WhatsApp and call. It slides up once the opening screen's own booking button has scrolled away, so the two never show at once. The gallery is a swipe strip with a thin progress line under it, and the browser's address bar takes the page's background color.
