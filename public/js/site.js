@@ -548,74 +548,34 @@ function initHeader() {
 }
 
 // ---------------------------------------------------------------------------
-// Desktop only: a soft ring that follows the pointer (it grows over links and
-// turns into a "+" over photos), and buttons that lean toward the pointer.
+// Mouse only: buttons lean slightly toward the pointer.
 // ---------------------------------------------------------------------------
 
-function initPointerFx() {
+function initMagneticButtons() {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const still = () => root.classList.contains('a11y-still');
-  const ring = el('div', { class: 'cursor', 'aria-hidden': 'true', html: svg('plus') });
-  document.body.append(ring);
-  root.classList.add('has-cursor');
-  let x = -100;
-  let y = -100;
-  let cx = -100;
-  let cy = -100;
-  let frame = null;
   let pulled = null;
-
-  const loop = () => {
-    cx += (x - cx) * 0.22;
-    cy += (y - cy) * 0.22;
-    ring.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
-    frame = Math.abs(x - cx) + Math.abs(y - cy) > 0.2 ? requestAnimationFrame(loop) : null;
-  };
   const release = () => {
     if (pulled) pulled.style.translate = '';
     pulled = null;
   };
-
   document.addEventListener(
     'pointermove',
     (e) => {
-      if (e.pointerType !== 'mouse') return;
-      if (still()) {
-        ring.classList.remove('is-on');
-        return release();
-      }
-      x = e.clientX;
-      y = e.clientY;
-      if (!ring.classList.contains('is-on')) {
-        cx = x;
-        cy = y;
-      }
-      const target = e.target instanceof Element ? e.target : null;
-      const view = !!target?.closest('.mosaic-item');
-      ring.classList.add('is-on');
-      ring.classList.toggle('is-view', view);
-      ring.classList.toggle('is-link', !view && !!target?.closest('a, button, label, summary, [role="button"]'));
-      ring.classList.toggle('is-text', !!target?.closest('input, textarea, select'));
-      frame ??= requestAnimationFrame(loop);
-
-      const button = target?.closest('.btn');
+      if (e.pointerType !== 'mouse' || root.classList.contains('a11y-still')) return release();
+      const button = e.target instanceof Element ? e.target.closest('.btn') : null;
       if (button !== pulled) release();
-      if (button && !button.disabled) {
-        const r = button.getBoundingClientRect();
-        const dx = (e.clientX - (r.left + r.width / 2)) * 0.18;
-        const dy = (e.clientY - (r.top + r.height / 2)) * 0.28;
-        button.style.translate = `${dx.toFixed(1)}px ${dy.toFixed(1)}px`;
-        pulled = button;
-      }
+      if (!button || button.disabled) return;
+      const r = button.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) * 0.18;
+      const dy = (e.clientY - (r.top + r.height / 2)) * 0.28;
+      button.style.translate = `${dx.toFixed(1)}px ${dy.toFixed(1)}px`;
+      pulled = button;
     },
     { passive: true },
   );
-  root.addEventListener('mouseleave', () => {
-    ring.classList.remove('is-on');
-    release();
-  });
-  window.addEventListener('blur', () => ring.classList.remove('is-on'));
+  root.addEventListener('mouseleave', release);
+  window.addEventListener('blur', release);
 }
 
 // Underline the nav link of the section on screen.
@@ -643,8 +603,10 @@ function initReveal() {
     items.forEach((i) => i.classList.add('is-visible'));
     return;
   }
+  let answered = false;
   const io = new IntersectionObserver(
     (entries) => {
+      answered = true;
       for (const e of entries) {
         if (e.isIntersecting) {
           e.target.classList.add('is-visible');
@@ -655,6 +617,10 @@ function initReveal() {
     { rootMargin: '0px 0px -8% 0px' },
   );
   items.forEach((i) => io.observe(i));
+  // Some embedded browsers never report visibility; never leave content hidden there.
+  setTimeout(() => {
+    if (!answered) items.forEach((i) => i.classList.add('is-visible'));
+  }, 3000);
 }
 
 hydrateIcons();
@@ -663,6 +629,6 @@ initA11yMenu();
 applyTranslations();
 initReveal();
 initScrollSpy();
-initPointerFx();
+initMagneticButtons();
 loadConfig().catch(() => {});
 setInterval(renderStatus, 60_000);

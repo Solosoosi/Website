@@ -765,6 +765,32 @@ bdi {
   }
 }
 
+/* Very narrow phones (e.g. a folded Galaxy Fold): keep the name clear of the buttons. */
+@media (max-width: 359px) {
+  .site-header .brand-orb {
+    display: none;
+  }
+
+  .brand-name {
+    font-size: 1.3rem;
+  }
+
+  .header-inner,
+  [dir='rtl'] .header-inner {
+    padding-inline: 12px 6px;
+    gap: 6px;
+  }
+
+  .header-actions {
+    gap: 4px;
+  }
+
+  .header-actions .icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 /* ==========================================================================
    Sections
    ========================================================================== */
@@ -1067,8 +1093,8 @@ html.a11y-still .intro {
 @media (max-width: 700px) {
   .hero-media {
     --media-inset: var(--gutter);
-    height: 72vh;
-    height: 72svh;
+    height: min(72vh, 165vw);
+    height: min(72svh, 165vw);
     margin-top: 36px;
   }
 
@@ -1145,13 +1171,11 @@ html.a11y-still .intro {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  clip-path: inset(100% 0 0 0);
-  transform: scale(1.16);
-  transition: clip-path 1.3s var(--ease), transform 1.8s var(--ease);
+  transform: scale(1.1);
+  transition: transform 1.8s var(--ease);
 }
 
 .stack-card.is-in .stack-img img {
-  clip-path: inset(0);
   transform: none;
 }
 
@@ -1205,6 +1229,13 @@ html.a11y-contrast .stack-num {
 .duration svg {
   width: 16px;
   height: 16px;
+}
+
+@media (max-height: 699px) {
+  .stack-card {
+    position: relative;
+    top: auto;
+  }
 }
 
 @media (max-width: 860px) {
@@ -1396,10 +1427,6 @@ html.a11y-contrast .words .w {
 .mosaic-item:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 4px;
-}
-
-.has-cursor .mosaic-item {
-  cursor: none;
 }
 
 @media (max-width: 760px) {
@@ -2729,7 +2756,7 @@ html.a11y-contrast .words .w {
 }
 
 /* ==========================================================================
-   Finishing touches: film grain and a soft cursor
+   Finishing touches: film grain
    ========================================================================== */
 
 body::after {
@@ -2747,64 +2774,6 @@ body::after {
   opacity: 0.035;
 }
 
-.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 400;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  margin: -18px 0 0 -18px;
-  border: 1.5px solid color-mix(in srgb, var(--accent-ink) 55%, transparent);
-  border-radius: 50%;
-  color: var(--on-accent);
-  pointer-events: none;
-  opacity: 0;
-  transition: width 0.35s var(--ease), height 0.35s var(--ease), margin 0.35s var(--ease), background-color 0.35s, border-color 0.35s, opacity 0.3s;
-}
-
-.cursor.is-on {
-  opacity: 1;
-}
-
-.cursor.is-link {
-  width: 58px;
-  height: 58px;
-  margin: -29px 0 0 -29px;
-  border-color: transparent;
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
-}
-
-.cursor.is-view {
-  width: 86px;
-  height: 86px;
-  margin: -43px 0 0 -43px;
-  border-color: transparent;
-  background: color-mix(in srgb, var(--accent) 90%, transparent);
-}
-
-.cursor.is-on.is-text {
-  opacity: 0;
-}
-
-.cursor svg {
-  width: 24px;
-  height: 24px;
-  opacity: 0;
-  transform: scale(0.5);
-  transition: opacity 0.25s, transform 0.35s var(--ease);
-}
-
-.cursor.is-view svg {
-  opacity: 1;
-  transform: none;
-}
-
-html.a11y-still .cursor {
-  display: none;
-}
 
 /* ==========================================================================
    Motion

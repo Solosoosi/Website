@@ -119,7 +119,7 @@ function initScrollFx() {
   const list = $('services-list');
   const mosaic = $('mosaic');
   const cols = [...document.querySelectorAll('.mosaic-col')];
-  const stacked = window.matchMedia('(min-width: 861px)');
+  const stacked = window.matchMedia('(min-width: 861px) and (min-height: 700px)');
   const wide = window.matchMedia('(min-width: 761px)');
   let queued = false;
 
@@ -384,6 +384,14 @@ if (intro && media) {
   if (getComputedStyle(intro).display === 'none') settle();
   else media.addEventListener('animationend', settle, { once: true });
 }
+
+// Lazy photos load as you scroll; shortly after the page is ready, fetch any
+// that are still waiting so none can stay empty (some in-app browsers stall).
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    for (const img of document.querySelectorAll('img[loading="lazy"]')) img.loading = 'eager';
+  }, 2500);
+});
 
 const galleryItems = [...document.querySelectorAll('.mosaic-item')];
 if (galleryItems.length) initLightbox(galleryItems);

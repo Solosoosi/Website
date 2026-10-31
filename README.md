@@ -10,11 +10,10 @@ The design is soft and calm:
 - **Motion:**
   - a short intro with his name (once per visit), then his name rises in large type
   - the clinic photo sits in a frame that opens to the full width as you scroll
-  - the techniques move across in large type, faster while scrolling, and turn around when you scroll back up
-  - treatment cards stack, and the ones behind sink back; each photo opens like a curtain
+  - treatment cards stack (on screens tall enough), and the ones behind sink back
   - the About portrait warms from black and white into color, and his quote lights up word by word
   - the gallery columns drift at different speeds
-  - on computers, a soft ring follows the mouse and buttons lean toward it; the header slides away while scrolling down
+  - on computers, buttons lean toward the mouse; the header slides away while scrolling down
   - switching the theme ripples a circle out from the button
   - everything respects the "reduce motion" setting and the accessibility menu
 
