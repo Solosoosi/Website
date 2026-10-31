@@ -27,36 +27,6 @@ const arrow = () => el('span', { class: 'flip-rtl', html: svg('arrow') });
 // Treatments: cards that stack as you scroll
 // ---------------------------------------------------------------------------
 
-function countUp(node) {
-  const target = Number(node.dataset.count);
-  if (reducedMotion()) {
-    node.textContent = String(target);
-    return;
-  }
-  const start = performance.now();
-  const tick = (now) => {
-    const k = Math.min(1, (now - start) / 1400);
-    node.textContent = String(Math.round(target * (1 - (1 - k) ** 3)));
-    if (k < 1) requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-}
-
-const counterObserver =
-  'IntersectionObserver' in window
-    ? new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) {
-            if (e.isIntersecting) {
-              counterObserver.unobserve(e.target);
-              countUp(e.target);
-            }
-          }
-        },
-        { threshold: 0.6 },
-      )
-    : null;
-
 function renderServices() {
   if (!config) return;
   const list = $('services-list');
@@ -75,16 +45,7 @@ function renderServices() {
           { class: 'stack-body' },
           el('span', { class: 'stack-num' }, `0${i + 1} / 0${config.services.length}`),
           el('h3', { class: 'stack-name' }, pick(s.name)),
-          s.stat
-            ? el(
-                'p',
-                { class: 'stat' },
-                el('span', { class: 'stat-value', 'data-count': s.stat.value }, s.stat.value),
-                el('span', { class: 'stat-label' }, pick(s.stat.label)),
-              )
-            : null,
           el('p', { class: 'stack-desc' }, pick(s.description)),
-          s.tags ? el('ul', { class: 'tags' }, (pick(s.tags) || []).map((tag) => el('li', { class: 'tag' }, tag))) : null,
           el(
             'div',
             { class: 'stack-foot' },
@@ -94,7 +55,6 @@ function renderServices() {
               el('span', {}, t('treatments.book')),
               arrow(),
             ),
-            el('span', { class: 'duration', html: svg('clock') }, t('common.minutes', { n: s.duration })),
             s.price == null ? null : el('span', { class: 'duration' }, formatPrice(s.price)),
           ),
         ),
@@ -103,236 +63,6 @@ function renderServices() {
       return card;
     }),
   );
-  for (const node of list.querySelectorAll('[data-count]')) {
-    const below = node.getBoundingClientRect().top > window.innerHeight;
-    if (counterObserver && below && !reducedMotion()) {
-      node.textContent = '0';
-      counterObserver.observe(node);
-    }
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Body map: pick where it hurts → matching treatment
-// ---------------------------------------------------------------------------
-
-const ZONE_SERVICE = {
-  neck: 'dry-needling',
-  upper: 'dry-needling',
-  lower: 'dry-needling',
-  hips: 'dry-needling',
-  legs: 'dry-needling',
-  face: 'cosmetic',
-  stress: 'stress',
-};
-const figure = document.querySelector('.bodymap-figure svg');
-let currentZone = 'neck';
-
-function svgEl(tag, attrs, text) {
-  const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
-  for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
-  if (text) node.textContent = text;
-  return node;
-}
-
-/** A soft dashed line from the zone's point out to its name. */
-function annotate() {
-  if (!figure) return;
-  const g = figure.querySelector('.annot');
-  const points = [...figure.querySelectorAll(`.pt[data-zone="${currentZone}"]`)];
-  if (!points.length) return g.replaceChildren();
-  const p = points.reduce((a, b) => (Number(a.dataset.x) >= Number(b.dataset.x) ? a : b));
-  const x = Number(p.dataset.x);
-  const y = Number(p.dataset.y);
-  const end = 412;
-  g.replaceChildren(
-    svgEl('line', { x1: x + 11, y1: y, x2: end, y2: y }),
-    svgEl('circle', { cx: end, cy: y, r: 3 }),
-    svgEl('text', { x: end, y: y - 10, 'text-anchor': 'end', direction: 'ltr' }, t(`bodymap.zones.${currentZone}.name`)),
-  );
-}
-
-function renderMatch() {
-  if (!config) return;
-  const service = config.services.find((s) => s.id === ZONE_SERVICE[currentZone]);
-  if (!service) return;
-  const box = $('bodymap-match');
-  box.replaceChildren(
-    service.image ? el('img', { class: 'match-img', src: service.image, alt: '', width: 700, height: 700, loading: 'lazy' }) : null,
-    el('p', { class: 'match-label' }, t('bodymap.match')),
-    el('h3', { class: 'match-name' }, pick(service.name)),
-    el('p', { class: 'match-desc' }, t(`bodymap.zones.${currentZone}.desc`)),
-    el('p', { class: 'match-note' }, t('bodymap.note')),
-    el(
-      'a',
-      { class: 'btn btn-primary btn-arrow', href: bookHref(service.id), 'data-service': service.id },
-      el('span', {}, t('bodymap.cta', { name: pick(service.name) })),
-      arrow(),
-    ),
-  );
-  // Replay the soft entrance animation on every change.
-  box.style.animation = 'none';
-  void box.offsetWidth;
-  box.style.animation = '';
-}
-
-function selectZone(zone) {
-  currentZone = zone;
-  for (const b of document.querySelectorAll('.zone')) b.setAttribute('aria-pressed', String(b.dataset.zone === zone));
-  for (const p of figure.querySelectorAll('.pt')) p.classList.toggle('is-active', p.dataset.zone === zone);
-  annotate();
-  renderMatch();
-}
-
-if (figure) {
-  figure.addEventListener('click', (e) => {
-    const p = e.target.closest('.pt');
-    if (p) selectZone(p.dataset.zone);
-  });
-  for (const b of document.querySelectorAll('.zone')) b.addEventListener('click', () => selectZone(b.dataset.zone));
-  selectZone(currentZone);
-}
-
-// ---------------------------------------------------------------------------
-// Breathing exercise: inhale 4s, hold 4s, exhale 6s, four rounds
-// ---------------------------------------------------------------------------
-
-function initBreathing() {
-  const box = $('breathe-box');
-  if (!box) return;
-  const circle = $('breathe-circle');
-  const phaseEl = $('breathe-phase');
-  const countEl = $('breathe-count');
-  const button = $('breathe-toggle');
-  const label = button.querySelector('[data-i18n]');
-  const PHASES = [
-    { key: 'inhale', secs: 4, scale: 1 },
-    { key: 'hold', secs: 4, scale: 1 },
-    { key: 'exhale', secs: 6, scale: 0.62 },
-  ];
-  const ROUNDS = 4;
-  let running = false;
-  let timer = null;
-
-  const setText = (node, key, vars) => {
-    node.dataset.i18n = key;
-    node.textContent = t(key, vars);
-  };
-
-  function stop(finished = false) {
-    running = false;
-    clearTimeout(timer);
-    box.classList.remove('is-running');
-    circle.style.setProperty('--breath-time', '1.6s');
-    circle.style.setProperty('--breath', '0.62');
-    setText(phaseEl, finished ? 'breathe.done' : 'breathe.ready');
-    countEl.textContent = '';
-    setText(label, 'breathe.start');
-  }
-
-  function runPhase(round, index) {
-    if (!running) return;
-    if (index === PHASES.length) {
-      round += 1;
-      index = 0;
-    }
-    if (round > ROUNDS) return stop(true);
-    const phase = PHASES[index];
-    circle.style.setProperty('--breath-time', `${phase.secs}s`);
-    circle.style.setProperty('--breath', String(phase.scale));
-    setText(phaseEl, `breathe.${phase.key}`);
-    let left = phase.secs;
-    countEl.textContent = `${left} · ${t('breathe.cycle', { n: round, total: ROUNDS })}`;
-    const tick = () => {
-      if (!running) return;
-      left -= 1;
-      if (left <= 0) return runPhase(round, index + 1);
-      countEl.textContent = `${left} · ${t('breathe.cycle', { n: round, total: ROUNDS })}`;
-      timer = setTimeout(tick, 1000);
-    };
-    timer = setTimeout(tick, 1000);
-  }
-
-  button.addEventListener('click', () => {
-    if (running) return stop();
-    running = true;
-    box.classList.add('is-running');
-    setText(label, 'breathe.stop');
-    runPhase(1, 0);
-  });
-}
-
-// ---------------------------------------------------------------------------
-// Process: a line that draws itself through the three steps as you scroll
-// ---------------------------------------------------------------------------
-
-function initProcess() {
-  const flow = $('process-flow');
-  if (!flow) return;
-  const line = flow.querySelector('.process-line');
-  const track = line.querySelector('.track');
-  const draw = line.querySelector('.draw');
-  const stepList = flow.querySelector('.steps');
-  const steps = [...flow.querySelectorAll('.step')];
-  let fractions = steps.map((_, i) => i / (steps.length - 1));
-
-  function layout() {
-    const box = flow.getBoundingClientRect();
-    if (!box.width) return;
-    line.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
-    line.style.height = `${box.height}px`;
-    const nodes = steps.map((s) => {
-      const r = s.querySelector('.step-node').getBoundingClientRect();
-      return [r.left + r.width / 2 - box.left, r.top + r.height / 2 - box.top];
-    });
-    const startX = isRtl() ? box.width : 0;
-    const endX = isRtl() ? 0 : box.width;
-    const pts = [[startX, nodes[0][1]], ...nodes, [endX, nodes.at(-1)[1]]];
-    let d = `M${pts[0][0]},${pts[0][1]}`;
-    for (let i = 1; i < pts.length; i++) {
-      const [x0, y0] = pts[i - 1];
-      const [x1, y1] = pts[i];
-      const mid = (x0 + x1) / 2;
-      // Gentle waves between the steps; straight lead-in and lead-out at the edges.
-      const wave = i === 1 || i === pts.length - 1 ? 0 : (i % 2 ? -1 : 1) * 36;
-      d += ` C${mid},${y0 + wave} ${mid},${y1 + wave} ${x1},${y1}`;
-    }
-    track.setAttribute('d', d);
-    draw.setAttribute('d', d);
-    fractions = nodes.map(([x]) => Math.abs(x - startX) / box.width);
-    update();
-  }
-
-  function update() {
-    const r = flow.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.25)));
-    const shown = reducedMotion() ? 1 : p;
-    draw.setAttribute('stroke-dashoffset', String(1 - shown));
-    stepList.style.setProperty('--p', String(shown));
-    const vertical = getComputedStyle(line).display === 'none';
-    steps.forEach((s, i) => {
-      const at = vertical ? i / (steps.length - 1) : fractions[i];
-      s.classList.toggle('is-lit', shown >= at - 0.02);
-    });
-  }
-
-  let queued = false;
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(() => {
-        queued = false;
-        update();
-      });
-    },
-    { passive: true },
-  );
-  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(flow);
-  document.fonts?.ready.then(layout);
-  layout();
 }
 
 // ---------------------------------------------------------------------------
@@ -409,7 +139,6 @@ function initCarousel() {
 function initLightbox(items) {
   let index = 0;
   const img = el('img', { alt: '' });
-  const caption = el('span');
   const counter = el('span');
   const navButton = (icon, labelKey, step) =>
     el(
@@ -426,7 +155,7 @@ function initLightbox(items) {
       el(
         'div',
         { class: 'lightbox-top' },
-        el('span', {}, caption, ' · ', counter),
+        counter,
         el('button', { type: 'button', class: 'icon-btn', 'aria-label': t('gallery.close'), html: svg('close'), onclick: () => dialog.close() }),
       ),
       el('figure', {}, img),
@@ -440,7 +169,6 @@ function initLightbox(items) {
     const item = items[index];
     img.src = item.dataset.large;
     img.alt = item.querySelector('img').alt;
-    caption.textContent = item.querySelector('.cap')?.textContent || '';
     counter.textContent = t('gallery.count', { n: index + 1, total: items.length });
   }
 
@@ -588,13 +316,9 @@ form.addEventListener('submit', async (e) => {
 
 function renderAll() {
   renderServices();
-  renderMatch();
-  annotate();
   renderHours();
 }
 
-initBreathing();
-initProcess();
 initCarousel();
 initCursorGlow();
 

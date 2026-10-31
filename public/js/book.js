@@ -98,12 +98,9 @@ function renderServices() {
           'span',
           {},
           el('strong', {}, pick(s.name)),
-          el(
-            'span',
-            { class: 'service-meta' },
-            el('span', { class: 'chip', html: svg('clock') }, t('common.minutes', { n: s.duration })),
-            s.price == null ? null : el('span', { class: 'chip chip-accent' }, formatPrice(s.price)),
-          ),
+          s.price == null
+            ? null
+            : el('span', { class: 'service-meta' }, el('span', { class: 'chip chip-accent' }, formatPrice(s.price))),
         ),
         el('span', { class: 'check-mark', 'aria-hidden': 'true' }),
       ),
@@ -259,7 +256,6 @@ function renderSummary() {
     ['book.service', s && pick(s.name)],
     ['book.date', state.date && fmtDate(state.date)],
     ['book.time', state.time],
-    ['book.duration', s && t('common.minutes', { n: s.duration })],
     s?.price != null && ['book.price', formatPrice(s.price)],
   ].filter(Boolean);
   $('summary').replaceChildren(
@@ -371,7 +367,6 @@ function renderConfirmation() {
     ['book.service', pick(state.service.name)],
     ['book.date', fmtDate(booking.date)],
     ['book.time', el('bdi', {}, booking.time)],
-    ['book.duration', t('common.minutes', { n: booking.duration })],
   ].filter(Boolean);
   $('confirm-details').replaceChildren(...rows.flatMap(([k, v]) => [el('dt', {}, t(k)), el('dd', {}, v)]));
 }

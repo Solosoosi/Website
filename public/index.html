@@ -29,12 +29,10 @@
       </a>
       <nav class="main-nav" id="main-nav" data-i18n-attr="aria-label:a11y.menu">
         <ul>
-          <li><a href="#bodymap" data-i18n="nav.bodymap"></a></li>
           <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
           <li><a href="#about" data-i18n="nav.about"></a></li>
           <li><a href="#gallery" data-i18n="nav.gallery"></a></li>
           <li><a href="#visit" data-i18n="nav.visit"></a></li>
-          <li><a href="#faq" data-i18n="nav.faq"></a></li>
         </ul>
       </nav>
       <div class="header-actions">
@@ -53,36 +51,23 @@
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
       <div class="container hero-grid">
         <div class="hero-text">
-          <p class="pill-label" data-i18n="hero.kicker"></p>
+          <p class="pill-label" data-biz="street"></p>
           <h1 class="hero-title">
             <span class="line" data-i18n="hero.line1"></span>
             <span class="line grad" data-i18n="hero.line2"></span>
           </h1>
-          <p class="hero-lead" data-i18n="hero.lead"></p>
           <div class="hero-ctas">
             <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
-            <a class="btn btn-soft" href="#bodymap" data-i18n="hero.ctaMap"></a>
+            <a class="btn btn-soft" href="#treatments" data-i18n="hero.ctaMore"></a>
           </div>
           <div class="hero-meta">
             <p class="status" data-status hidden></p>
-            <ul class="hero-facts">
-              <li><span data-icon="check"></span><span data-i18n="hero.point1"></span></li>
-              <li><span data-icon="check"></span><span data-i18n="hero.point2"></span></li>
-            </ul>
           </div>
         </div>
         <div class="hero-visual">
           <div class="hero-halo" aria-hidden="true"></div>
           <div class="blob hero-photo">
             <img src="images/hero-circle.jpg" alt="טיפול בכוסות רוח בקליניקה" width="1000" height="1000" fetchpriority="high">
-          </div>
-          <div class="hero-card glass card-a">
-            <img class="avatar" src="images/avatar.jpg" alt="" width="240" height="240">
-            <span><strong data-biz="name"></strong><span data-i18n="hero.role"></span></span>
-          </div>
-          <div class="hero-card glass card-b">
-            <span class="bubble" data-icon="leaf"></span>
-            <span><strong data-i18n="hero.cardTitle"></strong><span data-i18n="hero.cardText"></span></span>
           </div>
         </div>
       </div>
@@ -93,21 +78,18 @@
       <div class="stream-track">
         <ul class="stream-group">
           <li class="stream-item" data-i18n="techniques.t1"></li>
-          <li class="stream-item" data-i18n="techniques.t2"></li>
           <li class="stream-item" data-i18n="techniques.t3"></li>
           <li class="stream-item" data-i18n="techniques.t4"></li>
           <li class="stream-item" data-i18n="techniques.t5"></li>
         </ul>
         <ul class="stream-group" aria-hidden="true">
           <li class="stream-item" data-i18n="techniques.t1"></li>
-          <li class="stream-item" data-i18n="techniques.t2"></li>
           <li class="stream-item" data-i18n="techniques.t3"></li>
           <li class="stream-item" data-i18n="techniques.t4"></li>
           <li class="stream-item" data-i18n="techniques.t5"></li>
         </ul>
         <ul class="stream-group" aria-hidden="true">
           <li class="stream-item" data-i18n="techniques.t1"></li>
-          <li class="stream-item" data-i18n="techniques.t2"></li>
           <li class="stream-item" data-i18n="techniques.t3"></li>
           <li class="stream-item" data-i18n="techniques.t4"></li>
           <li class="stream-item" data-i18n="techniques.t5"></li>
@@ -115,96 +97,14 @@
       </div>
     </div>
 
-    <!-- Body map -->
-    <section class="section" id="bodymap">
-      <div class="container">
-        <header class="section-head reveal">
-          <div>
-            <p class="kicker" data-i18n="bodymap.kicker"></p>
-            <h2 class="section-title" data-i18n="bodymap.title"></h2>
-          </div>
-          <p class="section-lead" data-i18n="bodymap.lead"></p>
-        </header>
-        <div class="bodymap glass reveal">
-          <figure class="bodymap-figure">
-            <svg viewBox="0 0 420 520" role="img" data-i18n-attr="aria-label:a11y.bodymapFigure">
-              <defs><linearGradient id="body-fill" x1="0" y1="0" x2="0" y2="1"><stop class="body-stop-1" offset="0"/><stop class="body-stop-2" offset="1"/></linearGradient></defs>
-              <path class="fig-body" d="M197,94 L194,122 C178,130 156,128 138,136 C120,143 110,160 111,182 L130,188 C134,220 146,262 152,296 C156,318 146,340 142,362 C138,392 142,428 150,462 L202,466 C204,430 206,404 210,392 C214,404 216,430 218,466 L270,462 C278,428 282,392 278,362 C274,340 264,318 268,296 C274,262 286,220 290,188 L309,182 C310,160 300,143 282,136 C264,128 242,130 226,122 L223,94"/>
-              <ellipse class="fig-body" cx="210" cy="62" rx="29" ry="35"/>
-              <path class="fig-detail" d="M178,150 C160,160 152,186 168,212 M242,150 C260,160 268,186 252,212 M156,412 C172,426 194,428 206,420 M264,412 C248,426 226,428 214,420 M210,350 L210,392"/>
-              <path class="fig-spine" d="M210,126 L210,334"/>
-              <circle class="fig-detail" cx="198" cy="332" r="1.6"/><circle class="fig-detail" cx="222" cy="332" r="1.6"/>
-              <g class="pt" data-zone="stress" data-x="210" data-y="36"><circle class="hit" cx="210" cy="36" r="16" fill="transparent"/><circle class="halo" cx="210" cy="36" r="6"/><circle class="core" cx="210" cy="36" r="6"/></g>
-              <g class="pt" data-zone="face" data-x="236" data-y="60"><circle class="hit" cx="236" cy="60" r="16" fill="transparent"/><circle class="halo" cx="236" cy="60" r="6"/><circle class="core" cx="236" cy="60" r="6"/></g>
-              <g class="pt" data-zone="neck" data-x="186" data-y="132"><circle class="hit" cx="186" cy="132" r="16" fill="transparent"/><circle class="halo" cx="186" cy="132" r="6"/><circle class="core" cx="186" cy="132" r="6"/></g>
-              <g class="pt" data-zone="neck" data-x="234" data-y="132"><circle class="hit" cx="234" cy="132" r="16" fill="transparent"/><circle class="halo" cx="234" cy="132" r="6"/><circle class="core" cx="234" cy="132" r="6"/></g>
-              <g class="pt" data-zone="upper" data-x="190" data-y="184"><circle class="hit" cx="190" cy="184" r="16" fill="transparent"/><circle class="halo" cx="190" cy="184" r="6"/><circle class="core" cx="190" cy="184" r="6"/></g>
-              <g class="pt" data-zone="upper" data-x="230" data-y="184"><circle class="hit" cx="230" cy="184" r="16" fill="transparent"/><circle class="halo" cx="230" cy="184" r="6"/><circle class="core" cx="230" cy="184" r="6"/></g>
-              <g class="pt" data-zone="lower" data-x="194" data-y="300"><circle class="hit" cx="194" cy="300" r="16" fill="transparent"/><circle class="halo" cx="194" cy="300" r="6"/><circle class="core" cx="194" cy="300" r="6"/></g>
-              <g class="pt" data-zone="lower" data-x="226" data-y="300"><circle class="hit" cx="226" cy="300" r="16" fill="transparent"/><circle class="halo" cx="226" cy="300" r="6"/><circle class="core" cx="226" cy="300" r="6"/></g>
-              <g class="pt" data-zone="hips" data-x="168" data-y="372"><circle class="hit" cx="168" cy="372" r="16" fill="transparent"/><circle class="halo" cx="168" cy="372" r="6"/><circle class="core" cx="168" cy="372" r="6"/></g>
-              <g class="pt" data-zone="hips" data-x="252" data-y="372"><circle class="hit" cx="252" cy="372" r="16" fill="transparent"/><circle class="halo" cx="252" cy="372" r="6"/><circle class="core" cx="252" cy="372" r="6"/></g>
-              <g class="pt" data-zone="legs" data-x="174" data-y="440"><circle class="hit" cx="174" cy="440" r="16" fill="transparent"/><circle class="halo" cx="174" cy="440" r="6"/><circle class="core" cx="174" cy="440" r="6"/></g>
-              <g class="pt" data-zone="legs" data-x="246" data-y="440"><circle class="hit" cx="246" cy="440" r="16" fill="transparent"/><circle class="halo" cx="246" cy="440" r="6"/><circle class="core" cx="246" cy="440" r="6"/></g>
-              <g class="annot" aria-hidden="true"></g>
-            </svg>
-          </figure>
-          <div class="bodymap-panel">
-            <div class="zones" role="group" data-i18n-attr="aria-label:bodymap.zonesLabel">
-              <button class="zone" type="button" data-zone="neck" aria-pressed="false" data-i18n="bodymap.zones.neck.name"></button>
-              <button class="zone" type="button" data-zone="upper" aria-pressed="false" data-i18n="bodymap.zones.upper.name"></button>
-              <button class="zone" type="button" data-zone="lower" aria-pressed="false" data-i18n="bodymap.zones.lower.name"></button>
-              <button class="zone" type="button" data-zone="hips" aria-pressed="false" data-i18n="bodymap.zones.hips.name"></button>
-              <button class="zone" type="button" data-zone="legs" aria-pressed="false" data-i18n="bodymap.zones.legs.name"></button>
-              <button class="zone" type="button" data-zone="face" aria-pressed="false" data-i18n="bodymap.zones.face.name"></button>
-              <button class="zone" type="button" data-zone="stress" aria-pressed="false" data-i18n="bodymap.zones.stress.name"></button>
-            </div>
-            <div class="match" id="bodymap-match" aria-live="polite"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- Treatments -->
     <section class="section section-alt" id="treatments">
       <div class="container">
         <header class="section-head reveal">
-          <div>
-            <p class="kicker" data-i18n="treatments.eyebrow"></p>
-            <h2 class="section-title" data-i18n="treatments.title"></h2>
-          </div>
+          <h2 class="section-title" data-i18n="treatments.title"></h2>
           <p class="section-lead" data-i18n="treatments.lead"></p>
         </header>
         <ol class="stack" id="services-list" aria-live="polite"></ol>
-        <p class="addons reveal">
-          <span data-i18n="treatments.addons"></span>
-          <span class="tag" data-i18n="techniques.t3"></span>
-          <span class="tag" data-i18n="techniques.t4"></span>
-          <span class="tag" data-i18n="techniques.t5"></span>
-        </p>
-      </div>
-    </section>
-
-    <!-- Breathing exercise -->
-    <section class="section" id="breathe">
-      <div class="container">
-        <div class="breathe glass reveal" id="breathe-box">
-          <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
-          <div class="breathe-text">
-            <p class="kicker" data-i18n="breathe.kicker"></p>
-            <h2 class="section-title" data-i18n="breathe.title"></h2>
-            <p class="section-lead" data-i18n="breathe.lead"></p>
-            <button class="btn btn-primary" type="button" id="breathe-toggle" aria-controls="breathe-circle"><span data-icon="leaf"></span><span data-i18n="breathe.start"></span></button>
-            <p class="breathe-note" data-i18n="breathe.note"></p>
-          </div>
-          <div class="breathe-stage">
-            <div class="breathe-ring" aria-hidden="true"></div>
-            <div class="breathe-circle" id="breathe-circle">
-              <span class="phase" id="breathe-phase" aria-live="polite" data-i18n="breathe.ready"></span>
-              <span class="count" id="breathe-count" aria-hidden="true"></span>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -216,21 +116,12 @@
             <div class="blob">
               <img src="images/about.jpg" alt="דוד נאמן בקליניקה" width="900" height="1125" loading="lazy">
             </div>
-            <div class="hero-card glass">
-              <span class="bubble" data-icon="sparkle"></span>
-              <span><strong data-i18n="about.cardTitle"></strong><span data-i18n="about.cardText"></span></span>
-            </div>
           </figure>
           <div class="about-text reveal">
-            <p class="kicker" data-i18n="about.eyebrow"></p>
             <h2 class="section-title" data-i18n="about.title"></h2>
             <p data-i18n="about.p1"></p>
             <p data-i18n="about.p2"></p>
-            <dl class="facts">
-              <div class="fact"><dt data-i18n="about.facts.training"></dt><dd data-i18n="about.facts.trainingValue"></dd></div>
-              <div class="fact"><dt data-i18n="about.facts.teacher"></dt><dd data-i18n="about.facts.teacherValue"></dd></div>
-              <div class="fact wide"><dt data-i18n="about.facts.methods"></dt><dd data-i18n="about.facts.methodsValue"></dd></div>
-            </dl>
+            <p data-i18n="about.p3"></p>
           </div>
         </div>
         <figure class="quote reveal">
@@ -240,52 +131,23 @@
       </div>
     </section>
 
-    <!-- Process -->
-    <section class="section section-alt" id="process">
-      <div class="container">
-        <header class="section-head reveal">
-          <div>
-            <p class="kicker" data-i18n="process.eyebrow"></p>
-            <h2 class="section-title" data-i18n="process.title"></h2>
-          </div>
-          <p class="section-lead" data-i18n="process.lead"></p>
-        </header>
-        <div class="process" id="process-flow">
-          <svg class="process-line" aria-hidden="true">
-            <defs><linearGradient id="process-grad" x1="1" y1="0" x2="0" y2="0"><stop class="process-stop-1" offset="0"/><stop class="process-stop-2" offset="1"/></linearGradient></defs>
-            <path class="track" d=""/>
-            <path class="draw" d="" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
-          </svg>
-          <ol class="steps">
-            <li class="step"><span class="step-node">1</span><h3 data-i18n="process.s1t"></h3><p data-i18n="process.s1p"></p></li>
-            <li class="step"><span class="step-node">2</span><h3 data-i18n="process.s2t"></h3><p data-i18n="process.s2p"></p></li>
-            <li class="step"><span class="step-node">3</span><h3 data-i18n="process.s3t"></h3><p data-i18n="process.s3p"></p></li>
-          </ol>
-        </div>
-      </div>
-    </section>
-
     <!-- Gallery -->
     <section class="section" id="gallery">
       <div class="container">
         <header class="section-head reveal">
-          <div>
-            <p class="kicker" data-i18n="gallery.eyebrow"></p>
-            <h2 class="section-title" data-i18n="gallery.title"></h2>
-          </div>
-          <p class="section-lead" data-i18n="gallery.lead"></p>
+          <h2 class="section-title" data-i18n="gallery.title"></h2>
         </header>
       </div>
       <div class="carousel-wrap reveal">
         <div class="carousel" id="carousel" tabindex="0" data-i18n-attr="aria-label:gallery.title">
-          <button class="carousel-item" type="button" data-large="images/large/gal-1.jpg"><img src="images/gal-1.jpg" alt="טיפול בכוסות רוח בקליניקה" width="720" height="900" loading="lazy" draggable="false"><span class="cap" data-i18n="gallery.c1"></span></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-2.jpg"><img src="images/gal-2.jpg" alt="כוסות רוח על הכתפיים" width="720" height="900" loading="lazy" draggable="false"><span class="cap" data-i18n="gallery.c2"></span></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-3.jpg"><img src="images/gal-3.jpg" alt="דיקור יבש לאורך הגב" width="720" height="900" loading="lazy" draggable="false"><span class="cap" data-i18n="gallery.c3"></span></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-4.jpg"><img src="images/gal-4.jpg" alt="טיפול משולב בכוסות רוח לאורך הגב" width="720" height="900" loading="lazy" draggable="false"><span class="cap" data-i18n="gallery.c4"></span></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-5.jpg"><img src="images/gal-5.jpg" alt="דיקור וסימני כוסות רוח בגב" width="720" height="900" loading="lazy" draggable="false"><span class="cap" data-i18n="gallery.c5"></span></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-6.jpg"><img src="images/gal-6.jpg" alt="כוסות רוח בגב התחתון" width="720" height="900" loading="lazy" draggable="false"><span class="cap" data-i18n="gallery.c6"></span></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-7.jpg"><img src="images/gal-7.jpg" alt="דיקור לאורך עמוד השדרה" width="720" height="900" loading="lazy" draggable="false"><span class="cap" data-i18n="gallery.c7"></span></button>
-          <button class="carousel-item" type="button" data-large="images/large/gal-8.jpg"><img src="images/gal-8.jpg" alt="דיקור בגב העליון" width="720" height="900" loading="lazy" draggable="false"><span class="cap" data-i18n="gallery.c8"></span></button>
+          <button class="carousel-item" type="button" data-large="images/large/gal-1.jpg"><img src="images/gal-1.jpg" alt="טיפול בכוסות רוח בקליניקה" width="720" height="900" loading="lazy" draggable="false"></button>
+          <button class="carousel-item" type="button" data-large="images/large/gal-2.jpg"><img src="images/gal-2.jpg" alt="כוסות רוח על הכתפיים" width="720" height="900" loading="lazy" draggable="false"></button>
+          <button class="carousel-item" type="button" data-large="images/large/gal-3.jpg"><img src="images/gal-3.jpg" alt="דיקור יבש לאורך הגב" width="720" height="900" loading="lazy" draggable="false"></button>
+          <button class="carousel-item" type="button" data-large="images/large/gal-4.jpg"><img src="images/gal-4.jpg" alt="טיפול משולב בכוסות רוח לאורך הגב" width="720" height="900" loading="lazy" draggable="false"></button>
+          <button class="carousel-item" type="button" data-large="images/large/gal-5.jpg"><img src="images/gal-5.jpg" alt="דיקור וסימני כוסות רוח בגב" width="720" height="900" loading="lazy" draggable="false"></button>
+          <button class="carousel-item" type="button" data-large="images/large/gal-6.jpg"><img src="images/gal-6.jpg" alt="כוסות רוח בגב התחתון" width="720" height="900" loading="lazy" draggable="false"></button>
+          <button class="carousel-item" type="button" data-large="images/large/gal-7.jpg"><img src="images/gal-7.jpg" alt="דיקור לאורך עמוד השדרה" width="720" height="900" loading="lazy" draggable="false"></button>
+          <button class="carousel-item" type="button" data-large="images/large/gal-8.jpg"><img src="images/gal-8.jpg" alt="דיקור בגב העליון" width="720" height="900" loading="lazy" draggable="false"></button>
         </div>
         <div class="container carousel-controls">
           <button class="icon-btn" type="button" id="carousel-prev" data-i18n-attr="aria-label:gallery.prev"><span class="flip-rtl" data-icon="chevronPrev"></span></button>
@@ -295,26 +157,11 @@
       </div>
     </section>
 
-    <!-- Testimonials (placeholders – replace with real client quotes) -->
-    <section class="section" id="testimonials" hidden>
-      <div class="container">
-        <header class="section-head">
-          <div>
-            <p class="kicker" data-i18n="testimonials.eyebrow"></p>
-            <h2 class="section-title" data-i18n="testimonials.title"></h2>
-          </div>
-        </header>
-      </div>
-    </section>
-
     <!-- Visit -->
     <section class="section section-alt" id="visit">
       <div class="container">
         <header class="section-head reveal">
-          <div>
-            <p class="kicker" data-i18n="visit.kicker"></p>
-            <h2 class="section-title" data-i18n="visit.title"></h2>
-          </div>
+          <h2 class="section-title" data-i18n="visit.title"></h2>
         </header>
         <div class="visit">
           <div class="visit-card glass reveal">
@@ -331,34 +178,17 @@
             <table class="hours-table">
               <tbody id="hours-body"></tbody>
             </table>
+            <p class="visit-note" data-i18n="visit.booking"></p>
             <p class="status" data-status hidden></p>
           </div>
           <div class="visit-card glass reveal delay-2">
             <h3 class="visit-h"><span data-icon="leaf"></span><span data-i18n="visit.prep"></span></h3>
             <ul class="prep">
-              <li><span class="prep-icon" data-icon="clock"></span><span><strong data-i18n="visit.prep1t"></strong><span data-i18n="visit.prep1"></span></span></li>
-              <li><span class="prep-icon" data-icon="shirt"></span><span><strong data-i18n="visit.prep2t"></strong><span data-i18n="visit.prep2"></span></span></li>
-              <li><span class="prep-icon" data-icon="parking"></span><span><strong data-i18n="visit.prep3t"></strong><span data-i18n="visit.prep3"></span></span></li>
-              <li><span class="prep-icon" data-icon="calendarX"></span><span><strong data-i18n="visit.prep4t"></strong><span data-i18n="visit.prep4"></span></span></li>
+              <li><span class="prep-icon" data-icon="clock"></span><span data-i18n="visit.prep1"></span></li>
+              <li><span class="prep-icon" data-icon="shirt"></span><span data-i18n="visit.prep2"></span></li>
+              <li><span class="prep-icon" data-icon="calendarX"></span><span data-i18n="visit.prep3"></span></li>
             </ul>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="section" id="faq">
-      <div class="container faq-wrap">
-        <header class="reveal">
-          <p class="kicker" data-i18n="faq.eyebrow"></p>
-          <h2 class="section-title" data-i18n="faq.title"></h2>
-        </header>
-        <div class="faq reveal">
-          <details><summary data-i18n="faq.q1"></summary><p data-i18n="faq.a1"></p></details>
-          <details><summary data-i18n="faq.q2"></summary><p data-i18n="faq.a2"></p></details>
-          <details><summary data-i18n="faq.q3"></summary><p data-i18n="faq.a3"></p></details>
-          <details><summary data-i18n="faq.q4"></summary><p data-i18n="faq.a4"></p></details>
-          <details><summary data-i18n="faq.q5"></summary><p data-i18n="faq.a5"></p></details>
         </div>
       </div>
     </section>
@@ -369,9 +199,7 @@
         <div class="final-card reveal">
           <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
           <div>
-            <p class="kicker" data-i18n="contact.eyebrow"></p>
-            <h2 class="final-title" data-i18n="cta.title"></h2>
-            <p class="final-lead" data-i18n="cta.text"></p>
+            <h2 class="final-title" data-i18n="contact.title"></h2>
             <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="cta.button"></span><span class="flip-rtl" data-icon="arrow"></span></a>
             <ul class="final-links">
               <li data-biz-item><span class="bubble" data-icon="phone"></span><a data-biz-href="phone"><bdi data-biz="phone"></bdi></a></li>
@@ -381,8 +209,6 @@
             </ul>
           </div>
           <div class="contact-card glass">
-            <h3 data-i18n="contact.title"></h3>
-            <p class="panel-sub" data-i18n="contact.lead"></p>
             <form class="form" id="contact-form" novalidate>
               <div class="field">
                 <label for="c-name" data-i18n="contact.formName"></label>
@@ -422,7 +248,7 @@
           <span class="brand-orb" aria-hidden="true"></span>
           <div>
             <p class="footer-name" data-biz="name"></p>
-            <p class="footer-tag" data-i18n="footer.about"></p>
+            <p class="footer-tag" data-biz="tagline"></p>
           </div>
         </div>
         <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="nav.book"></span><span class="flip-rtl" data-icon="arrow"></span></a>
@@ -431,10 +257,10 @@
         <div>
           <h4 data-i18n="footer.links"></h4>
           <ul>
-            <li><a href="#bodymap" data-i18n="nav.bodymap"></a></li>
             <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
             <li><a href="#about" data-i18n="nav.about"></a></li>
-            <li><a href="#faq" data-i18n="nav.faq"></a></li>
+            <li><a href="#gallery" data-i18n="nav.gallery"></a></li>
+            <li><a href="#visit" data-i18n="nav.visit"></a></li>
           </ul>
         </div>
         <div>

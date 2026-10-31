@@ -1,6 +1,8 @@
 # David Neeman – acupuncture clinic website
 
-The website of an acupuncture clinic in Tel Aviv, in Hebrew. Clients see the treatments, find the one that fits them, and send a booking request.
+The website of an acupuncture clinic in Tel Aviv, in Hebrew. Clients see the treatments and send a booking request.
+
+All the text on the site is the practitioner's own wording, lightly proofread. Add new text only when it comes from him.
 
 The design is soft and calm:
 - **Look:** a light palette of mint, sky and a touch of blush with slowly drifting light, frosted-glass cards, rounded shapes, and photos in gently morphing organic frames.
@@ -9,16 +11,12 @@ The design is soft and calm:
 
 - **Pages:** home and booking (`#book` on GitHub Pages, `/book` on the server).
 - **Home page sections, in order:**
-  - opening section: an "open now / opens at…" status from the opening hours
+  - opening section: name, address and an "open now / opens at…" status from the opening hours
   - a slow stream of the techniques he uses
-  - interactive **body map** ("מה כואב לך?"): pick an area, see the matching treatment, book it
-  - treatments as cards that stack as you scroll; the "43 muscles" number counts up
-  - **breathing exercise** ("בואו ננשום רגע"): a guided 4-4-6 breathing circle
-  - about
-  - the process ("כמו באימון"): a line that draws itself through the steps as you scroll
+  - treatments as cards that stack as you scroll
+  - about, with his quote
   - photo carousel (swipe, drag or arrows) with a full-screen viewer
-  - visit: address, Waze / Google Maps, an hours table with today marked, how to prepare
-  - FAQ with answers that open smoothly
+  - address and hours: Waze / Google Maps, an hours table with today marked, and what to know before a treatment
   - contact
 - **Accessibility menu** (the person icon in the header): bigger text, high contrast, underlined links, stop animations, readable font. Also an accessibility statement.
 - **Phones:** a bottom bar with "book", WhatsApp and call.
@@ -51,17 +49,14 @@ Requires Node.js 22.13 or newer.
 | Business name, tagline, phone, WhatsApp, email, address, Instagram/Facebook | `config/site.json` → `business` |
 | Treatments: name, description, length in minutes, price (0 = free) | `config/site.json` → `services` |
 | Default opening hours (later edited in `/admin`) | `config/site.json` → `defaultSchedule` |
-| Treatment photo, keywords and a highlighted number (e.g. "43 muscles") | `config/site.json` → `services` → `image`, `tags`, `stat` |
+| Treatment photo | `config/site.json` → `services` → `image` |
 | Site address (used for link previews) | `config/site.json` → `siteUrl` |
-| All page text: about, FAQ, body map areas, accessibility statement, buttons… | `public/js/i18n.js` |
-| Which body map area leads to which treatment | `public/js/home.js` → `ZONE_SERVICE` |
+| All page text: about, address and hours, accessibility statement, buttons… | `public/js/i18n.js` |
 | Colors and fonts | top of `public/css/styles.css` (`:root` for light, `[data-theme='dark']` for dark) |
 
 **Photos:** the originals are in `photos/`. The web versions in `public/images/` are cropped and compressed copies (no location data). To use a different photo, replace the file in `public/images/` with one of the same name and shape.
 
 **Accessibility statement:** the text in `public/js/i18n.js` → `statement` is a starting point. Have the business review it. Add details about the clinic's physical accessibility (entrance, elevator, parking) if it applies.
-
-**Testimonials:** the section is hidden until there are real client quotes (with their permission).
 
 A missing phone, WhatsApp, email, Instagram or Facebook value hides that link automatically.
 

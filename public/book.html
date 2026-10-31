@@ -29,12 +29,10 @@
       </a>
       <nav class="main-nav" id="main-nav" data-i18n-attr="aria-label:a11y.menu">
         <ul>
-          <li><a href="/#bodymap" data-i18n="nav.bodymap"></a></li>
           <li><a href="/#treatments" data-i18n="nav.treatments"></a></li>
           <li><a href="/#about" data-i18n="nav.about"></a></li>
           <li><a href="/#gallery" data-i18n="nav.gallery"></a></li>
           <li><a href="/#visit" data-i18n="nav.visit"></a></li>
-          <li><a href="/#faq" data-i18n="nav.faq"></a></li>
         </ul>
       </nav>
       <div class="header-actions">
@@ -65,7 +63,6 @@
           <!-- Step 1: service -->
           <section id="step-1" aria-labelledby="step-1-title">
             <h2 id="step-1-title" tabindex="-1" data-i18n="book.chooseService"></h2>
-            <p class="panel-sub" data-i18n="book.chooseServiceSub"></p>
             <div class="service-options" id="service-options">
               <p class="panel-sub" data-i18n="common.loading"></p>
             </div>
@@ -109,7 +106,6 @@
           <!-- Step 3: details -->
           <section id="step-3" aria-labelledby="step-3-title" hidden>
             <h2 id="step-3-title" tabindex="-1" data-i18n="book.details"></h2>
-            <p class="panel-sub" data-i18n="book.detailsSub"></p>
             <form class="form" id="details-form" novalidate>
               <div class="field">
                 <label for="b-name" data-i18n="contact.formName"></label>
@@ -162,9 +158,10 @@
         <p class="panel-sub" id="confirm-email" data-i18n="book.successEmail" hidden></p>
         <ul class="prep">
           <li class="prep-head"><p class="prep-title" data-i18n="book.prepTitle"></p></li>
-          <li><span class="prep-icon" data-icon="clock"></span><span><strong data-i18n="visit.prep1t"></strong><span data-i18n="visit.prep1"></span></span></li>
-          <li><span class="prep-icon" data-icon="shirt"></span><span><strong data-i18n="visit.prep2t"></strong><span data-i18n="visit.prep2"></span></span></li>
-          <li><span class="prep-icon" data-icon="parking"></span><span><strong data-i18n="visit.prep3t"></strong><span data-i18n="visit.prep3"></span></span></li>
+          <li><span class="prep-icon" data-icon="clock"></span><span data-i18n="visit.prep1"></span></li>
+          <li><span class="prep-icon" data-icon="shirt"></span><span data-i18n="visit.prep2"></span></li>
+          <li><span class="prep-icon" data-icon="parking"></span><span data-i18n="visit.parking"></span></li>
+          <li><span class="prep-icon" data-icon="calendarX"></span><span data-i18n="visit.prep3"></span></li>
         </ul>
         <div class="hero-ctas center">
           <a class="btn btn-primary" id="confirm-whatsapp" target="_blank" rel="noopener" hidden><span data-icon="whatsapp"></span><span data-i18n="book.waButton"></span></a>
