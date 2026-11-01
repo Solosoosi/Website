@@ -2863,8 +2863,8 @@ html.a11y-contrast .words .w {
 }
 
 /* ==========================================================================
-   Design options: three versions, set with data-look on <html> – ז sunset
-   (2g, the default), ט night (2i) and י botanical (2j). They share the
+   Design options: two versions, set with data-look on <html> – ז sunset
+   (2g, the default) and י botanical (2j). They share the
    "natural" base right below (the [data-look^='2'] rules); each version then
    adds its own colors, fonts, photo shapes and motion further down.
    Open the site with ?options to compare them.
@@ -3717,62 +3717,13 @@ html.a11y-contrast .words .w {
 
 /* ---------- Pieces that only some versions show ---------- */
 
-.page-deco,
-.hover-preview {
+.page-deco {
   display: none;
 }
 
 /* A word never breaks between its letters (they may sit in their own spans) */
 .hero-title .line > span {
   white-space: nowrap;
-}
-
-/* Treatment photos can lean toward the mouse (versions set --tilt: 1) */
-.stack-img {
-  --rx: 0deg;
-  --ry: 0deg;
-}
-
-/* The photo that follows the mouse over the opening list (versions switch it on) */
-.hover-preview {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 4;
-  width: clamp(190px, 17vw, 250px);
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  background: var(--photo-bg);
-  box-shadow: var(--shadow-lift);
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -112%) rotate(-5deg) scale(0.8);
-  transition: opacity 0.35s var(--ease), transform 0.55s var(--ease);
-}
-
-.hover-preview.is-on {
-  opacity: 1;
-  transform: translate(-50%, -112%) rotate(-2deg) scale(1);
-}
-
-.hover-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  [data-look='2i'] .hover-preview {
-    display: block;
-  }
-}
-
-/* Treatment photos lean toward the mouse (ט) */
-[data-look='2i'] .stack-img {
-  --tilt: 1;
-  transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry));
-  transition: clip-path 1.3s var(--ease) var(--card-d, 0s), transform 0.6s var(--ease);
 }
 
 /* ==========================================================================
@@ -4176,292 +4127,6 @@ html.a11y-contrast .words .w {
 }
 
 /* ==========================================================================
-   Version ט: night – warm dark, a candle glow behind the photo, gold lines,
-   and the headline appears letter by letter
-   ========================================================================== */
-
-:root[data-look='2i'] {
-  --bg: #f3ebdf;
-  --bg-2: #eadfcf;
-  --surface: #fbf6ee;
-  --glass: #fbf6ee;
-  --glass-strong: #fbf6ee;
-  --glass-border: #e0d3c0;
-  --ink: #22190f;
-  --ink-2: #44372a;
-  --muted: #6c5e4d;
-  --line: rgb(34 25 15 / 0.13);
-  --line-strong: rgb(34 25 15 / 0.28);
-  --accent: #8a5a1c;
-  --accent-2: #b98a45;
-  --accent-ink: #714814;
-  --on-accent: #ffffff;
-  --accent-soft: #efdfc6;
-  --spark: #8a5a1c;
-  --curtain: #ecdcc4;
-  --glow-1: #f1d9ad;
-  --glow-2: #ece1cf;
-  --glow-3: #f0d5bd;
-  --glow-4: #efe1c7;
-  --open: #4f7d3c;
-  --photo-bg: #e8dcca;
-  --shadow-soft: 0 10px 30px -18px rgb(70 45 15 / 0.25);
-  --shadow-lift: 0 26px 60px -30px rgb(70 45 15 / 0.35);
-  --header-bg: rgb(243 235 223 / 0.9);
-  --font-display: 'Gveret Levin', 'Rubik', sans-serif;
-  --radius-sm: 2px;
-  --radius: 4px;
-  --radius-lg: 6px;
-  --radius-xl: 8px;
-}
-
-:root[data-look='2i'][data-theme='dark'] {
-  --bg: #13100d;
-  --bg-2: #19140f;
-  --surface: #201914;
-  --glass: #201914;
-  --glass-strong: #201914;
-  --glass-border: #352a20;
-  --ink: #f4e9da;
-  --ink-2: #dacbb6;
-  --muted: #a8977e;
-  --line: rgb(244 233 218 / 0.12);
-  --line-strong: rgb(244 233 218 / 0.26);
-  --accent: #e2a65f;
-  --accent-2: #f1c483;
-  --accent-ink: #ecb672;
-  --on-accent: #1d1206;
-  --accent-soft: #32261a;
-  --spark: #e2a65f;
-  --curtain: #2a2016;
-  --glow-1: #5a3a17;
-  --glow-2: #2a1f17;
-  --glow-3: #4a2a18;
-  --glow-4: #3a2c18;
-  --open: #9bd08f;
-  --photo-bg: #261e17;
-  --shadow-soft: 0 12px 34px -18px rgb(0 0 0 / 0.7);
-  --shadow-lift: 0 30px 70px -30px rgb(0 0 0 / 0.8);
-  --header-bg: rgb(19 16 13 / 0.86);
-}
-
-/* A candle glow behind the photo that flickers softly */
-[data-look='2i'] .hero::before {
-  top: 2%;
-  inset-inline-end: -8vw;
-  width: min(80vw, 980px);
-  background: radial-gradient(circle, color-mix(in srgb, var(--glow-1) 92%, transparent) 0%, transparent 62%);
-  animation: candle 5.5s ease-in-out infinite;
-}
-
-[data-look='2i'] .hero-title,
-[data-look='2i'] .section-title,
-[data-look='2i'] .stack-name {
-  font-weight: 400;
-}
-
-[data-look='2i'] .hero-title .line {
-  font-size: clamp(3rem, 8vw, 6.6rem);
-}
-
-/* The handwriting reaches further out of its box than a print font, and the
-   gold word glows: more room around the headline's slots and the section
-   titles, so no stroke is cut off (the text itself stays where it was) */
-[data-look='2i'] .hero-title .line {
-  padding: 0.3em 0.3em 0.36em;
-  margin: -0.26em -0.22em -0.32em;
-}
-
-[data-look='2i'] .section-title {
-  clip-path: inset(-45% -12% -45% -12%);
-}
-
-[data-look='2i'] .hero-title .line > span,
-[data-look='2i'] .hero-title .line > .grad {
-  animation: none;
-}
-
-[data-look='2i'] .hero-title .line > .grad {
-  text-shadow: 0 0 28px color-mix(in srgb, var(--accent) 35%, transparent);
-}
-
-[data-look='2i'] .hero-title .ch {
-  display: inline-block;
-  animation: ch-glow 1.15s var(--ease) calc(var(--intro) + 0.15s + var(--ci, 0) * 0.07s) both;
-}
-
-[data-look='2i'] .hero-room {
-  outline: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
-  outline-offset: 12px;
-  box-shadow: 0 0 90px -20px color-mix(in srgb, var(--accent) 45%, transparent);
-}
-
-[data-look='2i'] .hero-treatments img {
-  border-radius: 4px;
-}
-
-[data-look='2i'] .stack-num,
-[data-look='2i'] .sec-num {
-  color: var(--accent);
-}
-
-[data-look='2i'] .mosaic,
-[data-look='2i'] .mosaic-col {
-  gap: 10px;
-}
-
-[data-look='2i'] .mosaic-item {
-  outline: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  outline-offset: -1px;
-}
-
-@media (hover: hover) {
-  [data-look='2i'] .mosaic-item:hover img {
-    filter: brightness(1.08);
-  }
-}
-
-/* Embers drift up slowly in the dark around the photo, as if from the candle */
-[data-look='2i'] .hero .aurora {
-  display: block;
-  --ember: color-mix(in srgb, var(--accent-2) 80%, #fff);
-}
-
-[data-look='2i'] .hero .aurora span,
-[data-look='2i'] .hero .aurora::before,
-[data-look='2i'] .hero .aurora::after {
-  content: '';
-  position: absolute;
-  top: auto;
-  bottom: 12%;
-  inset-inline: auto 5%;
-  width: 3px;
-  height: 3px;
-  aspect-ratio: auto;
-  border-radius: 50%;
-  background: var(--ember);
-  box-shadow: 0 0 8px 2px color-mix(in srgb, var(--accent-2) 65%, transparent);
-  opacity: 0;
-  animation: ember 11s linear infinite;
-  animation-delay: -1s;
-}
-
-[data-look='2i'] .hero .aurora span:nth-child(2) {
-  bottom: 6%;
-  inset-inline-end: 46%;
-  width: 2.5px;
-  height: 2.5px;
-  animation-duration: 14s;
-  animation-delay: -5s;
-}
-
-[data-look='2i'] .hero .aurora span:nth-child(3) {
-  bottom: 36%;
-  inset-inline-end: 2%;
-  width: 2px;
-  height: 2px;
-  animation-duration: 12s;
-  animation-delay: -8s;
-}
-
-[data-look='2i'] .hero .aurora span:nth-child(4) {
-  bottom: 26%;
-  inset-inline-end: 49%;
-  animation-duration: 16s;
-  animation-delay: -3s;
-}
-
-[data-look='2i'] .hero .aurora::before {
-  bottom: 2%;
-  inset-inline-end: 24%;
-  width: 2.5px;
-  height: 2.5px;
-  animation-duration: 13s;
-  animation-delay: -10s;
-}
-
-[data-look='2i'] .hero .aurora::after {
-  bottom: 44%;
-  inset-inline-end: 40%;
-  width: 2px;
-  height: 2px;
-  animation-duration: 15s;
-  animation-delay: -6.5s;
-}
-
-@keyframes ember {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 0, 0);
-  }
-
-  14% {
-    opacity: 0.85;
-  }
-
-  50% {
-    transform: translate3d(-16px, -22vh, 0);
-  }
-
-  75% {
-    opacity: 0.5;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate3d(20px, -44vh, 0);
-  }
-}
-
-/* On computers a warm candle light follows the mouse across the opening screen */
-@media (hover: hover) and (pointer: fine) {
-  [data-look='2i'] .hero::after {
-    display: block;
-    background: radial-gradient(420px circle at var(--mx, 72%) var(--my, 42%), color-mix(in srgb, var(--glow-1) 55%, transparent), transparent 70%);
-  }
-}
-
-/* A thin gold line inside the treatment photos and the portrait, like a mount */
-[data-look='2i'] .stack-img::after,
-[data-look='2i'] .about-photo .blob::before {
-  content: '';
-  position: absolute;
-  inset: 12px;
-  z-index: 1;
-  border: 1px solid rgb(255 232 194 / 0.6);
-  border-radius: 2px;
-  pointer-events: none;
-}
-
-/* The logo's light flickers softly, like a candle */
-[data-look='2i'] .brand-orb::after {
-  animation: flame 3.6s ease-in-out infinite;
-}
-
-@keyframes flame {
-  0%,
-  100% {
-    scale: 1;
-    box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 50%, transparent);
-  }
-
-  28% {
-    scale: 1.07;
-    box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 80%, transparent);
-  }
-
-  52% {
-    scale: 0.96;
-    box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 40%, transparent);
-  }
-
-  76% {
-    scale: 1.03;
-    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 65%, transparent);
-  }
-}
-
-/* ==========================================================================
    Version י: botanical – deep leaf green, big leaves that sway, each photo
    in its own botanical frame, and a headline whose letters spring into place
    ========================================================================== */
@@ -4844,14 +4509,6 @@ html.a11y-contrast .words .w {
 
 /* ---------- Keyframes for the new versions ---------- */
 
-@keyframes ch-glow {
-  from {
-    opacity: 0;
-    transform: translateY(0.3em);
-    filter: blur(10px);
-  }
-}
-
 @keyframes ch-bounce {
   from {
     opacity: 0;
@@ -4880,34 +4537,6 @@ html.a11y-contrast .words .w {
   to {
     opacity: 0.8;
     transform: scale(1.12);
-  }
-}
-
-@keyframes candle {
-  0%,
-  100% {
-    opacity: 0.86;
-    transform: scale(1);
-  }
-
-  18% {
-    opacity: 1;
-    transform: scale(1.03) translate(0.4%, -0.3%);
-  }
-
-  34% {
-    opacity: 0.78;
-    transform: scale(0.98);
-  }
-
-  52% {
-    opacity: 0.96;
-    transform: scale(1.02) translate(-0.3%, 0.2%);
-  }
-
-  74% {
-    opacity: 0.82;
-    transform: scale(1);
   }
 }
 

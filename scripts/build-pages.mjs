@@ -299,7 +299,7 @@ const themeInit = `(function () {
     if (/[?&]options(=|&|$)/.test(location.search)) {
       r.classList.add('show-looks');
       var lk = localStorage.getItem('look');
-      if (/^2[gij]$/.test(lk || '')) r.setAttribute('data-look', lk);
+      if (/^2[gj]$/.test(lk || '')) r.setAttribute('data-look', lk);
     }
   } catch (e) {}
   if (location.hash !== '#book') r.classList.add('bar-wait');

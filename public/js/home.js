@@ -307,34 +307,6 @@ function initLightbox(items) {
 }
 
 // ---------------------------------------------------------------------------
-// Soft light that follows the mouse across the hero
-// ---------------------------------------------------------------------------
-
-function initCursorGlow() {
-  const hero = document.querySelector('.hero');
-  if (!hero || !window.matchMedia('(pointer: fine)').matches) return;
-  let tx = 50;
-  let ty = 40;
-  let x = 50;
-  let y = 40;
-  let frame = null;
-  const loop = () => {
-    x += (tx - x) * 0.1;
-    y += (ty - y) * 0.1;
-    hero.style.setProperty('--mx', `${x}%`);
-    hero.style.setProperty('--my', `${y}%`);
-    frame = Math.abs(tx - x) + Math.abs(ty - y) > 0.05 ? requestAnimationFrame(loop) : null;
-  };
-  hero.addEventListener('pointermove', (e) => {
-    if (reducedMotion()) return;
-    const r = hero.getBoundingClientRect();
-    tx = ((e.clientX - r.left) / r.width) * 100;
-    ty = ((e.clientY - r.top) / r.height) * 100;
-    frame ??= requestAnimationFrame(loop);
-  });
-}
-
-// ---------------------------------------------------------------------------
 // Opening hours table
 // ---------------------------------------------------------------------------
 
@@ -485,73 +457,6 @@ function splitHeadline() {
   new MutationObserver(split).observe(title, { childList: true, subtree: true, characterData: true });
 }
 
-// Computers: pointing at a treatment in the opening list shows its photo beside the
-// mouse (only versions that style .hover-preview show it).
-function initHoverPreview() {
-  const list = $('hero-treatments');
-  const hero = document.querySelector('.hero');
-  if (!list || !hero || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  // The card is up to 250px wide in a 4:5 frame, so the square photo fills about 320px
-  const photo = el('img', { alt: '', width: 700, height: 700, sizes: '320px' });
-  const card = el('div', { class: 'hover-preview', 'aria-hidden': 'true' }, photo);
-  hero.append(card);
-  let x = 0;
-  let y = 0;
-  let tx = 0;
-  let ty = 0;
-  let frame = null;
-  const loop = () => {
-    x += (tx - x) * 0.16;
-    y += (ty - y) * 0.16;
-    card.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
-    frame = Math.abs(tx - x) + Math.abs(ty - y) > 0.4 ? requestAnimationFrame(loop) : null;
-  };
-  const aim = (e) => {
-    const r = hero.getBoundingClientRect();
-    tx = e.clientX - r.left;
-    ty = e.clientY - r.top;
-  };
-  list.addEventListener('pointerover', (e) => {
-    const link = e.target.closest('a');
-    const service = link && config?.services.find((s) => link.getAttribute('href') === `#svc-${s.id}`);
-    if (!service?.image || reducedMotion()) return;
-    photo.srcset = `${service.image} 700w, ${sized(service.image, 1200)} 1200w`;
-    photo.src = service.image;
-    if (!card.classList.contains('is-on')) {
-      aim(e);
-      x = tx;
-      y = ty;
-      card.style.translate = `${x}px ${y}px`;
-    }
-    card.classList.add('is-on');
-  });
-  list.addEventListener('pointermove', (e) => {
-    aim(e);
-    frame ??= requestAnimationFrame(loop);
-  });
-  list.addEventListener('pointerleave', () => card.classList.remove('is-on'));
-}
-
-// Computers: in versions that set --tilt: 1, a treatment photo leans toward the mouse.
-function initTilt() {
-  const list = $('services-list');
-  if (!list || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  list.addEventListener('pointermove', (e) => {
-    const box = e.target.closest('.stack-img');
-    if (!box || reducedMotion() || getComputedStyle(box).getPropertyValue('--tilt').trim() !== '1') return;
-    const r = box.getBoundingClientRect();
-    box.style.setProperty('--ry', `${(((e.clientX - r.left) / r.width - 0.5) * 7).toFixed(2)}deg`);
-    box.style.setProperty('--rx', `${((0.5 - (e.clientY - r.top) / r.height) * 7).toFixed(2)}deg`);
-  });
-  list.addEventListener('pointerout', (e) => {
-    const box = e.target.closest('.stack-img');
-    if (box && !box.contains(e.relatedTarget)) {
-      box.style.setProperty('--rx', '0deg');
-      box.style.setProperty('--ry', '0deg');
-    }
-  });
-}
-
 // Phones: the bottom bar (book · WhatsApp · call) waits until the opening
 // screen's own booking button has scrolled away, so the two never show at once.
 function initActionBar() {
@@ -667,13 +572,10 @@ const galleryItems = [...document.querySelectorAll('.mosaic-item')];
 if (galleryItems.length) initLightbox(galleryItems);
 renderWords();
 initScrollFx();
-initCursorGlow();
 initActionBar();
 initStripProgress();
 initClinicVideo();
 splitHeadline();
-initHoverPreview();
-initTilt();
 
 loadConfig()
   .then((cfg) => {

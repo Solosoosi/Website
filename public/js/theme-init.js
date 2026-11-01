@@ -17,13 +17,13 @@
     });
   } catch (e) {}
   // The design version (ז by default). ?options shows a switcher for comparing
-  // the three versions (and remembers the pick).
+  // the two versions (and remembers the pick).
   root.setAttribute('data-look', '2g');
   try {
     if (/[?&]options(=|&|$)/.test(location.search)) {
       root.classList.add('show-looks');
       var look = localStorage.getItem('look');
-      if (/^2[gij]$/.test(look || '')) root.setAttribute('data-look', look);
+      if (/^2[gj]$/.test(look || '')) root.setAttribute('data-look', look);
     }
   } catch (e) {}
   // Phones: on the home page the bottom bar waits until the opening button scrolls away.

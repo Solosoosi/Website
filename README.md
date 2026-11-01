@@ -4,9 +4,9 @@ The website of an acupuncture clinic in Tel Aviv, in Hebrew. Clients see the tre
 
 All the text on the site is the practitioner's own wording, lightly proofread. Add new text only when it comes from him.
 
-The design is warm and natural, in three versions (see **Design options** below):
+The design is warm and natural, in two versions (see **Design options** below):
 - **Look:** warm paper colors, soft headings, thin lines, and a photo of the empty treatment room on the opening screen. Light and dark themes.
-- **Fonts:** soft and cozy. Each version has its own heading font (Varela Round, Gveret Levin handwriting or Fredoka), with Varela Round or Rubik for the text. In every version his quote and his name under it are in handwriting (Gveret Levin), like a note from him.
+- **Fonts:** soft and cozy. Each version has its own heading font (Varela Round or Fredoka), with Varela Round or Rubik for the text. In every version his quote and his name under it are in handwriting (Gveret Levin), like a note from him.
 - **Motion:**
   - a short intro (once per visit); then the header slides in, the headline and the treatment list come in, and the room photo rises
   - section titles rise out of a slot and the short line by their number draws in
@@ -28,9 +28,8 @@ The design is warm and natural, in three versions (see **Design options** below)
   - about, with his quote beside a short silent video of a treatment (it plays only while on screen, never with "reduce motion", "stop animations" or data saver on, and a button pauses it)
   - address and hours: Waze / Google Maps, an hours table with today marked, and what to know before a treatment
   - contact
-- **Design options:** three versions share the same content (`data-look` on `<html>`). Each has its own colors, fonts, photo shapes and motion, in light and dark.
+- **Design options:** two versions share the same content (`data-look` on `<html>`). Each has its own colors, fonts, photo shapes and motion, in light and dark.
   - **ז – sunset** (`2g`, the default): golden-hour colors. The room photo rises in a circle like the sun, with soft rays of light turning slowly around it; the sky behind the page turns from dawn to dusk as you scroll, and near the bottom a few stars come out. The treatments as soft pills on the opening screen and as three warm cards below. Font: Varela Round (soft and round) for the headings and the text.
-  - **ט – night** (`2i`, opens in the dark theme): warm dark with gold lines. A candle glow flickers behind the photo and a few embers drift up around it; on computers a warm light follows the mouse over the opening screen. The headline appears letter by letter; the treatment photos and the portrait have a thin gold line inside them, like a mount; the logo's light flickers like a candle. On computers, pointing at a treatment in the opening list shows its photo beside the mouse, and the treatment photos lean toward the mouse. Fonts: Gveret Levin (handwriting) for the headings, Rubik for the text.
   - **י – botanical** (`2j`): deep leaf green. Two big leaves sway at the edges of the opening screen and a few small leaves drift down across it; the headline's letters spring into place; the logo is a leaf and a small leaf sits beside each section number. Each photo has its own botanical frame: the room photo a leaf with a thin outline that opens out around it, the treatments a leaf, a pebble that slowly changes shape and a petal, the gallery six shapes mixed (leaf, arch, pebble, petal, seed – on computers a frame softly changes shape under the mouse), the about photo a seed with a soft green pebble behind it, and the video an arch in a light mat like a framed picture. Fonts: Fredoka (round, semibold) for the headings, Rubik for the text.
 
   Open the site with `?options` at the end of the address (for example `https://solosoosi.github.io/Website/?options`) to get a switcher (a bar at the bottom on computers, a round button on phones); the pick is remembered on that device. Normal visitors never see it and get version ז.

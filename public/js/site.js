@@ -631,7 +631,6 @@ function initMagneticButtons() {
 // [id, letter, name, theme it opens in]
 const LOOKS = [
   ['2g', 'ז', 'שקיעה'],
-  ['2i', 'ט', 'לילה', 'dark'],
   ['2j', 'י', 'בוטני'],
 ];
 
