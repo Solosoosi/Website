@@ -157,9 +157,17 @@ const router = `
   const home = document.getElementById('page-home');
   const bookPage = document.getElementById('page-book');
   let pendingService = null;
+  // Where the home page was scrolled to when the booking page opened, so the
+  // browser's back button returns to the same spot (not to the top).
+  let homeY = 0;
+  let fromLink = false;
   function route() {
     const h = location.hash.slice(1);
     const isBook = h === 'book';
+    const wasBook = document.body.dataset.route === 'book';
+    const historyBack = wasBook && !isBook && !fromLink;
+    fromLink = false;
+    if (isBook && document.body.dataset.route === 'home') homeY = window.scrollY;
     home.hidden = isBook;
     bookPage.hidden = !isBook;
     document.body.dataset.titleKey = isBook ? 'meta.bookTitle' : 'meta.homeTitle';
@@ -172,6 +180,8 @@ const router = `
         pendingService = null;
         loadConfig().then(() => window.__bookPreset(id));
       }
+    } else if (historyBack) {
+      window.scrollTo({ top: homeY, behavior: 'instant' });
     } else if (h && h !== 'top' && h !== 'main') {
       document.getElementById(h)?.scrollIntoView();
     } else {
@@ -182,10 +192,18 @@ const router = `
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
     const href = a.getAttribute('href');
-    if (href === '#main') return;
     e.preventDefault();
+    if (href === '#main') {
+      // The skip link: go to the content of the page that's showing, without leaving it.
+      const main = document.getElementById('main');
+      main.tabIndex = -1;
+      main.focus({ preventScroll: true });
+      main.scrollIntoView();
+      return;
+    }
     if (a.id === 'book-another') window.__bookReset();
     if (a.dataset.service) pendingService = a.dataset.service;
+    fromLink = true;
     if (location.hash === href) route();
     else location.hash = href;
   });

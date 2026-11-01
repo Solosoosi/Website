@@ -49,7 +49,7 @@
 })();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Bellefair&family=Bona+Nova:wght@400;700&family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Rubik:wght@300;400;500;600&family=Suez+One&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Gveret+Levin&family=Rubik:wght@300;400;500;600&family=Varela+Round&display=swap">
   <style>
 /* ==========================================================================
    David Neeman – acupuncture clinic, Tel Aviv
@@ -237,8 +237,11 @@ html.a11y-links a {
   text-underline-offset: 3px;
 }
 
-html.a11y-font {
+/* :root[data-look] too, so it wins over each version's own fonts */
+html.a11y-font,
+:root.a11y-font[data-look] {
   --font-display: var(--font-body);
+  --font-hand: var(--font-body);
 }
 
 html.a11y-still *,
@@ -360,6 +363,11 @@ textarea {
 
 .skip-link:focus {
   top: 12px;
+}
+
+/* The skip link moves focus to <main>; no ring around the whole page */
+main:focus {
+  outline: none;
 }
 
 .container {
@@ -1412,7 +1420,7 @@ html.a11y-contrast .stack-num {
 
 .words {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-hand, var(--font-display));
   font-size: clamp(2.3rem, 5vw, 4.6rem);
   line-height: 1.14;
 }
@@ -2045,7 +2053,7 @@ html.a11y-contrast .words .w {
   gap: 28px;
 }
 
-.footer-grid h4 {
+.footer-grid h2 {
   margin-bottom: 12px;
   font-size: var(--fs-xs);
   font-weight: 500;
@@ -2067,6 +2075,13 @@ html.a11y-contrast .words .w {
 
 .footer-grid a:hover {
   color: var(--accent-ink);
+}
+
+/* The Waze link under the address is underlined, so it doesn't read as more address text */
+.footer-grid > div > a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
 }
 
 .footer-grid p {
@@ -2908,7 +2923,7 @@ html.a11y-contrast .words .w {
    Open the site with ?options to compare them.
    ========================================================================== */
 
-/* ---------- The shared base: warm paper, serif headings, thin lines ---------- */
+/* ---------- The shared base: warm paper, soft headings, thin lines ---------- */
 
 :root {
   --start: 0%;
@@ -2949,9 +2964,11 @@ html.a11y-contrast .words .w {
   --shadow-soft: 0 10px 30px -18px rgb(70 50 25 / 0.25);
   --shadow-lift: 0 26px 60px -30px rgb(70 50 25 / 0.35);
   --header-bg: rgb(246 241 233 / 0.92);
-  --font-display: 'Frank Ruhl Libre', 'Times New Roman', serif;
-  --font-body: 'Assistant', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Rubik', system-ui, sans-serif;
+  --font-body: 'Rubik', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   --font-label: var(--font-body);
+  /* His own words (the quote and his name under it) in handwriting */
+  --font-hand: 'Gveret Levin', var(--font-display);
   --radius-sm: 6px;
   --radius: 10px;
   --radius-lg: 14px;
@@ -3437,6 +3454,19 @@ html.a11y-contrast .words .w {
   grid-area: caption;
 }
 
+/* His name under the quote, like a signature */
+[data-look^='2'] .statement figcaption {
+  font-family: var(--font-hand);
+  font-size: 1.6rem;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+
+/* Lead lines in a regular weight: warmer and easier to read than a thin one */
+[data-look^='2'] :is(.section-lead, .page-hero .lead) {
+  font-weight: 400;
+}
+
 .statement-media {
   grid-area: media;
   position: relative;
@@ -3831,7 +3861,8 @@ html.a11y-contrast .words .w {
   --shadow-soft: 0 12px 34px -20px rgb(138 74 95 / 0.35);
   --shadow-lift: 0 30px 70px -34px rgb(138 74 95 / 0.45);
   --header-bg: rgb(255 246 240 / 0.84);
-  --font-display: 'Bellefair', 'Frank Ruhl Libre', serif;
+  --font-display: 'Varela Round', 'Rubik', sans-serif;
+  --font-body: 'Varela Round', 'Rubik', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   --radius-sm: 14px;
   --radius: 18px;
   --radius-lg: 26px;
@@ -4230,7 +4261,7 @@ html.a11y-contrast .words .w {
   --shadow-soft: 0 10px 30px -18px rgb(70 45 15 / 0.25);
   --shadow-lift: 0 26px 60px -30px rgb(70 45 15 / 0.35);
   --header-bg: rgb(243 235 223 / 0.9);
-  --font-display: 'Bona Nova', 'Frank Ruhl Libre', serif;
+  --font-display: 'Gveret Levin', 'Rubik', sans-serif;
   --radius-sm: 2px;
   --radius: 4px;
   --radius-lg: 6px;
@@ -4284,6 +4315,18 @@ html.a11y-contrast .words .w {
 
 [data-look='2i'] .hero-title .line {
   font-size: clamp(3rem, 8vw, 6.6rem);
+}
+
+/* The handwriting reaches further out of its box than a print font, and the
+   gold word glows: more room around the headline's slots and the section
+   titles, so no stroke is cut off (the text itself stays where it was) */
+[data-look='2i'] .hero-title .line {
+  padding: 0.3em 0.3em 0.36em;
+  margin: -0.26em -0.22em -0.32em;
+}
+
+[data-look='2i'] .section-title {
+  clip-path: inset(-45% -12% -45% -12%);
 }
 
 [data-look='2i'] .hero-title .line > span,
@@ -4506,7 +4549,8 @@ html.a11y-contrast .words .w {
   --shadow-soft: 0 12px 30px -18px rgb(30 60 30 / 0.25);
   --shadow-lift: 0 28px 60px -30px rgb(30 60 30 / 0.35);
   --header-bg: rgb(244 242 233 / 0.9);
-  --font-display: 'Suez One', 'Frank Ruhl Libre', serif;
+  /* Fredoka is loaded in semibold (600) only, so every heading here is soft and full */
+  --font-display: 'Fredoka', 'Rubik', sans-serif;
   --font-body: 'Rubik', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   --radius-sm: 14px;
   --radius: 20px;
@@ -5071,7 +5115,7 @@ html.a11y-contrast .words .w {
   width: max-content;
   max-width: calc(100% - 24px);
   margin-inline: auto;
-  font: 400 0.95rem/1.2 'Assistant', system-ui, sans-serif;
+  font: 400 0.95rem/1.2 'Rubik', system-ui, sans-serif;
 }
 
 .look-toggle {
@@ -5142,7 +5186,7 @@ html.a11y-contrast .words .w {
     background: #1d1a16;
     color: #f3ede4;
     box-shadow: 0 12px 30px -10px rgb(0 0 0 / 0.55);
-    font: 700 1.1rem/1 'Assistant', system-ui, sans-serif;
+    font: 600 1.1rem/1 'Rubik', system-ui, sans-serif;
     cursor: pointer;
   }
 
@@ -6046,7 +6090,7 @@ html.js .reveal:not(.is-visible) {
       </div>
       <div class="footer-grid">
         <div>
-          <h4 data-i18n="footer.links"></h4>
+          <h2 data-i18n="footer.links"></h2>
           <ul>
             <li><a href="#treatments" data-i18n="nav.treatments"></a></li>
             <li><a href="#gallery" data-i18n="nav.gallery"></a></li>
@@ -6055,7 +6099,7 @@ html.js .reveal:not(.is-visible) {
           </ul>
         </div>
         <div>
-          <h4 data-i18n="footer.contact"></h4>
+          <h2 data-i18n="footer.contact"></h2>
           <ul>
             <li data-biz-item><a data-biz-href="phone"><bdi data-biz="phone"></bdi></a></li>
             <li data-biz-item><a data-biz-href="whatsapp" target="_blank" rel="noopener">WhatsApp</a></li>
@@ -6065,7 +6109,7 @@ html.js .reveal:not(.is-visible) {
           </ul>
         </div>
         <div>
-          <h4 data-i18n="footer.address"></h4>
+          <h2 data-i18n="footer.address"></h2>
           <p data-biz="address"></p>
           <a data-biz-href="waze" target="_blank" rel="noopener" data-i18n="visit.waze"></a>
         </div>
@@ -8627,9 +8671,17 @@ window.__bookReset = () => {
   const home = document.getElementById('page-home');
   const bookPage = document.getElementById('page-book');
   let pendingService = null;
+  // Where the home page was scrolled to when the booking page opened, so the
+  // browser's back button returns to the same spot (not to the top).
+  let homeY = 0;
+  let fromLink = false;
   function route() {
     const h = location.hash.slice(1);
     const isBook = h === 'book';
+    const wasBook = document.body.dataset.route === 'book';
+    const historyBack = wasBook && !isBook && !fromLink;
+    fromLink = false;
+    if (isBook && document.body.dataset.route === 'home') homeY = window.scrollY;
     home.hidden = isBook;
     bookPage.hidden = !isBook;
     document.body.dataset.titleKey = isBook ? 'meta.bookTitle' : 'meta.homeTitle';
@@ -8642,6 +8694,8 @@ window.__bookReset = () => {
         pendingService = null;
         loadConfig().then(() => window.__bookPreset(id));
       }
+    } else if (historyBack) {
+      window.scrollTo({ top: homeY, behavior: 'instant' });
     } else if (h && h !== 'top' && h !== 'main') {
       document.getElementById(h)?.scrollIntoView();
     } else {
@@ -8652,10 +8706,18 @@ window.__bookReset = () => {
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
     const href = a.getAttribute('href');
-    if (href === '#main') return;
     e.preventDefault();
+    if (href === '#main') {
+      // The skip link: go to the content of the page that's showing, without leaving it.
+      const main = document.getElementById('main');
+      main.tabIndex = -1;
+      main.focus({ preventScroll: true });
+      main.scrollIntoView();
+      return;
+    }
     if (a.id === 'book-another') window.__bookReset();
     if (a.dataset.service) pendingService = a.dataset.service;
+    fromLink = true;
     if (location.hash === href) route();
     else location.hash = href;
   });
