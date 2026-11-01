@@ -4794,8 +4794,8 @@ html.a11y-contrast[data-look='2c'] .stack-num {
 }
 
 /* ==========================================================================
-   Version י: botanical – deep leaf green, big leaves that sway, photos in
-   leaf shapes, and a headline whose letters spring into place
+   Version י: botanical – deep leaf green, big leaves that sway, each photo
+   in its own botanical frame, and a headline whose letters spring into place
    ========================================================================== */
 
 :root[data-look='2j'] {
@@ -4932,23 +4932,117 @@ html.a11y-contrast[data-look='2c'] .stack-num {
   animation: sway-b 9s ease-in-out infinite alternate;
 }
 
-/* Photos in leaf shapes */
-[data-look='2j'] .hero-room,
-[data-look='2j'] .about-photo .blob,
-[data-look='2j'] .statement-media {
-  border-radius: 46% 0 46% 0 / 34% 0 34% 0;
+/* Photo frames: each photo gets its own botanical shape – leaf, arch, pebble,
+   petal, seed – and some a frame detail: a thin outline, a soft shape behind,
+   or a mat like a framed picture. */
+:root[data-look='2j'] {
+  --f-leaf: 46% 0 46% 0 / 34% 0 34% 0;
+  --f-leaf-b: 0 46% 0 46% / 0 34% 0 34%;
+  --f-arch: 999px 999px var(--radius) var(--radius);
+  --f-pebble: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  --f-petal: 50% 50% 50% 7%;
+  --f-seed: 50% 50% 50% 50% / 60% 60% 40% 40%;
 }
 
-[data-look='2j'] .stack-img {
-  border-radius: 40% 0 40% 0 / 40% 0 40% 0;
+/* The room photo: a leaf with a thin outline that opens out around it */
+[data-look='2j'] .hero-room {
+  border-radius: var(--f-leaf);
+  outline: 1.5px solid color-mix(in srgb, var(--accent-2) 75%, transparent);
+  outline-offset: 12px;
+  animation:
+    rise-in 1.4s var(--ease) calc(var(--intro) + 0.1s) both,
+    frame-out 1.6s var(--ease) calc(var(--intro) + 1.3s) both;
 }
 
-[data-look='2j'] .stack-card:nth-child(even) .stack-img {
+/* The small photos in the treatment list (and on the booking page): little leaves */
+[data-look='2j'] .hero-treatments img,
+[data-look='2j'] .service-thumb {
+  border-radius: 50% 0 50% 0;
+}
+
+[data-look='2j'] .hero-treatments li:nth-child(even) img,
+[data-look='2j'] .service-option:nth-child(even) .service-thumb {
+  border-radius: 0 50% 0 50%;
+}
+
+/* The three treatments: a leaf, a pebble that slowly changes shape, a petal */
+[data-look='2j'] .stack-card:nth-child(3n + 1) .stack-img {
   border-radius: 0 40% 0 40% / 0 40% 0 40%;
 }
 
+[data-look='2j'] .stack-card:nth-child(3n + 2) .stack-img {
+  border-radius: var(--f-pebble);
+  animation: morph 18s ease-in-out infinite;
+}
+
+[data-look='2j'] .stack-card:nth-child(3n + 3) .stack-img {
+  border-radius: var(--f-petal);
+}
+
+/* Gallery: six shapes mixed so that no two neighbours match */
 [data-look='2j'] .mosaic-item {
-  border-radius: var(--radius-lg);
+  border-radius: var(--f-arch);
+}
+
+[data-look='2j'] .mosaic-col:nth-child(1) .mosaic-item:nth-child(2) {
+  border-radius: var(--f-petal);
+}
+
+[data-look='2j'] .mosaic-col:nth-child(1) .mosaic-item:nth-child(3),
+[data-look='2j'] .mosaic-col:nth-child(3) .mosaic-item:nth-child(1) {
+  border-radius: var(--f-leaf-b);
+}
+
+[data-look='2j'] .mosaic-col:nth-child(2) .mosaic-item:nth-child(1),
+[data-look='2j'] .mosaic-col:nth-child(3) .mosaic-item:nth-child(3) {
+  border-radius: var(--f-leaf);
+}
+
+[data-look='2j'] .mosaic-col:nth-child(2) .mosaic-item:nth-child(2) {
+  border-radius: var(--f-pebble);
+}
+
+[data-look='2j'] .mosaic-col:nth-child(2) .mosaic-item:nth-child(3) {
+  border-radius: var(--f-seed);
+}
+
+/* About: a seed shape with a soft green pebble behind it that slowly changes shape */
+[data-look='2j'] .about-photo {
+  isolation: isolate;
+}
+
+[data-look='2j'] .about-photo .blob {
+  border-radius: var(--f-seed);
+}
+
+[data-look='2j'] .about-photo::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 9% -4% -6% 7%;
+  border-radius: var(--f-pebble);
+  background: linear-gradient(150deg, var(--leaf-1), var(--leaf-2));
+  opacity: 0.45;
+  animation: morph 22s ease-in-out infinite reverse;
+  transition: opacity 1.2s var(--ease) 0.2s, transform 1.6s var(--ease) 0.2s;
+  pointer-events: none;
+}
+
+/* The video: an arch in a light mat, like a framed picture */
+[data-look='2j'] .statement-media {
+  padding: 10px;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
+  background: var(--surface);
+}
+
+[data-look='2j'] .statement-media video {
+  border-radius: 999px 999px calc(var(--radius-lg) - 10px) calc(var(--radius-lg) - 10px);
+}
+
+[data-look='2j'] .video-toggle {
+  bottom: 22px;
+  inset-inline-end: 22px;
 }
 
 [data-look='2j'] .hero-treatments a::before {
@@ -4958,6 +5052,11 @@ html.a11y-contrast[data-look='2c'] .stack-num {
 @media (prefers-reduced-motion: no-preference) {
   html.js:not(.a11y-still)[data-look='2j'] .stack-card:nth-child(n):not(.is-in) .stack-img {
     clip-path: inset(100% 0 0 0);
+  }
+
+  html.js:not(.a11y-still)[data-look='2j'] .about-photo.reveal:not(.is-visible)::before {
+    opacity: 0;
+    transform: scale(0.85) rotate(-6deg);
   }
 }
 
@@ -5407,6 +5506,14 @@ html.a11y-contrast[data-look='2c'] .stack-num {
 
   to {
     rotate: 6deg;
+  }
+}
+
+/* י: the outline around the room photo opens out from its edge */
+@keyframes frame-out {
+  from {
+    outline-color: transparent;
+    outline-offset: -2px;
   }
 }
 
