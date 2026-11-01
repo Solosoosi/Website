@@ -632,6 +632,9 @@ function initMagneticButtons() {
 const LOOKS = [
   ['2g', 'ז', 'שקיעה'],
   ['2j', 'י', 'בוטני'],
+  ['2lm', 'מ', 'אליפסה'],
+  ['2ln', 'נ', 'ערפל'],
+  ['2ls', 'ס', 'אדווה'],
 ];
 
 function initLookSwitcher() {

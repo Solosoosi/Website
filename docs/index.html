@@ -38,7 +38,7 @@
     if (/[?&]options(=|&|$)/.test(location.search)) {
       r.classList.add('show-looks');
       var lk = localStorage.getItem('look');
-      if (/^2[gj]$/.test(lk || '')) r.setAttribute('data-look', lk);
+      if (/^2(g|j|l[mns])$/.test(lk || '')) r.setAttribute('data-look', lk);
     }
   } catch (e) {}
   if (location.hash !== '#book') r.classList.add('bar-wait');
@@ -49,7 +49,7 @@
 })();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Gveret+Levin&family=Rubik:wght@300;400;500;600&family=Varela+Round&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300..600&family=Fredoka:wght@600&family=Gveret+Levin&family=Heebo:wght@200..500&family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans+Hebrew:wght@300;400;500&family=Noto+Sans+Hebrew:wdth,wght@62.5..100,200..500&family=Noto+Serif+Hebrew:wdth,wght@62.5..100,200..500&family=Rubik:wght@300;400;500;600&family=Varela+Round&display=swap">
   <style>
 /* ==========================================================================
    David Neeman – acupuncture clinic, Tel Aviv
@@ -4560,6 +4560,1030 @@ html.a11y-contrast .words .w {
   }
 }
 
+/* ==========================================================================
+   Versions built around the logo – מ oval (2lm), נ mist (2ln), ס ripple (2ls):
+   "DAVID NEEMAN" in its thin oval, cool colors and precise, thin lines.
+   Their ids all start with "2l", so [data-look^='2l'] is what they share;
+   each version below adds its own palette, fonts and shapes.
+   ========================================================================== */
+
+/* The logo shows only in these versions */
+.brand-logo,
+.hero-logo,
+.intro-logo,
+.footer-logo {
+  display: none;
+}
+
+:root[data-look^='2l'] {
+  --font-hand: var(--font-display);
+  --radius-sm: 0px;
+  --radius: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --shadow-soft: 0 0 0 transparent;
+  --shadow-lift: 0 0 0 transparent;
+  --cursor-glow: transparent;
+  /* the opening curtain stays a little longer, while the logo draws itself */
+  --intro: 1.5s;
+}
+
+html.no-intro[data-look^='2l'],
+html.a11y-still[data-look^='2l'] {
+  --intro: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-look^='2l'] {
+    --intro: 0s;
+  }
+}
+
+/* ---------- The logo ---------- */
+
+[data-look^='2l'] .brand-logo {
+  display: block;
+  width: clamp(116px, 11vw, 150px);
+  height: auto;
+  fill: currentColor;
+  color: var(--ink);
+}
+
+[data-look^='2l'] .brand .brand-orb,
+[data-look^='2l'] .footer-brand .brand-orb {
+  display: none;
+}
+
+/* The Hebrew name stays for screen readers; the logo is what shows */
+[data-look^='2l'] .brand .brand-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+[data-look^='2l'] :is(.hero-logo, .intro-logo) {
+  display: block;
+  height: auto;
+  overflow: visible;
+  color: var(--ink);
+}
+
+[data-look^='2l'] :is(.hero-logo, .intro-logo) .logo-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+[data-look^='2l'] :is(.hero-logo, .intro-logo) .logo-word {
+  fill: currentColor;
+}
+
+/* The opening curtain: the oval draws itself, then the name appears */
+[data-look^='2l'] .intro {
+  animation-delay: 1.4s;
+}
+
+[data-look^='2l'] .intro::before,
+[data-look^='2l'] .intro-orb,
+[data-look^='2l'] .intro-name {
+  display: none;
+}
+
+[data-look^='2l'] .intro-logo {
+  position: relative;
+  width: min(78vw, 560px);
+}
+
+[data-look^='2l'] .intro-logo .logo-ring {
+  stroke-dasharray: 1;
+  animation: ring-draw 1.25s cubic-bezier(0.65, 0, 0.35, 1) 0.05s both;
+}
+
+[data-look^='2l'] .intro-logo .logo-word {
+  animation: logo-word-in 0.9s var(--ease) 0.5s both;
+}
+
+/* The opening screen: the logo leads, the headline follows quieter */
+[data-look^='2l'] .hero-logo {
+  width: min(100%, 480px, 52svh);
+  margin: 0 0 clamp(16px, 2.6svh, 28px);
+}
+
+[data-look^='2l'] .hero-logo .logo-ring {
+  stroke-dasharray: 1;
+  animation: ring-draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--intro) + 0.05s) both;
+}
+
+[data-look^='2l'] .hero-logo .logo-word {
+  animation: logo-word-in 1.1s var(--ease) calc(var(--intro) + 0.4s) both;
+}
+
+[data-look^='2l'] .hero::before,
+[data-look^='2l'] .hero .aurora {
+  display: none;
+}
+
+/* The logo adds height, so the rest of the opening screen is a little more compact
+   (on laptop screens the booking button still shows without scrolling) */
+[data-look^='2l'] .hero {
+  padding-top: calc(64px + clamp(26px, 5svh, 72px));
+}
+
+[data-look^='2l'] .hero-treatments a {
+  padding-block: 10px;
+}
+
+[data-look^='2l'] .hero-treatments img {
+  width: 40px;
+  height: 40px;
+}
+
+[data-look^='2l'] .hero-title {
+  font-weight: 300;
+}
+
+[data-look^='2l'] .hero-title .line {
+  font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+  /* tall letters like ל reach above the line: more room in the slot, same place */
+  padding-top: 0.2em;
+  margin-top: -0.16em;
+}
+
+[data-look^='2l'] .hero-title .line > span {
+  animation-name: word-in-tall;
+}
+
+[data-look^='2l'] .hero-title .line > .grad {
+  color: var(--ink);
+}
+
+/* The footer: the logo, and the name very large at the bottom, like a watermark */
+[data-look^='2l'] .footer-brand .brand-logo {
+  width: clamp(132px, 14vw, 172px);
+}
+
+[data-look^='2l'] .footer-mark {
+  height: auto;
+  aspect-ratio: 610 / 82;
+  font-size: 1rem;
+}
+
+[data-look^='2l'] .footer-mark span {
+  display: none;
+}
+
+[data-look^='2l'] .footer-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  fill: currentColor;
+  color: color-mix(in srgb, var(--ink) 9%, transparent);
+  transition: transform 1.6s var(--ease);
+}
+
+/* ---------- Precise: hairlines, no soft shadows, light headings ---------- */
+
+[data-look^='2l'] .glass,
+[data-look^='2l'] .final-card {
+  border: 1px solid var(--line-strong);
+  box-shadow: none;
+}
+
+[data-look^='2l'] .header-inner {
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+
+[data-look^='2l'] :is(.section-title, .stack-name, .visit-address, .final-title, .footer-name, .dialog h2, .page-hero h1, .panel h2, .calendar-head h3, .summary h3, .words) {
+  font-weight: 300;
+}
+
+[data-look^='2l'] .words {
+  line-height: 1.18;
+}
+
+[data-look^='2l'] .statement figcaption {
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+}
+
+[data-look^='2l'] .sec-num,
+[data-look^='2l'] .stack-num {
+  letter-spacing: 0.22em;
+}
+
+[data-look^='2l'] .pill-label {
+  letter-spacing: 0.04em;
+}
+
+[data-look^='2l'] .pill-label {
+  border: 1px solid var(--line-strong);
+  background: none;
+  box-shadow: none;
+}
+
+[data-look^='2l'] .btn {
+  box-shadow: none;
+}
+
+[data-look^='2l'] .btn-outline,
+[data-look^='2l'] .btn-ghost {
+  border-color: var(--line-strong);
+}
+
+/* ==========================================================================
+   מ – oval: the logo's own world. Its off-white and black, light condensed
+   serif headings, and the oval everywhere: photos sit in tall ovals with a
+   thin ring around them, and the rings draw themselves in.
+   ========================================================================== */
+
+:root[data-look='2lm'] {
+  --bg: #eff0eb;
+  --bg-2: #e7e9e3;
+  --surface: #f7f8f4;
+  --glass: #f7f8f4;
+  --glass-strong: #f7f8f4;
+  --glass-border: #d8dad3;
+  --ink: #111211;
+  --ink-2: #393a37;
+  --muted: #666863;
+  --line: rgb(17 18 17 / 0.12);
+  --line-strong: rgb(17 18 17 / 0.3);
+  --accent: #111211;
+  --accent-2: #9a9c96;
+  --accent-ink: #3a3b38;
+  --on-accent: #f7f8f4;
+  --accent-soft: #e2e4de;
+  --spark: #111211;
+  --curtain: #e4e6e0;
+  --glow-1: #e7e9e3;
+  --glow-2: #e9ebe5;
+  --glow-3: #e7e9e3;
+  --glow-4: #e9ebe5;
+  --open: #4c7a5f;
+  --photo-bg: #e1e3dd;
+  --header-bg: rgb(239 240 235 / 0.86);
+  --font-display: 'Noto Serif Hebrew', 'Frank Ruhl Libre', serif;
+  --font-body: 'Assistant', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  font-stretch: 62.5%;
+}
+
+:root[data-look='2lm'][data-theme='dark'] {
+  --bg: #101110;
+  --bg-2: #151614;
+  --surface: #191a18;
+  --glass: #191a18;
+  --glass-strong: #191a18;
+  --glass-border: #2b2c29;
+  --ink: #ecede8;
+  --ink-2: #c6c8c1;
+  --muted: #8e908a;
+  --line: rgb(236 237 232 / 0.12);
+  --line-strong: rgb(236 237 232 / 0.3);
+  --accent: #ecede8;
+  --accent-2: #6f716b;
+  --accent-ink: #c9cbc4;
+  --on-accent: #101110;
+  --accent-soft: #232421;
+  --spark: #ecede8;
+  --curtain: #1d1e1c;
+  --glow-1: #161715;
+  --glow-2: #171816;
+  --glow-3: #161715;
+  --glow-4: #171816;
+  --open: #8cc7a2;
+  --photo-bg: #1d1e1c;
+  --header-bg: rgb(16 17 16 / 0.86);
+}
+
+[data-look='2lm'] .btn,
+[data-look='2lm'] .status,
+[data-look='2lm'] .pill-label,
+[data-look='2lm'] .header-inner {
+  border-radius: 999px;
+}
+
+/* The second word of the headline is drawn in outline: a precise line */
+[data-look='2lm'] .hero-title .line > .grad {
+  color: transparent;
+  -webkit-text-stroke: 1.2px var(--ink);
+}
+
+/* The treatments under the headline: the condensed serif, a thin rule between */
+[data-look='2lm'] .hero-treatments a {
+  font-size: 1.45rem;
+  font-weight: 400;
+}
+
+[data-look='2lm'] .hero-treatments img {
+  border-radius: 50%;
+}
+
+/* The room: a tall oval, and a thin ring that settles around it */
+[data-look='2lm'] .hero-room {
+  justify-self: center;
+  width: min(100%, 400px);
+  aspect-ratio: 3 / 4.2;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 0 16px var(--bg), 0 0 0 17px var(--line-strong);
+  animation: oval-ring 1.6s var(--ease) calc(var(--intro) + 0.6s) both;
+}
+
+[data-look='2lm'] .hero-room img {
+  animation:
+    oval-open 1.5s var(--ease) calc(var(--intro) + 0.1s) both,
+    breathe-img 18s ease-in-out calc(var(--intro) + 2.6s) infinite alternate;
+}
+
+[data-look='2lm'] .hero-room::after {
+  display: none;
+}
+
+/* Treatments: each photo a tall oval with a ring around it */
+@media (min-width: 861px) {
+  [data-look='2lm'] .stack-card,
+  [data-look='2lm'] .stack-card:nth-child(n) {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+}
+
+[data-look='2lm'] .stack-img {
+  justify-self: center;
+  width: min(100%, 360px);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 3 / 4;
+  border-radius: 50%;
+  outline: 1px solid var(--line-strong);
+  outline-offset: 12px;
+  clip-path: none;
+}
+
+[data-look='2lm'] .stack-img img {
+  border-radius: 50%;
+}
+
+[data-look='2lm'] .stack-num {
+  color: var(--muted);
+}
+
+/* Section numbers sit in a small oval, like the logo */
+[data-look='2lm'] .sec-num {
+  width: fit-content;
+  padding: 5px 15px 5px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+}
+
+[data-look='2lm'] .sec-num::after {
+  display: none;
+}
+
+[data-look='2lm'] .service-thumb,
+[data-look='2lm'] .service-thumb img {
+  border-radius: 50%;
+}
+
+/* Gallery: thin white mats inside each photo; two of them are ovals */
+[data-look='2lm'] .mosaic-item {
+  border-radius: 0;
+}
+
+[data-look='2lm'] .mosaic-item::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: inherit;
+  pointer-events: none;
+  transition: inset 0.6s var(--ease);
+}
+
+[data-look='2lm'] .mosaic-col:nth-child(1) .mosaic-item:nth-child(2),
+[data-look='2lm'] .mosaic-col:nth-child(3) .mosaic-item:nth-child(1) {
+  border-radius: 50%;
+}
+
+@media (hover: hover) {
+  [data-look='2lm'] .mosaic-item:hover::after {
+    inset: 20px;
+  }
+}
+
+/* About: the portrait in an oval, a ring offset around it */
+[data-look='2lm'] .about-photo .blob {
+  border-radius: 50%;
+  outline: 1px solid var(--line-strong);
+  outline-offset: 14px;
+}
+
+/* The video: an oval too */
+[data-look='2lm'] .statement-media {
+  border-radius: 50%;
+  outline: 1px solid var(--line-strong);
+  outline-offset: 12px;
+  overflow: hidden;
+}
+
+[data-look='2lm'] .video-toggle {
+  inset-inline-end: auto;
+  left: 50%;
+  bottom: 22px;
+  translate: -50% 0;
+}
+
+/* ==========================================================================
+   נ – mist: cool blue-grey, like an architect's drawing. A faint grid of
+   hairlines behind the page, viewfinder corners on the photos, the logo's
+   oval as a dashed construction line, numbers set like measurements.
+   ========================================================================== */
+
+:root[data-look='2ln'] {
+  --bg: #e9edef;
+  --bg-2: #e0e6e9;
+  --surface: #f4f7f8;
+  --glass: #f4f7f8;
+  --glass-strong: #f4f7f8;
+  --glass-border: #d1dae0;
+  --ink: #14202a;
+  --ink-2: #344351;
+  --muted: #5b6a77;
+  --line: rgb(20 32 42 / 0.12);
+  --line-strong: rgb(20 32 42 / 0.28);
+  --accent: #2b4860;
+  --accent-2: #8da4b6;
+  --accent-ink: #1e364b;
+  --on-accent: #f4f7f8;
+  --accent-soft: #d6e0e7;
+  --spark: #2b4860;
+  --curtain: #d9e2e8;
+  --glow-1: #dfe6ea;
+  --glow-2: #e3e9ec;
+  --glow-3: #dfe6ea;
+  --glow-4: #e3e9ec;
+  --open: #3d7a5c;
+  --photo-bg: #dbe3e8;
+  --header-bg: rgb(233 237 239 / 0.86);
+  --font-display: 'Noto Sans Hebrew', 'Heebo', sans-serif;
+  --font-body: 'IBM Plex Sans Hebrew', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'IBM Plex Sans Hebrew', monospace;
+  font-stretch: 62.5%;
+}
+
+:root[data-look='2ln'][data-theme='dark'] {
+  --bg: #0d1318;
+  --bg-2: #111920;
+  --surface: #141d24;
+  --glass: #141d24;
+  --glass-strong: #141d24;
+  --glass-border: #233140;
+  --ink: #e2e9ee;
+  --ink-2: #b9c5ce;
+  --muted: #83929e;
+  --line: rgb(226 233 238 / 0.11);
+  --line-strong: rgb(226 233 238 / 0.26);
+  --accent: #9cb6ca;
+  --accent-2: #56708a;
+  --accent-ink: #bcd0de;
+  --on-accent: #0d1318;
+  --accent-soft: #1a2732;
+  --spark: #9cb6ca;
+  --curtain: #17222b;
+  --glow-1: #111a21;
+  --glow-2: #121b22;
+  --glow-3: #111a21;
+  --glow-4: #121b22;
+  --open: #7fc4a0;
+  --photo-bg: #17222b;
+  --header-bg: rgb(13 19 24 / 0.86);
+}
+
+/* The grid behind the page: six columns of hairlines over the content width */
+[data-look='2ln'] .page-deco {
+  display: block;
+  position: fixed;
+  inset: 0 max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)));
+  z-index: -1;
+  --grid: color-mix(in srgb, var(--line) 60%, transparent);
+  background: repeating-linear-gradient(to right, var(--grid) 0 1px, transparent 1px calc(100% / 6));
+  border-inline-end: 1px solid var(--grid);
+  pointer-events: none;
+  animation: grid-in 1.6s var(--ease) calc(var(--intro) + 0.1s) both;
+}
+
+[data-look='2ln'] .page-deco span {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  [data-look='2ln'] .page-deco {
+    background: repeating-linear-gradient(to right, var(--grid) 0 1px, transparent 1px calc(100% / 3));
+  }
+}
+
+/* Numbers set like measurements */
+[data-look='2ln'] :is(.sec-num, .stack-num, .duration) {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+[data-look='2ln'] .hours-table td {
+  font-family: var(--font-mono);
+  font-weight: 400;
+}
+
+[data-look='2ln'] .sec-num::after {
+  height: 1px;
+}
+
+/* The logo's oval as a dashed construction line */
+[data-look='2ln'] .hero-logo .logo-ring {
+  stroke-dasharray: 0.006 0.006;
+  stroke-dashoffset: 0;
+  opacity: 0.55;
+  animation: dash-in 1.6s var(--ease) calc(var(--intro) + 0.05s) both;
+}
+
+[data-look='2ln'] .hero-title .line > .grad {
+  color: var(--accent);
+}
+
+[data-look='2ln'] .hero-treatments a {
+  font-family: var(--font-body);
+  font-size: 1.12rem;
+  font-weight: 400;
+}
+
+[data-look='2ln'] .hero-treatments img {
+  border-radius: 0;
+}
+
+/* The room: a sharp frame, a thin offset line, viewfinder corners */
+[data-look='2ln'] .hero-room {
+  border-radius: 0;
+  outline: 1px solid var(--line-strong);
+  outline-offset: 10px;
+  overflow: hidden;
+  animation: frame-in 1.4s var(--ease) calc(var(--intro) + 0.1s) both;
+}
+
+[data-look='2ln'] :is(.hero-room, .stack-img, .about-photo .blob, .statement-media)::before {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  z-index: 2;
+  --c: rgb(255 255 255 / 0.85);
+  background:
+    linear-gradient(var(--c), var(--c)) 0 0 / 22px 1px,
+    linear-gradient(var(--c), var(--c)) 0 0 / 1px 22px,
+    linear-gradient(var(--c), var(--c)) 100% 0 / 22px 1px,
+    linear-gradient(var(--c), var(--c)) 100% 0 / 1px 22px,
+    linear-gradient(var(--c), var(--c)) 0 100% / 22px 1px,
+    linear-gradient(var(--c), var(--c)) 0 100% / 1px 22px,
+    linear-gradient(var(--c), var(--c)) 100% 100% / 22px 1px,
+    linear-gradient(var(--c), var(--c)) 100% 100% / 1px 22px;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  animation: corners-in 1.2s var(--ease) calc(var(--intro) + 0.6s) both;
+}
+
+[data-look='2ln'] .stack-img,
+[data-look='2ln'] .about-photo .blob,
+[data-look='2ln'] .statement-media,
+[data-look='2ln'] .mosaic-item,
+[data-look='2ln'] .service-thumb,
+[data-look='2ln'] .service-thumb img {
+  border-radius: 0;
+}
+
+[data-look='2ln'] .stack-img,
+[data-look='2ln'] .about-photo .blob,
+[data-look='2ln'] .statement-media {
+  outline: 1px solid var(--line-strong);
+  outline-offset: 8px;
+}
+
+[data-look='2ln'] .stack-img::before,
+[data-look='2ln'] .about-photo .blob::before,
+[data-look='2ln'] .statement-media::before {
+  animation: none;
+  transition: inset 0.6s var(--ease);
+}
+
+@media (hover: hover) {
+  [data-look='2ln'] .stack-card:hover .stack-img::before {
+    inset: 26px;
+  }
+}
+
+[data-look='2ln'] .mosaic-item {
+  outline: 1px solid var(--line);
+  outline-offset: 5px;
+}
+
+/* Buttons, choices and the round icons: sharp, like the rest */
+[data-look='2ln'] :is(.btn, .status, .pill-label, .header-inner, .icon-btn, .service-option, .day, .slot, .chip, #stepper, #stepper li, .a11y-panel, .a11y-opt) {
+  border-radius: 0;
+}
+
+/* ==========================================================================
+   ס – ripple: cool sage, calm. The opening screen is centered like the logo,
+   and the room photo sits in the logo's own wide oval, with thin rings
+   rippling out around it, slowly, like water. Photos are circles and ovals.
+   ========================================================================== */
+
+:root[data-look='2ls'] {
+  --bg: #ecefec;
+  --bg-2: #e2e7e3;
+  --surface: #f5f7f4;
+  --glass: #f5f7f4;
+  --glass-strong: #f5f7f4;
+  --glass-border: #d2dad4;
+  --ink: #17201b;
+  --ink-2: #36433c;
+  --muted: #5e6e65;
+  --line: rgb(23 32 27 / 0.12);
+  --line-strong: rgb(23 32 27 / 0.28);
+  --accent: #3e5b4c;
+  --accent-2: #93aa9d;
+  --accent-ink: #2e4639;
+  --on-accent: #f5f7f4;
+  --accent-soft: #dbe4dd;
+  --spark: #3e5b4c;
+  --curtain: #dce4de;
+  --glow-1: #e3e9e4;
+  --glow-2: #e6ebe7;
+  --glow-3: #e3e9e4;
+  --glow-4: #e6ebe7;
+  --open: #3e7a58;
+  --photo-bg: #dce3de;
+  --header-bg: rgb(236 239 236 / 0.86);
+  --font-display: 'Heebo', 'Assistant', sans-serif;
+  --font-body: 'Heebo', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+}
+
+:root[data-look='2ls'][data-theme='dark'] {
+  --bg: #0f1411;
+  --bg-2: #131a16;
+  --surface: #17201b;
+  --glass: #17201b;
+  --glass-strong: #17201b;
+  --glass-border: #26332c;
+  --ink: #e3eae5;
+  --ink-2: #bdcac2;
+  --muted: #87988f;
+  --line: rgb(227 234 229 / 0.11);
+  --line-strong: rgb(227 234 229 / 0.26);
+  --accent: #a2c1b0;
+  --accent-2: #4f6b5c;
+  --accent-ink: #bcd5c8;
+  --on-accent: #0f1411;
+  --accent-soft: #1a251f;
+  --spark: #a2c1b0;
+  --curtain: #18211c;
+  --glow-1: #131a16;
+  --glow-2: #141c17;
+  --glow-3: #131a16;
+  --glow-4: #141c17;
+  --open: #86c8a3;
+  --photo-bg: #18211c;
+  --header-bg: rgb(15 20 17 / 0.86);
+}
+
+[data-look='2ls'] :is(.hero-title, .section-title, .stack-name, .visit-address, .final-title, .words, .page-hero h1) {
+  font-weight: 200;
+  letter-spacing: -0.01em;
+}
+
+/* Section numbers in a small circle */
+[data-look='2ls'] .sec-num {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  letter-spacing: 0.04em;
+}
+
+[data-look='2ls'] .sec-num::after {
+  display: none;
+}
+
+[data-look='2ls'] .btn,
+[data-look='2ls'] .status,
+[data-look='2ls'] .pill-label,
+[data-look='2ls'] .header-inner {
+  border-radius: 999px;
+}
+
+/* Centered, like the logo: the logo, the room in its oval, then the words */
+[data-look='2ls'] .hero {
+  padding-top: calc(64px + clamp(40px, 6svh, 112px));
+}
+
+[data-look='2ls'] .hero-inner {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'photo' 'head';
+  justify-items: center;
+  row-gap: clamp(20px, 3.4svh, 38px);
+}
+
+[data-look='2ls'] .hero-head {
+  grid-area: head;
+  justify-items: center;
+  text-align: center;
+}
+
+[data-look='2ls'] .hero-logo {
+  --w: min(84vw, 400px, 46svh);
+  width: var(--w);
+  margin: calc(var(--w) * -0.105) 0 calc(var(--w) * -0.105 + clamp(16px, 2.4vw, 26px));
+}
+
+[data-look='2ls'] .hero-logo .logo-ring {
+  display: none;
+}
+
+[data-look='2ls'] .hero-title .line > .grad {
+  color: var(--accent);
+}
+
+[data-look='2ls'] .hero-room {
+  grid-area: photo;
+  justify-self: center;
+  /* on short screens the oval gets smaller, so the booking button stays on the first screen */
+  width: min(100%, 620px, calc(22svh * 848 / 308));
+  aspect-ratio: 848 / 308;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  overflow: visible;
+  background: none;
+  box-shadow: none;
+  animation: none;
+}
+
+/* the photo stays exactly inside its thin line (no zoom or drift), so the oval's edge is always crisp */
+[data-look='2ls'] .hero-room img {
+  border-radius: 50%;
+  object-position: 50% 62%;
+  scale: 1;
+  translate: none;
+  animation: oval-open 1.6s var(--ease) calc(var(--intro) + 0.1s) both;
+}
+
+/* Thin rings ripple out around the oval, one after another */
+[data-look='2ls'] .hero-room::before,
+[data-look='2ls'] .hero-room::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: none;
+  transform: none;
+  pointer-events: none;
+  opacity: 0;
+  animation: ripple 6s cubic-bezier(0.2, 0.6, 0.3, 1) calc(var(--intro) + 1s) infinite;
+}
+
+[data-look='2ls'] .hero-room::after {
+  animation-delay: calc(var(--intro) + 4s);
+}
+
+[data-look='2ls'] .hero-treatments {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 12px;
+  max-width: 720px;
+  margin: 8px 0 32px;
+}
+
+[data-look='2ls'] .hero-treatments::before,
+[data-look='2ls'] .hero-treatments li::after,
+[data-look='2ls'] .hero-treatments a::before,
+[data-look='2ls'] .hero-treatments .ht-go {
+  display: none;
+}
+
+[data-look='2ls'] .hero-treatments a {
+  padding: 6px 18px 6px 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+}
+
+[data-look='2ls'] .hero-treatments img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
+
+@media (hover: hover) {
+  [data-look='2ls'] .hero-treatments a:hover {
+    padding-inline-start: 18px;
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+}
+
+[data-look='2ls'] .hero-ctas {
+  justify-content: center;
+}
+
+/* Phones: a more compact opening screen, so the booking button shows on the first screen */
+@media (max-width: 560px) {
+  [data-look='2ls'] .hero {
+    padding-top: calc(64px + 26px);
+  }
+
+  [data-look='2ls'] .hero-inner {
+    row-gap: 16px;
+  }
+
+  [data-look='2ls'] .hero-room {
+    width: 86%;
+  }
+
+  [data-look='2ls'] .hero-logo {
+    --w: min(74vw, 300px);
+    margin-bottom: calc(var(--w) * -0.105 + 10px);
+  }
+
+  [data-look='2ls'] .hero-treatments {
+    gap: 8px;
+    margin: 2px 0 22px;
+  }
+
+  [data-look='2ls'] .hero-treatments a {
+    padding: 4px 14px 4px 4px;
+    font-size: 0.95rem;
+  }
+
+  [data-look='2ls'] .hero-treatments img {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Treatments: round photos, each in a ring */
+[data-look='2ls'] .stack-img {
+  justify-self: center;
+  width: min(100%, 340px);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  outline: 1px solid var(--line-strong);
+  outline-offset: 12px;
+  clip-path: none;
+}
+
+[data-look='2ls'] .stack-img img,
+[data-look='2ls'] .service-thumb,
+[data-look='2ls'] .service-thumb img {
+  border-radius: 50%;
+}
+
+[data-look='2ls'] .mosaic-item {
+  border-radius: 999px;
+}
+
+[data-look='2ls'] .mosaic-col:nth-child(2) .mosaic-item {
+  border-radius: 0;
+}
+
+[data-look='2ls'] .about-photo .blob {
+  border-radius: 50%;
+  outline: 1px solid var(--line-strong);
+  outline-offset: 14px;
+}
+
+[data-look='2ls'] .statement-media {
+  border-radius: 999px;
+  outline: 1px solid var(--line-strong);
+  outline-offset: 12px;
+}
+
+[data-look='2ls'] .video-toggle {
+  inset-inline-end: auto;
+  left: 50%;
+  bottom: 22px;
+  translate: -50% 0;
+}
+
+/* ---------- Keyframes for the logo versions ---------- */
+
+@keyframes word-in-tall {
+  from {
+    clip-path: inset(100% -6% -30% -6%);
+    transform: translateY(34%);
+  }
+
+  to {
+    clip-path: inset(-40% -6% -30% -6%);
+    transform: none;
+  }
+}
+
+@keyframes ring-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes dash-in {
+  from {
+    opacity: 0;
+    stroke-dashoffset: 0.12;
+  }
+}
+
+@keyframes logo-word-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes oval-open {
+  from {
+    clip-path: ellipse(0% 0% at 50% 50%);
+    scale: 1.12;
+  }
+
+  to {
+    clip-path: ellipse(50% 50% at 50% 50%);
+  }
+}
+
+@keyframes oval-ring {
+  from {
+    box-shadow: 0 0 0 0 var(--bg), 0 0 0 0 transparent;
+  }
+}
+
+@keyframes grid-in {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes frame-in {
+  from {
+    clip-path: inset(50% -24px);
+  }
+
+  to {
+    clip-path: inset(-24px);
+  }
+}
+
+@keyframes corners-in {
+  from {
+    opacity: 0;
+    inset: 40px;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+
+  12% {
+    opacity: 0.55;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.26, 1.16);
+  }
+}
+
 /* ---------- Keyframes for the new versions ---------- */
 
 @keyframes ch-bounce {
@@ -4793,15 +5817,16 @@ html.a11y-contrast .words .w {
 /* Phones, and phones turned sideways: a round button that opens the list */
 @media (max-width: 760px), (max-height: 500px) {
   .look-switcher {
+    --switch-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
     inset-inline: auto 14px;
-    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    bottom: var(--switch-bottom);
     max-width: none;
     margin: 0;
     transition: bottom 0.6s var(--ease);
   }
 
   html.bar-wait .look-switcher {
-    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    --switch-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   }
 
   .look-toggle {
@@ -4837,7 +5862,8 @@ html.a11y-contrast .words .w {
     flex-wrap: nowrap;
     width: max-content;
     min-width: 200px;
-    max-height: min(68vh, 560px);
+    /* the space above the round button, so the open list never runs off the top */
+    max-height: min(560px, calc(100svh - var(--switch-bottom) - 52px - 10px - 12px));
     overflow-y: auto;
     padding: 6px;
     border-radius: 18px;
@@ -4868,12 +5894,20 @@ html.a11y-contrast .words .w {
   }
 }
 
+/* Short screens (phones turned sideways): the list in two columns, so all of it fits */
+@media (max-height: 500px) {
+  .look-switcher .look-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* Sideways phones have the WhatsApp button in the corner, so the round button sits in the other one */
 @media (min-width: 761px) and (max-height: 500px) {
   .look-switcher,
   html.bar-wait .look-switcher {
+    --switch-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
     inset-inline: 14px auto;
-    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   }
 
   .look-list {
@@ -5396,6 +6430,7 @@ html.js .reveal:not(.is-visible) {
     <div class="header-inner">
       <a class="brand" href="#top">
         <span class="brand-orb" aria-hidden="true"></span>
+        <svg class="brand-logo" viewBox="0 0 610 111" aria-hidden="true" focusable="false"><use href="images/logo-wordmark.svg#word"></use></svg>
         <span class="brand-text">
           <span class="brand-name" data-biz="name"></span>
           <span class="brand-tagline" data-biz="tagline"></span>
@@ -5424,6 +6459,7 @@ html.js .reveal:not(.is-visible) {
     <div class="intro" aria-hidden="true">
       <span class="intro-orb"></span>
       <span class="intro-name" data-biz="tagline"></span>
+      <svg class="intro-logo" viewBox="-2 -2 852 312" aria-hidden="true" focusable="false"><ellipse class="logo-ring" cx="424" cy="154" rx="424" ry="154" pathLength="1"></ellipse><use class="logo-word" href="images/logo-wordmark.svg#word" x="119" y="98.5" width="610" height="111"></use></svg>
     </div>
 
     <!-- Hero: what he does. The design comes in versions (data-look on <html>). -->
@@ -5431,6 +6467,7 @@ html.js .reveal:not(.is-visible) {
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
       <div class="container hero-inner">
         <div class="hero-head">
+          <svg class="hero-logo" viewBox="-2 -2 852 312" aria-hidden="true" focusable="false"><ellipse class="logo-ring" cx="424" cy="154" rx="424" ry="154" pathLength="1"></ellipse><use class="logo-word" href="images/logo-wordmark.svg#word" x="119" y="98.5" width="610" height="111"></use></svg>
           <p class="pill-label" data-biz="street"></p>
           <h1 class="hero-title">
             <span class="line"><span data-i18n="hero.titleA"></span> <span class="grad" data-i18n="hero.titleB"></span></span>
@@ -5740,6 +6777,7 @@ html.js .reveal:not(.is-visible) {
       <div class="footer-top">
         <div class="footer-brand">
           <span class="brand-orb" aria-hidden="true"></span>
+          <svg class="brand-logo" viewBox="0 0 610 111" aria-hidden="true" focusable="false"><use href="images/logo-wordmark.svg#word"></use></svg>
           <div>
             <p class="footer-name" data-biz="name"></p>
             <p class="footer-tag" data-biz="tagline"></p>
@@ -5780,7 +6818,7 @@ html.js .reveal:not(.is-visible) {
           <a href="#top" data-i18n="a11y.top"></a>
         </span>
       </div>
-      <div class="footer-mark reveal" aria-hidden="true"><span data-i18n="hero.title"></span></div>
+      <div class="footer-mark reveal" aria-hidden="true"><span data-i18n="hero.title"></span><svg class="footer-logo" viewBox="0 0 610 111" focusable="false"><use href="images/logo-wordmark.svg#word"></use></svg></div>
     </div>
   </footer>
 
@@ -7146,6 +8184,9 @@ function initMagneticButtons() {
 const LOOKS = [
   ['2g', 'ז', 'שקיעה'],
   ['2j', 'י', 'בוטני'],
+  ['2lm', 'מ', 'אליפסה'],
+  ['2ln', 'נ', 'ערפל'],
+  ['2ls', 'ס', 'אדווה'],
 ];
 
 function initLookSwitcher() {
