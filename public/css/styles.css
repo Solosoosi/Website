@@ -4531,8 +4531,8 @@ html.a11y-contrast .words .w {
   --shadow-soft: 0 0 0 transparent;
   --shadow-lift: 0 0 0 transparent;
   --cursor-glow: transparent;
-  /* the opening curtain stays a little longer, while the logo draws itself */
-  --intro: 1.5s;
+  /* the opening curtain stays longer: the logo draws itself, then lands on the opening screen */
+  --intro: 2.15s;
 }
 
 html.no-intro[data-look^='2l'],
@@ -4571,27 +4571,144 @@ html.a11y-still[data-look^='2l'] {
   white-space: nowrap;
 }
 
-[data-look^='2l'] :is(.hero-logo, .intro-logo) {
+/* ---------- The client's full logo: the oval, the name and the three small lines ---------- */
+
+[data-look^='2l'] :is(.hero-logo, .intro-logo, .footer-logo) {
   display: block;
   height: auto;
   overflow: visible;
+  direction: ltr;
   color: var(--ink);
 }
 
-[data-look^='2l'] :is(.hero-logo, .intro-logo) .logo-ring {
+/* Parts that only some versions use */
+:is(.hero-logo, .intro-logo, .footer-logo) :is(.logo-guides, .logo-window, .logo-ripple) {
+  display: none;
+}
+
+[data-look^='2l'] :is(.hero-logo, .intro-logo, .footer-logo) .logo-ring {
   fill: none;
   stroke: currentColor;
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
 }
 
-[data-look^='2l'] :is(.hero-logo, .intro-logo) .logo-word {
+/* The name in its eleven letters: each can trace its outline in a hairline, then fill in */
+[data-look^='2l'] .logo-l {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  stroke-opacity: 0;
+}
+
+/* one after another, with a breath between DAVID and NEEMAN */
+.logo-l:nth-of-type(2) {
+  --li: 1;
+}
+
+.logo-l:nth-of-type(3) {
+  --li: 2;
+}
+
+.logo-l:nth-of-type(4) {
+  --li: 3;
+}
+
+.logo-l:nth-of-type(5) {
+  --li: 4;
+}
+
+.logo-l:nth-of-type(6) {
+  --li: 5.6;
+}
+
+.logo-l:nth-of-type(7) {
+  --li: 6.6;
+}
+
+.logo-l:nth-of-type(8) {
+  --li: 7.6;
+}
+
+.logo-l:nth-of-type(9) {
+  --li: 8.6;
+}
+
+.logo-l:nth-of-type(10) {
+  --li: 9.6;
+}
+
+.logo-l:nth-of-type(11) {
+  --li: 10.6;
+}
+
+/* The three small lines, in the logo's own font (Manrope), spelled right */
+[data-look^='2l'] .logo-tag text {
+  font: 700 13.89px/1 'Manrope', 'Assistant', sans-serif;
+  letter-spacing: 1.53px;
+  text-anchor: middle;
   fill: currentColor;
 }
 
-/* The opening curtain: the oval draws itself, then the name appears */
+.logo-tag text:nth-of-type(2) {
+  --ti: 1;
+}
+
+.logo-tag text:nth-of-type(3) {
+  --ti: 2;
+}
+
+/* Small, the name sits in the middle of the oval and the small lines (too small to read) are
+   left out; big, it is the logo exactly as it was designed */
+[data-look^='2l'] .logo-word {
+  transform: translateY(44.5px);
+}
+
+[data-look^='2l'] .logo-tag {
+  display: none;
+}
+
+/* מ and נ: the full logo where the text column has room for it (the curtain matches, so its
+   logo can land on this one) */
+@media (min-width: 1100px) and (min-height: 820px) {
+  :is([data-look='2lm'], [data-look='2ln']) :is(.hero-logo, .intro-logo) .logo-word {
+    transform: none;
+  }
+
+  :is([data-look='2lm'], [data-look='2ln']) :is(.hero-logo, .intro-logo) .logo-tag {
+    display: inline;
+  }
+
+  :root:is([data-look='2lm'], [data-look='2ln']) .hero-logo {
+    width: min(100%, 600px);
+  }
+
+  :root:is([data-look='2lm'], [data-look='2ln']) .intro-logo {
+    width: min(80vw, 720px);
+  }
+}
+
+@media (min-width: 760px) {
+  [data-look^='2l'] .footer-logo .logo-word {
+    transform: none;
+  }
+
+  [data-look^='2l'] .footer-logo .logo-tag {
+    display: inline;
+  }
+}
+
+/* ---------- The opening curtain: the logo draws itself ---------- */
+
+/* the oval, then each letter traced and filled, then the small lines; then home.js flies the
+   logo down to its place on the opening screen as the curtain clears (any scroll, tap or key
+   skips ahead). If the script can't run, the curtain still clears. */
 [data-look^='2l'] .intro {
-  animation-delay: 1.4s;
+  animation-delay: 3.4s;
 }
 
 [data-look^='2l'] .intro::before,
@@ -4602,31 +4719,102 @@ html.a11y-still[data-look^='2l'] {
 
 [data-look^='2l'] .intro-logo {
   position: relative;
-  width: min(78vw, 560px);
+  width: min(80vw, 560px);
 }
 
 [data-look^='2l'] .intro-logo .logo-ring {
-  stroke-dasharray: 1;
-  animation: ring-draw 1.25s cubic-bezier(0.65, 0, 0.35, 1) 0.05s both;
+  animation: ring-draw 1s cubic-bezier(0.65, 0, 0.35, 1) 0.05s both;
 }
 
-[data-look^='2l'] .intro-logo .logo-word {
-  animation: logo-word-in 0.9s var(--ease) 0.5s both;
+[data-look^='2l'] .intro-logo .logo-l {
+  animation: letter-draw 1s cubic-bezier(0.45, 0, 0.25, 1) calc(0.25s + var(--li, 0) * 0.055s) both;
 }
 
-/* The opening screen: the logo leads, the headline follows quieter */
+[data-look^='2l'] .intro-logo .logo-tag text {
+  animation: tag-in 0.75s var(--ease) calc(1.05s + var(--ti, 0) * 0.08s) both;
+}
+
+/* ---------- The opening screen: the logo leads, the headline follows quieter ---------- */
+
 [data-look^='2l'] .hero-logo {
+  --dock: 0;
   width: min(100%, 480px, 52svh);
   margin: 0 0 clamp(16px, 2.6svh, 28px);
 }
 
+/* with no curtain (later pages of the visit), the logo draws itself here */
 [data-look^='2l'] .hero-logo .logo-ring {
-  stroke-dasharray: 1;
-  animation: ring-draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--intro) + 0.05s) both;
+  animation: ring-draw 1.3s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--intro) + 0.05s) both;
 }
 
-[data-look^='2l'] .hero-logo .logo-word {
-  animation: logo-word-in 1.1s var(--ease) calc(var(--intro) + 0.4s) both;
+[data-look^='2l'] .hero-logo .logo-l {
+  animation: letter-draw 1.1s cubic-bezier(0.45, 0, 0.25, 1) calc(var(--intro) + 0.3s + var(--li, 0) * 0.06s) both;
+}
+
+[data-look^='2l'] .hero-logo .logo-tag text {
+  animation: tag-in 0.8s var(--ease) calc(var(--intro) + 1.15s + var(--ti, 0) * 0.08s) both;
+}
+
+/* While the curtain is up, this logo waits (already drawn) for the curtain's logo to land on it
+   (home.js adds .logo-landed); if the script can't run, it shows after a moment anyway */
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.no-intro):not(.a11y-still):not(.logo-landed)[data-look^='2l']:has(.intro) .hero-logo {
+    animation: logo-wait 0s linear 3.4s both;
+  }
+
+  html.js:not(.no-intro):not(.a11y-still)[data-look^='2l']:has(.intro) .hero-logo :is(.logo-ring, .logo-l, .logo-tag text, .logo-guides > *),
+  html.logo-landed[data-look^='2l'] .hero-logo :is(.logo-ring, .logo-l, .logo-tag text, .logo-guides > *) {
+    animation: none;
+  }
+}
+
+/* ---------- As the page scrolls, the name rises into the header (home.js) ---------- */
+
+.logo-dock {
+  display: none;
+}
+
+[data-look^='2l'] .logo-dock {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 55;
+  display: block;
+  height: auto;
+  overflow: visible;
+  visibility: hidden;
+  color: var(--ink);
+  fill: currentColor;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+[data-look^='2l'] .logo-dock.is-flying {
+  visibility: visible;
+}
+
+/* At the top of the page the opening screen's logo is the logo; the header's shows once the name
+   has arrived (and whenever it has keyboard focus) */
+html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand-logo {
+  opacity: 0;
+}
+
+html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible .brand-logo {
+  opacity: 1;
+}
+
+[data-look^='2l'] .hero-logo.is-docking .logo-word {
+  visibility: hidden;
+}
+
+/* the small lines fade as the name leaves, and the oval un-draws (each version can change this);
+   scrolling back up brings them back */
+[data-look^='2l'] .hero-logo .logo-tag {
+  opacity: calc(1 - var(--dock) * 3);
+}
+
+[data-look^='2l'] .hero-logo .logo-ring {
+  stroke-dashoffset: var(--dock);
 }
 
 [data-look^='2l'] .hero::before,
@@ -4668,14 +4856,19 @@ html.a11y-still[data-look^='2l'] {
   color: var(--ink);
 }
 
-/* The footer: the logo, and the name very large at the bottom, like a watermark */
+/* The footer: the logo, and at the very end the full logo once more, drawing itself as it
+   comes into view */
 [data-look^='2l'] .footer-brand .brand-logo {
   width: clamp(132px, 14vw, 172px);
 }
 
 [data-look^='2l'] .footer-mark {
+  display: grid;
+  place-items: center;
   height: auto;
-  aspect-ratio: 610 / 82;
+  margin-top: clamp(52px, 8vw, 104px);
+  padding-bottom: clamp(40px, 6vw, 80px);
+  overflow: visible;
   font-size: 1rem;
 }
 
@@ -4684,12 +4877,33 @@ html.a11y-still[data-look^='2l'] {
 }
 
 [data-look^='2l'] .footer-logo {
-  display: block;
-  width: 100%;
-  height: auto;
-  fill: currentColor;
-  color: color-mix(in srgb, var(--ink) 9%, transparent);
-  transition: transform 1.6s var(--ease);
+  width: min(100%, 860px);
+}
+
+[data-look^='2l'] .footer-mark.is-visible .footer-logo .logo-ring {
+  animation: ring-draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both;
+}
+
+[data-look^='2l'] .footer-mark.is-visible .footer-logo .logo-l {
+  animation: letter-draw 1.2s cubic-bezier(0.45, 0, 0.25, 1) calc(0.45s + var(--li, 0) * 0.07s) both;
+}
+
+[data-look^='2l'] .footer-mark.is-visible .footer-logo .logo-tag text {
+  animation: tag-in 0.9s var(--ease) calc(1.45s + var(--ti, 0) * 0.1s) both;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.a11y-still)[data-look^='2l'] .footer-mark.reveal:not(.is-visible) .footer-logo .logo-ring {
+    stroke-dashoffset: 1;
+  }
+
+  html.js:not(.a11y-still)[data-look^='2l'] .footer-mark.reveal:not(.is-visible) .footer-logo .logo-l {
+    fill-opacity: 0;
+  }
+
+  html.js:not(.a11y-still)[data-look^='2l'] .footer-mark.reveal:not(.is-visible) .footer-logo .logo-tag {
+    opacity: 0;
+  }
 }
 
 /* ---------- Precise: hairlines, no soft shadows, light headings ---------- */
@@ -4880,12 +5094,31 @@ html.a11y-still[data-look^='2l'] {
   color: var(--muted);
 }
 
-/* Section numbers sit in a small oval, like the logo */
+/* Section numbers sit in a small oval, like the logo's, which draws itself around the number
+   as the section comes into view */
 [data-look='2lm'] .sec-num {
+  position: relative;
   width: fit-content;
   padding: 5px 15px 5px 13px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+}
+
+[data-look='2lm'] .sec-num::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
   border: 1px solid var(--line-strong);
   border-radius: 50%;
+  -webkit-mask: conic-gradient(from 90deg, #000 var(--sweep), transparent 0);
+  mask: conic-gradient(from 90deg, #000 var(--sweep), transparent 0);
+  transition: --sweep 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.25s;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.a11y-still)[data-look='2lm'] .reveal:not(.is-visible) .sec-num::before {
+    --sweep: 0deg;
+  }
 }
 
 [data-look='2lm'] .sec-num::after {
@@ -5050,12 +5283,87 @@ html.a11y-still[data-look^='2l'] {
   height: 1px;
 }
 
+/* The logo on its construction drawing: the oval's axes, the corners of its box, its two foci
+   and lines along the top and bottom of the name. They draw first and stay, faint. */
+[data-look='2ln'] :is(.hero-logo, .intro-logo, .footer-logo) .logo-guides {
+  display: inline;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  opacity: 0.42;
+}
+
+[data-look='2ln'] .logo-guides .g-axis {
+  stroke-dasharray: 7 7;
+}
+
+[data-look='2ln'] .logo-guides .g-name {
+  stroke-dasharray: 3 6;
+}
+
+[data-look='2ln'] .logo-guides .g-focus {
+  fill: currentColor;
+  stroke: none;
+}
+
+[data-look='2ln'] .logo-guides > * {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+[data-look='2ln'] .hero-logo .logo-guides > * {
+  animation: guide-in 0.9s var(--ease) calc(var(--intro) + var(--gi, 0s)) both;
+}
+
+[data-look='2ln'] .intro-logo .logo-guides > * {
+  animation: guide-in 0.8s var(--ease) var(--gi, 0s) both;
+}
+
+[data-look='2ln'] .footer-mark.is-visible .footer-logo .logo-guides > * {
+  animation: guide-in 1s var(--ease) var(--gi, 0s) both;
+}
+
+[data-look='2ln'] .logo-guides .g-name {
+  --gi: 0.15s;
+}
+
+[data-look='2ln'] .logo-guides .g-ticks {
+  --gi: 0.3s;
+}
+
+[data-look='2ln'] .logo-guides .g-focus {
+  --gi: 0.45s;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.a11y-still)[data-look='2ln'] .footer-mark.reveal:not(.is-visible) .footer-logo .logo-guides > * {
+    scale: 0;
+  }
+}
+
+/* as the name rises into the header, its drawing fades away */
+[data-look='2ln'] .hero-logo > .logo-guides {
+  opacity: calc(0.42 * (1 - var(--dock) * 1.6));
+}
+
 /* The logo's oval as a dashed construction line */
-[data-look='2ln'] .hero-logo .logo-ring {
+[data-look='2ln'] :is(.hero-logo, .intro-logo, .footer-logo) .logo-ring {
   stroke-dasharray: 0.006 0.006;
   stroke-dashoffset: 0;
   opacity: 0.55;
+}
+
+[data-look='2ln'] .hero-logo .logo-ring {
+  opacity: calc(0.55 * (1 - var(--dock)));
   animation: dash-in 1.6s var(--ease) calc(var(--intro) + 0.05s) both;
+}
+
+[data-look='2ln'] .intro-logo .logo-ring {
+  animation: dash-in 1.2s var(--ease) 0.05s both;
+}
+
+[data-look='2ln'] .footer-mark.is-visible .footer-logo .logo-ring {
+  animation: dash-in 1.6s var(--ease) 0.1s both;
 }
 
 [data-look='2ln'] .hero-title .line > .grad {
@@ -5232,79 +5540,102 @@ html.a11y-still[data-look^='2l'] {
   border-radius: 999px;
 }
 
-/* Centered, like the logo: the logo, the room in its oval, then the words */
+/* Centered, like the logo: the full logo is the centerpiece. The room is inside its oval, faint
+   at first, and comes into focus as the name rises into the header (home.js sets --dock) */
 [data-look='2ls'] .hero {
-  padding-top: calc(64px + clamp(40px, 6svh, 112px));
+  padding-top: calc(64px + clamp(36px, 9svh, 120px));
 }
 
 [data-look='2ls'] .hero-inner {
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: 'photo' 'head';
   justify-items: center;
-  row-gap: clamp(20px, 3.4svh, 38px);
 }
 
 [data-look='2ls'] .hero-head {
-  grid-area: head;
+  width: 100%;
   justify-items: center;
   text-align: center;
 }
 
-[data-look='2ls'] .hero-logo {
-  --w: min(84vw, 400px, 46svh);
-  width: var(--w);
-  margin: calc(var(--w) * -0.105) 0 calc(var(--w) * -0.105 + clamp(16px, 2.4vw, 26px));
+[data-look='2ls'] .hero-room {
+  display: none;
 }
 
+[data-look='2ls'] .hero-logo {
+  width: min(100%, 640px, calc(30svh * 852 / 312));
+  margin: 0 0 clamp(18px, 3svh, 34px);
+}
+
+@media (min-width: 700px) and (min-height: 640px) {
+  [data-look='2ls'] :is(.hero-logo, .intro-logo) .logo-word {
+    transform: none;
+  }
+
+  [data-look='2ls'] :is(.hero-logo, .intro-logo) .logo-tag {
+    display: inline;
+  }
+
+  [data-look='2ls'] .intro-logo {
+    width: min(80vw, 720px);
+  }
+}
+
+/* once the logo has drawn itself the room slowly develops inside the oval, softly; scrolling
+   brings it fully into focus while the oval is still on screen */
+[data-look='2ls'] .hero-logo {
+  --window-rest: 0.3;
+}
+
+[data-look='2ls'][data-theme='dark'] .hero-logo {
+  --window-rest: 0.2;
+}
+
+[data-look='2ls'] .hero-logo .logo-window {
+  display: inline;
+  /* soft at rest; clears once the name has left the oval */
+  opacity: calc(var(--window-rest) + (1 - var(--window-rest)) * clamp(0, (var(--dock) - 0.25) / 0.35, 1));
+}
+
+[data-look='2ls'] .hero-logo .logo-window image {
+  transform-box: fill-box;
+  transform-origin: 50% 62%;
+  transform: scale(calc(1.12 - 0.12 * clamp(0, (var(--dock) - 0.2) / 0.55, 1)));
+  animation: window-develop 2.6s ease-in-out calc(var(--intro) + 1.5s) both;
+}
+
+/* the oval stays: it is the window's frame */
 [data-look='2ls'] .hero-logo .logo-ring {
-  display: none;
+  stroke-dashoffset: 0;
+}
+
+/* Thin rings ripple out around the oval, one after another, slowly, like water */
+[data-look='2ls'] :is(.hero-logo, .footer-logo) .logo-ripple {
+  display: inline;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  /* fixed start times: the curtain's timing changes once it's gone, which would make them jump */
+  animation: ripple 6s cubic-bezier(0.2, 0.6, 0.3, 1) 3.4s infinite;
+}
+
+[data-look='2ls'] :is(.hero-logo, .footer-logo) .logo-ripple + .logo-ripple {
+  animation-delay: 6.4s;
+}
+
+[data-look='2ls'] .footer-logo .logo-ripple {
+  animation-delay: 2.4s;
+}
+
+[data-look='2ls'] .footer-logo .logo-ripple + .logo-ripple {
+  animation-delay: 5.4s;
 }
 
 [data-look='2ls'] .hero-title .line > .grad {
   color: var(--accent);
-}
-
-[data-look='2ls'] .hero-room {
-  grid-area: photo;
-  justify-self: center;
-  /* on short screens the oval gets smaller, so the booking button stays on the first screen */
-  width: min(100%, 620px, calc(22svh * 848 / 308));
-  aspect-ratio: 848 / 308;
-  border: 1px solid var(--line-strong);
-  border-radius: 50%;
-  overflow: visible;
-  background: none;
-  box-shadow: none;
-  animation: none;
-}
-
-/* the photo stays exactly inside its thin line (no zoom or drift), so the oval's edge is always crisp */
-[data-look='2ls'] .hero-room img {
-  border-radius: 50%;
-  object-position: 50% 62%;
-  scale: 1;
-  translate: none;
-  animation: oval-open 1.6s var(--ease) calc(var(--intro) + 0.1s) both;
-}
-
-/* Thin rings ripple out around the oval, one after another */
-[data-look='2ls'] .hero-room::before,
-[data-look='2ls'] .hero-room::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border: 1px solid var(--accent);
-  border-radius: 50%;
-  background: none;
-  transform: none;
-  pointer-events: none;
-  opacity: 0;
-  animation: ripple 6s cubic-bezier(0.2, 0.6, 0.3, 1) calc(var(--intro) + 1s) infinite;
-}
-
-[data-look='2ls'] .hero-room::after {
-  animation-delay: calc(var(--intro) + 4s);
 }
 
 [data-look='2ls'] .hero-treatments {
@@ -5357,17 +5688,8 @@ html.a11y-still[data-look^='2l'] {
     padding-top: calc(64px + 26px);
   }
 
-  [data-look='2ls'] .hero-inner {
-    row-gap: 16px;
-  }
-
-  [data-look='2ls'] .hero-room {
-    width: 86%;
-  }
-
   [data-look='2ls'] .hero-logo {
-    --w: min(74vw, 300px);
-    margin-bottom: calc(var(--w) * -0.105 + 10px);
+    margin-bottom: 14px;
   }
 
   [data-look='2ls'] .hero-treatments {
@@ -5463,10 +5785,54 @@ html.a11y-still[data-look^='2l'] {
   }
 }
 
-@keyframes logo-word-in {
+@keyframes letter-draw {
+  0% {
+    stroke-dashoffset: 1;
+    stroke-opacity: 1;
+    fill-opacity: 0;
+  }
+
+  58% {
+    stroke-dashoffset: 0;
+    stroke-opacity: 1;
+    fill-opacity: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    stroke-opacity: 0;
+    fill-opacity: 1;
+  }
+}
+
+@keyframes tag-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(5px);
+    letter-spacing: 3.2px;
+  }
+}
+
+@keyframes guide-in {
+  from {
+    opacity: 0;
+    scale: 0;
+  }
+}
+
+@keyframes window-develop {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes logo-wait {
+  from {
+    visibility: hidden;
+  }
+
+  to {
+    visibility: visible;
   }
 }
 
@@ -5930,6 +6296,13 @@ html.js .reveal:not(.is-visible) {
    with a soft, feathered edge (site.js sets --vt-x/--vt-y, the button, and
    --vt-end, the farthest corner). Meanwhile nothing fades on its own, so the
    whole page changes together. */
+/* how much of an oval is drawn (version מ's section numbers) */
+@property --sweep {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 360deg;
+}
+
 @property --vt-r {
   syntax: '<length>';
   inherits: false;

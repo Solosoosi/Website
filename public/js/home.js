@@ -545,6 +545,148 @@ function renderAll() {
   renderHours();
 }
 
+// The versions built around the logo (data-look 2l…): the curtain's logo lands on the
+// opening screen's, and as the page scrolls the name rises out of its oval into the header
+// (and comes back down on the way up). Nothing moves when motion is turned off.
+function initLogoMotion() {
+  const root = document.documentElement;
+  const header = document.querySelector('.site-header');
+  const heroLogo = document.querySelector('.hero .hero-logo');
+  const brandLogo = header?.querySelector('.brand-logo');
+  const word = heroLogo?.querySelector('.logo-word');
+  if (!heroLogo || !brandLogo || !word) return;
+  const logoLook = () => (root.dataset.look || '').startsWith('2l');
+  const intro = document.querySelector('.intro');
+  const introLogo = intro?.querySelector('.intro-logo');
+  let introBusy = false;
+
+  // ---- The curtain's logo lands on the opening screen ----
+  if (introLogo && logoLook() && !reducedMotion() && getComputedStyle(intro).display !== 'none') {
+    introBusy = true;
+    const stop = new AbortController();
+    const land = (quick) => {
+      if (!introBusy) return;
+      introBusy = false;
+      stop.abort();
+      for (const a of introLogo.getAnimations({ subtree: true })) a.finish();
+      const from = introLogo.getBoundingClientRect();
+      const to = heroLogo.getBoundingClientRect();
+      const finish = () => {
+        root.classList.toggle('logo-landed', true);
+        intro.style.visibility = 'hidden';
+        request();
+      };
+      if (!introLogo.animate) {
+        finish();
+        return;
+      }
+      const ms = quick ? 450 : 950;
+      // no place to land on screen (the booking page, or opened further down): just fade out
+      if (!from.width || !to.width || to.bottom < 0 || to.top > window.innerHeight) {
+        intro.animate([{ opacity: 1 }, { opacity: 0 }], { duration: ms * 0.6, easing: 'ease-out', fill: 'forwards' }).finished.then(finish, finish);
+        return;
+      }
+      const k = to.width / from.width;
+      const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+      const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+      introLogo.animate([{ transform: 'none' }, { transform: `translate(${dx}px, ${dy}px) scale(${k})` }], {
+        duration: ms,
+        easing: 'cubic-bezier(0.65, 0, 0.25, 1)',
+        fill: 'forwards',
+      });
+      intro
+        .animate([{ backgroundColor: getComputedStyle(intro).backgroundColor }, { backgroundColor: 'transparent' }], {
+          duration: ms * 0.8,
+          delay: ms * 0.2,
+          easing: 'ease-in-out',
+          fill: 'forwards',
+        })
+        .finished.then(finish, finish);
+    };
+    // once the logo has drawn itself (or straight away if the visitor scrolls, taps or types)
+    Promise.all(introLogo.getAnimations({ subtree: true }).map((a) => a.finished)).then(
+      () => land(false),
+      () => {},
+    );
+    setTimeout(() => land(false), 2600);
+    for (const type of ['wheel', 'touchstart', 'pointerdown', 'keydown']) {
+      window.addEventListener(type, () => land(true), { passive: true, signal: stop.signal });
+    }
+  }
+
+  // ---- The name rises into the header ----
+  const NS = 'http://www.w3.org/2000/svg';
+  const dock = document.createElementNS(NS, 'svg');
+  dock.setAttribute('class', 'logo-dock');
+  dock.setAttribute('viewBox', '0 0 610 111');
+  dock.setAttribute('aria-hidden', 'true');
+  dock.setAttribute('focusable', 'false');
+  const use = document.createElementNS(NS, 'use');
+  use.setAttribute('href', brandLogo.querySelector('use')?.getAttribute('href') || 'images/logo-wordmark.svg#word');
+  dock.append(use);
+  document.body.append(dock);
+
+  const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+  let queued = false;
+  // (classList.toggle with a second argument changes nothing when the class is already right,
+  // so the observer below isn't woken by these updates)
+  function update() {
+    queued = false;
+    const active =
+      logoLook() && !reducedMotion() && heroLogo.getClientRects().length > 0 && brandLogo.getClientRects().length > 0;
+    root.classList.toggle('dock-on', active);
+    if (!active) {
+      root.classList.toggle('dock-done', false);
+      heroLogo.classList.toggle('is-docking', false);
+      heroLogo.style.removeProperty('--dock');
+      dock.classList.toggle('is-flying', false);
+      return;
+    }
+    const y = window.scrollY;
+    const r = heroLogo.getBoundingClientRect();
+    const u = r.width / 852;
+    const tf = getComputedStyle(word).transform;
+    const shift = tf && tf !== 'none' ? new DOMMatrixReadOnly(tf).m42 : 0; // the name sits lower when the small lines are left out
+    const from = { left: r.left + 121 * u, top: r.top + (56 + shift) * u, width: 610 * u };
+    from.height = (from.width * 111) / 610;
+    // where the header's logo sits when the header is showing
+    const hr = header.getBoundingClientRect();
+    const br = brandLogo.getBoundingClientRect();
+    const to = { left: br.left, top: (parseFloat(getComputedStyle(header).top) || 0) + (br.top - hr.top), width: br.width };
+    to.height = br.height;
+    const span = Math.max(48, from.top + y + from.height / 2 - (to.top + to.height / 2));
+    const t = introBusy ? 0 : clamp01(y / span);
+    heroLogo.style.setProperty('--dock', t.toFixed(3));
+    if (t > 0) root.classList.toggle('logo-landed', true); // finish the drawing at once
+    heroLogo.classList.toggle('is-docking', t > 0);
+    root.classList.toggle('dock-done', t >= 1);
+    const flying = t > 0 && t < 1;
+    dock.classList.toggle('is-flying', flying);
+    if (flying) {
+      const e = ease(t);
+      const left = from.left + (to.left - from.left) * e;
+      const top = from.top + (to.top - from.top) * e;
+      const width = from.width + (to.width - from.width) * e;
+      dock.style.width = `${from.width}px`;
+      dock.style.transform = `translate(${left.toFixed(2)}px, ${top.toFixed(2)}px) scale(${(width / from.width).toFixed(4)})`;
+    }
+  }
+  function request() {
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(update);
+    }
+  }
+  window.addEventListener('scroll', request, { passive: true });
+  window.addEventListener('resize', request);
+  window.addEventListener('hashchange', request);
+  window.addEventListener('load', request);
+  document.fonts?.ready.then(request);
+  // a version picked in the switcher, or motion turned off in the accessibility menu
+  new MutationObserver(request).observe(root, { attributes: true, attributeFilter: ['data-look', 'class'] });
+  request();
+}
+
 // The intro curtain is a one-off: once the hero has settled, take it out so
 // it doesn't replay when the page is shown again.
 const intro = document.querySelector('.intro');
@@ -576,6 +718,7 @@ initActionBar();
 initStripProgress();
 initClinicVideo();
 splitHeadline();
+initLogoMotion();
 
 loadConfig()
   .then((cfg) => {
