@@ -4509,6 +4509,214 @@ html.a11y-contrast[data-look='2c'] .stack-num {
   animation: sun 30s ease-in-out -8s infinite alternate-reverse;
 }
 
+/* ---------- Version ו: cream and earth – calm, flat and led by the photos ----------
+   From the web research (Aesop, Lumera and similar wellness sites): warm off-white
+   instead of white, deep brown instead of black, taupe and rose-clay as the only
+   colors, no shadows or rounded corners, so the real photos carry the warmth. On
+   computers the room photo fills one side of the opening screen. */
+
+:root[data-look='2f'] {
+  --bg: #fbf5ee;
+  --bg-2: #f3eadf;
+  --surface: #fffaf4;
+  --glass: #fffaf4;
+  --glass-strong: #fffaf4;
+  --glass-border: #eadfd2;
+  --ink: #221814;
+  --ink-2: #4a3c35;
+  --muted: #7e6357;
+  --line: rgb(34 24 20 / 0.12);
+  --line-strong: rgb(34 24 20 / 0.24);
+  --accent: #2b201b;
+  --accent-2: #4a3c35;
+  --accent-ink: #221814;
+  --on-accent: #fbf5ee;
+  --accent-soft: #efe2d6;
+  --spark: #a8705f;
+  --spark-ink: #8a5646;
+  --blush: #ead9d1;
+  --curtain: var(--blush);
+  --glow-1: #f0e1d6;
+  --glow-2: #ece6dc;
+  --glow-3: #ead9d1;
+  --glow-4: #f1e8dc;
+  --open: #4f7a52;
+  --photo-bg: #ece2d6;
+  --shadow-soft: none;
+  --shadow-lift: none;
+  --header-bg: rgb(251 245 238 / 0.94);
+  --radius-sm: 0px;
+  --radius: 0px;
+  --radius-lg: 2px;
+  --radius-xl: 2px;
+}
+
+:root[data-look='2f'][data-theme='dark'] {
+  --bg: #17110e;
+  --bg-2: #1d1612;
+  --surface: #221a16;
+  --glass: #221a16;
+  --glass-strong: #221a16;
+  --glass-border: #3a2e27;
+  --ink: #f4ebe2;
+  --ink-2: #d8cbbf;
+  --muted: #b39d91;
+  --line: rgb(244 235 226 / 0.12);
+  --line-strong: rgb(244 235 226 / 0.24);
+  --accent: #f4ebe2;
+  --accent-2: #d8cbbf;
+  --accent-ink: #f4ebe2;
+  --on-accent: #17110e;
+  --accent-soft: #33261f;
+  --spark: #d9a796;
+  --spark-ink: #e2b6a6;
+  --blush: #33241e;
+  --glow-1: #2b1f19;
+  --glow-2: #221c18;
+  --glow-3: #33241e;
+  --glow-4: #28201a;
+  --open: #93cf9b;
+  --photo-bg: #29201b;
+  --header-bg: rgb(23 17 14 / 0.94);
+}
+
+/* No drifting light and no shadows: quiet surfaces, hairlines and the photos */
+[data-look='2f'] .hero::before,
+[data-look='2f'] .final-card::before {
+  display: none;
+}
+
+[data-look='2f'] .header-inner,
+[data-look='2f'] .site-header.is-scrolled .header-inner,
+[data-look='2f'] .btn-primary,
+[data-look='2f'] .btn-primary:hover {
+  box-shadow: none;
+}
+
+[data-look='2f'] .brand-orb {
+  background: var(--blush);
+  animation: none;
+}
+
+[data-look='2f'] .brand-orb::after,
+[data-look='2f'] .intro-orb,
+[data-look='2f'] .pill-label::before {
+  background: var(--spark);
+  box-shadow: none;
+}
+
+[data-look='2f'] .hero-title,
+[data-look='2f'] .section-title,
+[data-look='2f'] .stack-name,
+[data-look='2f'] .final-title {
+  font-weight: 300;
+}
+
+[data-look='2f'] .hero-title .line > .grad,
+[data-look='2f'] .hero-treatments .ht-go {
+  color: var(--spark);
+}
+
+[data-look='2f'] .stack-num,
+[data-look='2f'] .sec-num {
+  color: var(--spark-ink);
+}
+
+[data-look='2f'] .btn-primary::before {
+  background: var(--spark-ink);
+}
+
+[data-look='2f'] .hero-treatments img {
+  width: 52px;
+  height: 52px;
+  border-radius: 0;
+}
+
+[data-look='2f'] .about-photo .blob,
+[data-look='2f'] .statement-media,
+[data-look='2f'] .hero-room {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Treatments: the photo takes the larger share of each row */
+[data-look='2f'] .stack-card,
+[data-look='2f'] .stack-card:nth-child(n) {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+}
+
+[data-look='2f'] .stack-card:nth-child(even) {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+}
+
+[data-look='2f'] .stack-img {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 5 / 4;
+}
+
+[data-look='2f'] .mosaic,
+[data-look='2f'] .mosaic-col {
+  gap: 6px;
+}
+
+/* Computers: text on one half, the room photo filling the other, edge to edge */
+@media (min-width: 901px) {
+  [data-look='2f'] .hero {
+    display: flex;
+    align-items: center;
+    min-height: min(100svh, 1000px);
+  }
+
+  [data-look='2f'] .hero-inner {
+    position: static;
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  [data-look='2f'] .hero-head {
+    justify-self: start;
+    max-width: 52%;
+  }
+
+  [data-look='2f'] .hero-title .line {
+    font-size: clamp(3rem, 7vw, 6.6rem);
+  }
+
+  [data-look='2f'] .hero-room {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    inset-inline-end: 0;
+    width: 44vw;
+    aspect-ratio: auto;
+    animation: fade-in 1.2s var(--ease) calc(var(--intro) + 0.1s) both;
+  }
+}
+
+/* Phones and tablets: the photo runs edge to edge below the text */
+@media (max-width: 900px) {
+  [data-look='2f'] .hero-room {
+    justify-self: stretch;
+    width: calc(100% + 2 * var(--gutter));
+    max-width: none;
+    margin-inline: calc(var(--gutter) * -1);
+    aspect-ratio: 1;
+  }
+}
+
+@media (max-width: 860px) {
+  [data-look='2f'] .stack-card,
+  [data-look='2f'] .stack-card:nth-child(n),
+  [data-look='2f'] .stack-card:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-look='2f'] .stack-img {
+    aspect-ratio: 4 / 3;
+  }
+}
+
 /* ---------- Phones: the bottom bar waits until the opening button has scrolled away ---------- */
 
 @media (max-width: 760px) {

@@ -162,13 +162,15 @@ function renderBusiness() {
   const address = pick(b.address);
   // "Street 5, City (Building)" → street line for maps/navigation, building shown separately.
   const street = address.replace(/\s*\(.*?\)\s*/g, ' ').trim();
+  // On screen, a house number stays on the same line as its street name.
+  const keepNumber = (text) => text.replace(/ (?=\d)/g, ' ');
   const values = {
     name: pick(b.name),
     tagline: pick(b.tagline),
     phone: b.phone,
     email: b.email,
-    address,
-    street,
+    address: keepNumber(address),
+    street: keepNumber(street),
     building: (address.match(/\((.*?)\)/) || [])[1] || '',
     year: String(new Date().getFullYear()),
   };
@@ -597,6 +599,7 @@ const LOOKS = [
   ['2c', 'ג', 'חול ודבש'],
   ['2d', 'ד', 'שקט ומינימלי'],
   ['2e', 'ה', 'מרווה וחימר'],
+  ['2f', 'ו', 'שמנת ואדמה'],
 ];
 
 function initLookSwitcher() {

@@ -217,7 +217,7 @@ const themeInit = `(function () {
     if (/[?&]options(=|&|$)/.test(location.search)) {
       r.classList.add('show-looks');
       var lk = localStorage.getItem('look');
-      if (/^2[b-e]?$/.test(lk || '')) r.setAttribute('data-look', lk);
+      if (/^2[b-f]?$/.test(lk || '')) r.setAttribute('data-look', lk);
     }
   } catch (e) {}
   if (location.hash !== '#book') r.classList.add('bar-wait');
