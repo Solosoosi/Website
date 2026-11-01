@@ -84,6 +84,12 @@ home = replaceOnce(home, 'const bookHref = (id) => `/book?service=${encodeURICom
 
 let bookJs = stripModule(read('public/js/book.js'));
 bookJs = replaceOnce(bookJs, "new URLSearchParams(location.search).get('service')", 'null');
+// The request also goes into the practitioner's Google Calendar (when connected), while WhatsApp opens.
+bookJs = replaceOnce(
+  bookJs,
+  "  window.open(href, '_blank', 'noopener');\n",
+  "  window.open(href, '_blank', 'noopener');\n  saveToCalendar({ date: state.date, time: state.time, duration: state.service.duration, service: pick(state.service.name), name: data.name.trim(), notes: (data.notes || '').trim() })?.finally(() => cache.clear());\n",
+);
 bookJs += `
 window.__bookPreset = (id) => {
   const s = state.config?.services.find((x) => x.id === id);
@@ -94,6 +100,7 @@ window.__bookPreset = (id) => {
 };
 window.__bookReset = () => {
   confirmed = null;
+  cache.clear();
   state.service = null;
   state.date = null;
   state.time = null;
@@ -109,6 +116,45 @@ window.__bookReset = () => {
 const staticBackend = `
 // ---- Static backend: everything runs in the browser ----
 const STATIC_CONFIG = ${JSON.stringify(config)};
+
+// ---- Google Calendar (when connected): googleCalendarUrl in config/site.json is the
+// address of the script in google-calendar/booking-calendar.gs. Times taken in the
+// practitioner's calendar don't show, and each request is added to it. Without it, or
+// if the calendar doesn't answer, the free times come from the opening hours alone.
+const CALENDAR_URL = STATIC_CONFIG.googleCalendarUrl || '';
+const busyByMonth = new Map(); // "YYYY-MM" → promise of { "YYYY-MM-DD": [["HH:MM","HH:MM"]] | "all" } or null
+function calendarBusy(month) {
+  if (!CALENDAR_URL) return Promise.resolve(null);
+  if (!busyByMonth.has(month)) {
+    const last = new Date(Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0)).getUTCDate();
+    const stop = new AbortController();
+    const timer = setTimeout(() => stop.abort(), 9000);
+    const busy = fetch(CALENDAR_URL + '?from=' + month + '-01&to=' + month + '-' + String(last).padStart(2, '0'), { signal: stop.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => (j && j.ok && j.busy) || null)
+      .catch(() => null)
+      .finally(() => clearTimeout(timer));
+    busyByMonth.set(month, busy);
+    busy.then((b) => { if (!b && busyByMonth.get(month) === busy) busyByMonth.delete(month); }); // try again next time
+  }
+  return busyByMonth.get(month);
+}
+// Asked as soon as the booking page opens, so the times are ready by the calendar step.
+function prefetchCalendar() {
+  if (!CALENDAR_URL) return;
+  const today = nowInZone(STATIC_CONFIG.timezone).date;
+  const last = addDays(today, STATIC_CONFIG.defaultSchedule.maxDaysAhead);
+  calendarBusy(today.slice(0, 7));
+  if (last.slice(0, 7) !== today.slice(0, 7)) calendarBusy(last.slice(0, 7));
+}
+// Sent without waiting for an answer, so WhatsApp opens at once; the times are asked again afterwards.
+function saveToCalendar(request) {
+  if (!CALENDAR_URL) return null;
+  busyByMonth.clear();
+  return fetch(CALENDAR_URL, { method: 'POST', mode: 'no-cors', keepalive: true, body: JSON.stringify(request) })
+    .catch(() => {})
+    .finally(() => busyByMonth.clear());
+}
 let staticConfigPromise = null;
 function loadConfig() {
   staticConfigPromise ??= Promise.resolve().then(() => {
@@ -136,11 +182,20 @@ async function api(url) {
     const last = addDays(now.date, schedule.maxDaysAhead);
     let from = u.searchParams.get('from');
     let to = u.searchParams.get('to');
+    const busy = await calendarBusy(from.slice(0, 7));
     if (from < now.date) from = now.date;
     if (to > last) to = last;
     const days = {};
     for (let d = from; d <= to; d = addDays(d, 1)) {
-      days[d] = slotsForDay({ date: d, duration: service.duration, schedule, now });
+      const taken = busy && busy[d];
+      days[d] = slotsForDay({
+        date: d,
+        duration: service.duration,
+        schedule,
+        now,
+        blocked: taken === 'all',
+        dayBookings: Array.isArray(taken) ? taken.map(([s, e]) => ({ start: toMinutes(s), end: toMinutes(e) })) : [],
+      });
     }
     return { days };
   }
@@ -174,6 +229,7 @@ const router = `
     document.body.dataset.route = isBook ? 'book' : 'home';
     applyTranslations();
     if (isBook) {
+      prefetchCalendar();
       window.scrollTo({ top: 0, behavior: 'instant' });
       if (pendingService) {
         const id = pendingService;

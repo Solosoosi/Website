@@ -5306,6 +5306,36 @@ html.js .reveal:not(.is-visible) {
   mix-blend-mode: normal;
 }
 
+/* Switching light/dark: the new colors spread out from the button in a circle
+   with a soft, feathered edge (site.js sets --vt-x/--vt-y, the button, and
+   --vt-end, the farthest corner). Meanwhile nothing fades on its own, so the
+   whole page changes together. */
+@property --vt-r {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+:root.theme-switch,
+:root.theme-switch *,
+:root.theme-switch *::before,
+:root.theme-switch *::after {
+  transition: none !important;
+}
+
+:root.theme-switch::view-transition-new(root) {
+  --vt-edge: clamp(80px, 14vmax, 200px);
+  -webkit-mask-image: radial-gradient(circle at var(--vt-x) var(--vt-y), #000 calc(var(--vt-r) - var(--vt-edge)), transparent var(--vt-r));
+  mask-image: radial-gradient(circle at var(--vt-x) var(--vt-y), #000 calc(var(--vt-r) - var(--vt-edge)), transparent var(--vt-r));
+  animation: theme-spread 1s cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+
+@keyframes theme-spread {
+  to {
+    --vt-r: calc(var(--vt-end) + var(--vt-edge));
+  }
+}
+
 @keyframes rise {
   from {
     transform: translateY(108%);
@@ -6765,7 +6795,46 @@ function slotsForDay({ date, duration, schedule, dayBookings = [], blocked = fal
 
 
 // ---- Static backend: everything runs in the browser ----
-const STATIC_CONFIG = {"siteUrl":"https://solosoosi.github.io/Website/","business":{"name":{"he":"דוד נאמן","en":"David Neeman"},"tagline":{"he":"יעוץ וטיפול","en":"Consultation & treatment"},"phone":"+972 58-434-4047","whatsapp":"972584344047","email":"","address":{"he":"דרויאנוב 5, תל אביב (בית כלל)","en":"5 Druyanov St., Tel Aviv (Beit Klal)"},"instagram":"","facebook":""},"timezone":"Asia/Jerusalem","currency":"ILS","services":[{"id":"dry-needling","name":{"he":"דיקור מערבי יבש","en":"Western dry needling"},"description":{"he":"שיטה לטיפול בכאבי שרירים או מגבלות תנועה אחרי פציעות או עומס. ע״י אבחון מדויק ונכון של הגוף ואיתור נקודות טריגר מתבצע דיקור במטרה לשחרר ולהתיר את הטריגר פוינטס.","en":"A method for treating muscle pain or limited movement after injuries or overload. Through an accurate assessment of the body and locating trigger points, needling is done to release the trigger points."},"duration":60,"price":null,"icon":"leaf","image":"images/svc-dry.jpg"},{"id":"cosmetic","name":{"he":"דיקור קוסמטי","en":"Cosmetic acupuncture"},"description":{"he":"מטרתו לאזן ולשחרר את שרירי הפנים והצוואר במטרה לשפר את תפקוד השרירים בפנים (הפנים מורכבים מ-43 שרירים שונים) ולעודד מראה בריא, מתוח וחיוני. כמו כן משפר זרימת דם וחמצן לרקמות העור ומסייע בחידוש רקמת העור ויצירה של קולגן ואלסטין.","en":"Its aim is to balance and release the face and neck muscles to improve how the facial muscles work (the face is made of 43 different muscles) and to encourage a healthy, firm and vital look. It also improves blood and oxygen flow to the skin tissue and helps skin renewal and the production of collagen and elastin."},"duration":60,"price":null,"icon":"sparkle","image":"images/svc-cosmetic.jpg"},{"id":"stress","name":{"he":"דיקור לסטרס","en":"Acupuncture for stress"},"description":{"he":"משלב טכניקות מהעולם היפני והסיני. נקודות עוצמתיות שמטפלות ברמות קורטיזול גבוהות ובסטרס ותורמות לשלוות נפש ואיזון הורמונלי.","en":"Combines techniques from the Japanese and Chinese traditions. Powerful points that address high cortisol levels and stress and contribute to peace of mind and hormonal balance."},"duration":60,"price":null,"icon":"sun","image":"images/svc-stress.jpg"}],"defaultSchedule":{"weeklyHours":{"0":[["12:30","19:00"]],"1":[["08:00","14:30"]],"2":[],"3":[["13:00","19:00"]],"4":[["10:00","19:00"]],"5":[],"6":[]},"slotInterval":30,"bufferMinutes":15,"minNoticeHours":0,"maxDaysAhead":30}};
+const STATIC_CONFIG = {"siteUrl":"https://solosoosi.github.io/Website/","googleCalendarUrl":"","business":{"name":{"he":"דוד נאמן","en":"David Neeman"},"tagline":{"he":"יעוץ וטיפול","en":"Consultation & treatment"},"phone":"+972 58-434-4047","whatsapp":"972584344047","email":"","address":{"he":"דרויאנוב 5, תל אביב (בית כלל)","en":"5 Druyanov St., Tel Aviv (Beit Klal)"},"instagram":"","facebook":""},"timezone":"Asia/Jerusalem","currency":"ILS","services":[{"id":"dry-needling","name":{"he":"דיקור מערבי יבש","en":"Western dry needling"},"description":{"he":"שיטה לטיפול בכאבי שרירים או מגבלות תנועה אחרי פציעות או עומס. ע״י אבחון מדויק ונכון של הגוף ואיתור נקודות טריגר מתבצע דיקור במטרה לשחרר ולהתיר את הטריגר פוינטס.","en":"A method for treating muscle pain or limited movement after injuries or overload. Through an accurate assessment of the body and locating trigger points, needling is done to release the trigger points."},"duration":60,"price":null,"icon":"leaf","image":"images/svc-dry.jpg"},{"id":"cosmetic","name":{"he":"דיקור קוסמטי","en":"Cosmetic acupuncture"},"description":{"he":"מטרתו לאזן ולשחרר את שרירי הפנים והצוואר במטרה לשפר את תפקוד השרירים בפנים (הפנים מורכבים מ-43 שרירים שונים) ולעודד מראה בריא, מתוח וחיוני. כמו כן משפר זרימת דם וחמצן לרקמות העור ומסייע בחידוש רקמת העור ויצירה של קולגן ואלסטין.","en":"Its aim is to balance and release the face and neck muscles to improve how the facial muscles work (the face is made of 43 different muscles) and to encourage a healthy, firm and vital look. It also improves blood and oxygen flow to the skin tissue and helps skin renewal and the production of collagen and elastin."},"duration":60,"price":null,"icon":"sparkle","image":"images/svc-cosmetic.jpg"},{"id":"stress","name":{"he":"דיקור לסטרס","en":"Acupuncture for stress"},"description":{"he":"משלב טכניקות מהעולם היפני והסיני. נקודות עוצמתיות שמטפלות ברמות קורטיזול גבוהות ובסטרס ותורמות לשלוות נפש ואיזון הורמונלי.","en":"Combines techniques from the Japanese and Chinese traditions. Powerful points that address high cortisol levels and stress and contribute to peace of mind and hormonal balance."},"duration":60,"price":null,"icon":"sun","image":"images/svc-stress.jpg"}],"defaultSchedule":{"weeklyHours":{"0":[["12:30","19:00"]],"1":[["08:00","14:30"]],"2":[],"3":[["13:00","19:00"]],"4":[["10:00","19:00"]],"5":[],"6":[]},"slotInterval":30,"bufferMinutes":15,"minNoticeHours":0,"maxDaysAhead":30}};
+
+// ---- Google Calendar (when connected): googleCalendarUrl in config/site.json is the
+// address of the script in google-calendar/booking-calendar.gs. Times taken in the
+// practitioner's calendar don't show, and each request is added to it. Without it, or
+// if the calendar doesn't answer, the free times come from the opening hours alone.
+const CALENDAR_URL = STATIC_CONFIG.googleCalendarUrl || '';
+const busyByMonth = new Map(); // "YYYY-MM" → promise of { "YYYY-MM-DD": [["HH:MM","HH:MM"]] | "all" } or null
+function calendarBusy(month) {
+  if (!CALENDAR_URL) return Promise.resolve(null);
+  if (!busyByMonth.has(month)) {
+    const last = new Date(Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0)).getUTCDate();
+    const stop = new AbortController();
+    const timer = setTimeout(() => stop.abort(), 9000);
+    const busy = fetch(CALENDAR_URL + '?from=' + month + '-01&to=' + month + '-' + String(last).padStart(2, '0'), { signal: stop.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => (j && j.ok && j.busy) || null)
+      .catch(() => null)
+      .finally(() => clearTimeout(timer));
+    busyByMonth.set(month, busy);
+    busy.then((b) => { if (!b && busyByMonth.get(month) === busy) busyByMonth.delete(month); }); // try again next time
+  }
+  return busyByMonth.get(month);
+}
+// Asked as soon as the booking page opens, so the times are ready by the calendar step.
+function prefetchCalendar() {
+  if (!CALENDAR_URL) return;
+  const today = nowInZone(STATIC_CONFIG.timezone).date;
+  const last = addDays(today, STATIC_CONFIG.defaultSchedule.maxDaysAhead);
+  calendarBusy(today.slice(0, 7));
+  if (last.slice(0, 7) !== today.slice(0, 7)) calendarBusy(last.slice(0, 7));
+}
+// Sent without waiting for an answer, so WhatsApp opens at once; the times are asked again afterwards.
+function saveToCalendar(request) {
+  if (!CALENDAR_URL) return null;
+  busyByMonth.clear();
+  return fetch(CALENDAR_URL, { method: 'POST', mode: 'no-cors', keepalive: true, body: JSON.stringify(request) })
+    .catch(() => {})
+    .finally(() => busyByMonth.clear());
+}
 let staticConfigPromise = null;
 function loadConfig() {
   staticConfigPromise ??= Promise.resolve().then(() => {
@@ -6793,11 +6862,20 @@ async function api(url) {
     const last = addDays(now.date, schedule.maxDaysAhead);
     let from = u.searchParams.get('from');
     let to = u.searchParams.get('to');
+    const busy = await calendarBusy(from.slice(0, 7));
     if (from < now.date) from = now.date;
     if (to > last) to = last;
     const days = {};
     for (let d = from; d <= to; d = addDays(d, 1)) {
-      days[d] = slotsForDay({ date: d, duration: service.duration, schedule, now });
+      const taken = busy && busy[d];
+      days[d] = slotsForDay({
+        date: d,
+        duration: service.duration,
+        schedule,
+        now,
+        blocked: taken === 'all',
+        dayBookings: Array.isArray(taken) ? taken.map(([s, e]) => ({ start: toMinutes(s), end: toMinutes(e) })) : [],
+      });
     }
     return { days };
   }
@@ -7366,23 +7444,33 @@ function initHeader() {
     window.matchMedia('(min-width: 1141px)').addEventListener('change', () => setOpen(false));
   }
 
-  // Theme switch: a soft circle that ripples out from the button (where supported).
+  // Theme switch: the new colors spread out from the button in a soft circle
+  // (where the browser supports it; the look is in styles.css). While it runs,
+  // no color fades on its own, so the whole page changes together.
+  let switches = 0;
   document.getElementById('theme-toggle')?.addEventListener('click', (e) => {
     const next = getTheme() === 'dark' ? 'light' : 'dark';
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || root.classList.contains('a11y-still');
-    if (!document.startViewTransition || still) return setTheme(next);
-    const x = e.clientX || window.innerWidth / 2;
-    const y = e.clientY || 40;
-    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-    const transition = document.startViewTransition(() => setTheme(next));
-    transition.ready
-      .then(() =>
-        root.animate(
-          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-          { duration: 750, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' },
-        ),
-      )
-      .catch(() => {});
+    const id = ++switches;
+    root.classList.add('theme-switch');
+    const done = () => {
+      if (id !== switches) return; // a newer switch (a quick second tap) is still running
+      root.classList.remove('theme-switch');
+      for (const p of ['--vt-x', '--vt-y', '--vt-end']) root.style.removeProperty(p);
+    };
+    if (!document.startViewTransition || still) {
+      setTheme(next);
+      requestAnimationFrame(() => requestAnimationFrame(done));
+      return;
+    }
+    const box = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX || box.left + box.width / 2;
+    const y = e.clientY || box.top + box.height / 2;
+    const reach = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    root.style.setProperty('--vt-x', `${Math.round(x)}px`);
+    root.style.setProperty('--vt-y', `${Math.round(y)}px`);
+    root.style.setProperty('--vt-end', `${Math.ceil(reach)}px`);
+    document.startViewTransition(() => setTheme(next)).finished.finally(done);
   });
   document.getElementById('lang-toggle')?.addEventListener('click', () =>
     setLang(getLang() === 'he' ? 'en' : 'he'),
@@ -8396,6 +8484,7 @@ function renderCalendar() {
         {
           type: 'button',
           class: ['day', open && 'is-available', date === state.config.today && 'is-today'].filter(Boolean).join(' '),
+          'data-date': date,
           disabled: !open,
           'aria-pressed': String(date === state.date),
           'aria-label': fmtDate(date),
@@ -8501,6 +8590,7 @@ function whatsappMessage(data) {
 function handOffToWhatsApp(data) {
   const href = `https://wa.me/${state.config.business.whatsapp}?text=${encodeURIComponent(whatsappMessage(data))}`;
   window.open(href, '_blank', 'noopener');
+  saveToCalendar({ date: state.date, time: state.time, duration: state.service.duration, service: pick(state.service.name), name: data.name.trim(), notes: (data.notes || '').trim() })?.finally(() => cache.clear());
   const booking = { date: state.date, time: state.time, duration: state.service.duration, name: data.name.trim() };
   showConfirmation(booking, false, href);
 }
@@ -8653,6 +8743,7 @@ window.__bookPreset = (id) => {
 };
 window.__bookReset = () => {
   confirmed = null;
+  cache.clear();
   state.service = null;
   state.date = null;
   state.time = null;
@@ -8688,6 +8779,7 @@ window.__bookReset = () => {
     document.body.dataset.route = isBook ? 'book' : 'home';
     applyTranslations();
     if (isBook) {
+      prefetchCalendar();
       window.scrollTo({ top: 0, behavior: 'instant' });
       if (pendingService) {
         const id = pendingService;

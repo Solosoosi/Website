@@ -16,7 +16,7 @@ The design is warm and natural, in three versions (see **Design options** below)
   - the About portrait: a curtain lifts and it warms from black and white into color; his quote lights up word by word
   - the big "טיפולי דיקור" at the very bottom rises into view
   - buttons fill with a darker tone on hover and press in slightly on touch; the header slides away while scrolling down and comes back on the way up
-  - switching the theme ripples a circle out from the button
+  - switching the theme: the new colors spread out from the button in a soft circle, and the whole page changes together
   - everything respects the "reduce motion" setting and "stop animations" in the accessibility menu
 - **Menu on phones and tablets:** the menu button opens a card under the header with the four sections, numbered 01–04 as on the page; the links come in one after another and the page behind dims. Tapping a link scrolls to its section; tapping outside the card (or Escape) only closes it.
 
@@ -69,6 +69,7 @@ Requires Node.js 22.13 or newer.
 | Default opening hours (later edited in `/admin`) | `config/site.json` → `defaultSchedule` |
 | Treatment photo | `config/site.json` → `services` → `image` |
 | Site address (used for link previews) | `config/site.json` → `siteUrl` |
+| Google Calendar connection (empty = off) | `config/site.json` → `googleCalendarUrl` |
 | All page text: about, address and hours, accessibility statement, buttons… | `public/js/i18n.js` |
 | Colors and fonts | top of `public/css/styles.css` (`:root` for light, `[data-theme='dark']` for dark) |
 
@@ -87,8 +88,9 @@ A missing phone, WhatsApp, email, Instagram or Facebook value hides that link au
 
 The `docs/` folder holds a static, single-page version of the site, made for GitHub Pages:
 
-- Free times are calculated in the visitor's browser from the opening hours in `config/site.json`. Nothing is stored, so the site can't know about existing bookings.
+- Free times are calculated in the visitor's browser from the opening hours in `config/site.json`.
 - **Booking requests and contact messages open WhatsApp** with a ready message to the practitioner, who confirms the time with the client. The booking form only asks for a name (and optional notes): the message comes from the client's own WhatsApp, so the practitioner already has their number.
+- **Google Calendar (optional):** with `googleCalendarUrl` set in `config/site.json`, times taken in David's Google Calendar don't show, an all-day event closes the day, and each booking request is added to his calendar (in yellow) while WhatsApp opens. The website only gets busy times, never his events' details; if the calendar doesn't answer, the times come from the opening hours. Setup: [`google-calendar/README.md`](google-calendar/README.md). Without it nothing is stored, so the site can't know about other bookings.
 - Direct link to the booking page: add `#book` to the address. An old or mistyped address (for example `.../book`) is sent to the right place by `docs/404.html`.
 
 **Turn it on (one time):** on GitHub, open the repo → **Settings → Pages** → under **Build and deployment**, choose **Deploy from a branch**, pick this branch and the **`/docs`** folder → **Save**. After a minute or two the site is live at `https://<username>.github.io/<repo>/`.
@@ -160,7 +162,7 @@ All data is in one file: `$DATA_DIR/site.db`. On Render, disk snapshots are take
   - reduced motion when the device asks for it
 
   The statement itself must come from the business.
-- [ ] **Privacy notice:** on the server version the booking form collects names and phone numbers, so add a short privacy policy page. (The GitHub Pages version stores nothing; the request goes out from the client's own WhatsApp.)
+- [ ] **Privacy notice:** on the server version the booking form collects names and phone numbers, so add a short privacy policy page. (The GitHub Pages version stores nothing itself; the request goes out from the client's own WhatsApp. With the Google Calendar connected, the client's name and notes are also kept in David's calendar, so mention that in the notice.)
 
 ## Project layout
 
@@ -169,6 +171,7 @@ config/site.json      business details, treatments, default hours
 server/               Express app, SQLite store, availability logic, auth, email
 public/               HTML pages, CSS, JS (i18n, theme, booking, admin)
 scripts/              build-pages.mjs (builds docs/), make-images.py (makes the web photos)
+google-calendar/      the Google Calendar script (busy times, booking requests) and how to set it up
 test/                 node:test unit and API tests
 render.yaml           Render blueprint
 Dockerfile            container image for other hosts

@@ -5253,6 +5253,36 @@ html.js .reveal:not(.is-visible) {
   mix-blend-mode: normal;
 }
 
+/* Switching light/dark: the new colors spread out from the button in a circle
+   with a soft, feathered edge (site.js sets --vt-x/--vt-y, the button, and
+   --vt-end, the farthest corner). Meanwhile nothing fades on its own, so the
+   whole page changes together. */
+@property --vt-r {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+:root.theme-switch,
+:root.theme-switch *,
+:root.theme-switch *::before,
+:root.theme-switch *::after {
+  transition: none !important;
+}
+
+:root.theme-switch::view-transition-new(root) {
+  --vt-edge: clamp(80px, 14vmax, 200px);
+  -webkit-mask-image: radial-gradient(circle at var(--vt-x) var(--vt-y), #000 calc(var(--vt-r) - var(--vt-edge)), transparent var(--vt-r));
+  mask-image: radial-gradient(circle at var(--vt-x) var(--vt-y), #000 calc(var(--vt-r) - var(--vt-edge)), transparent var(--vt-r));
+  animation: theme-spread 1s cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+
+@keyframes theme-spread {
+  to {
+    --vt-r: calc(var(--vt-end) + var(--vt-edge));
+  }
+}
+
 @keyframes rise {
   from {
     transform: translateY(108%);

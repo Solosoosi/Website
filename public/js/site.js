@@ -559,23 +559,33 @@ function initHeader() {
     window.matchMedia('(min-width: 1141px)').addEventListener('change', () => setOpen(false));
   }
 
-  // Theme switch: a soft circle that ripples out from the button (where supported).
+  // Theme switch: the new colors spread out from the button in a soft circle
+  // (where the browser supports it; the look is in styles.css). While it runs,
+  // no color fades on its own, so the whole page changes together.
+  let switches = 0;
   document.getElementById('theme-toggle')?.addEventListener('click', (e) => {
     const next = getTheme() === 'dark' ? 'light' : 'dark';
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || root.classList.contains('a11y-still');
-    if (!document.startViewTransition || still) return setTheme(next);
-    const x = e.clientX || window.innerWidth / 2;
-    const y = e.clientY || 40;
-    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-    const transition = document.startViewTransition(() => setTheme(next));
-    transition.ready
-      .then(() =>
-        root.animate(
-          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-          { duration: 750, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' },
-        ),
-      )
-      .catch(() => {});
+    const id = ++switches;
+    root.classList.add('theme-switch');
+    const done = () => {
+      if (id !== switches) return; // a newer switch (a quick second tap) is still running
+      root.classList.remove('theme-switch');
+      for (const p of ['--vt-x', '--vt-y', '--vt-end']) root.style.removeProperty(p);
+    };
+    if (!document.startViewTransition || still) {
+      setTheme(next);
+      requestAnimationFrame(() => requestAnimationFrame(done));
+      return;
+    }
+    const box = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX || box.left + box.width / 2;
+    const y = e.clientY || box.top + box.height / 2;
+    const reach = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    root.style.setProperty('--vt-x', `${Math.round(x)}px`);
+    root.style.setProperty('--vt-y', `${Math.round(y)}px`);
+    root.style.setProperty('--vt-end', `${Math.ceil(reach)}px`);
+    document.startViewTransition(() => setTheme(next)).finished.finally(done);
   });
   document.getElementById('lang-toggle')?.addEventListener('click', () =>
     setLang(getLang() === 'he' ? 'en' : 'he'),

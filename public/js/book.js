@@ -187,6 +187,7 @@ function renderCalendar() {
         {
           type: 'button',
           class: ['day', open && 'is-available', date === state.config.today && 'is-today'].filter(Boolean).join(' '),
+          'data-date': date,
           disabled: !open,
           'aria-pressed': String(date === state.date),
           'aria-label': fmtDate(date),
