@@ -65,11 +65,6 @@ save(box(load(18), 0.18, 0.30, 0.64, 1), 'svc-stress', [700, 300, 1200, 1600])
 # About: David in the clinic
 save(crop(load(11), 4 / 5), 'about', [900, 1350, 1800])
 
-# The same treatment photos uncropped (3:4), for tall photo panels
-save(crop(load(6), 3 / 4, 0.5, 0.5), 'stage-dry-needling', [900, 1350])
-save(crop(load(3), 3 / 4, 0.5, 0.5), 'stage-cosmetic', [900, 1350])
-save(crop(load(18), 3 / 4, 0.5, 0.5), 'stage-stress', [900, 1350])
-
 # Gallery: 4:5 tiles, and the whole photo for the full-screen viewer
 GALLERY = [(1, 0.55), (5, 0.35), (4, 0.5), (25, 0.5), (8, 0.5), (17, 0.5), (7, 0.45), (2, 0.7), (24, 0.5)]
 for i, (n, fy) in enumerate(GALLERY, 1):

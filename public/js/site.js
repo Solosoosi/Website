@@ -524,14 +524,39 @@ function initHeader() {
   }
 
   if (nav && toggle) {
+    const isOpen = () => nav.classList.contains('is-open');
     const setOpen = (open) => {
+      if (open === isOpen()) return;
       nav.classList.toggle('is-open', open);
+      root.classList.toggle('menu-open', open); // dims the page behind the menu
       toggle.setAttribute('aria-expanded', String(open));
       toggle.innerHTML = svg(open ? 'close' : 'menu');
     };
-    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
     nav.addEventListener('click', (e) => e.target.closest('a') && setOpen(false));
-    document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen()) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    // A tap outside the open menu closes it. On the page itself the tap does only
+    // that (it doesn't also open a photo or follow a link underneath); the other
+    // header buttons still work.
+    document.addEventListener(
+      'click',
+      (e) => {
+        if (!isOpen() || nav.contains(e.target) || toggle.contains(e.target)) return;
+        setOpen(false);
+        if (!header?.contains(e.target)) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      },
+      true,
+    );
+    // Wide screens show the links in the header instead.
+    window.matchMedia('(min-width: 1141px)').addEventListener('change', () => setOpen(false));
   }
 
   // Theme switch: a soft circle that ripples out from the button (where supported).
@@ -595,15 +620,9 @@ function initMagneticButtons() {
 
 // [id, letter, name, theme it opens in]
 const LOOKS = [
-  ['2', 'א', 'טבעי וחם'],
-  ['2c', 'ג', 'חול ודבש'],
-  ['2e', 'ה', 'מרווה וחימר'],
   ['2g', 'ז', 'שקיעה'],
-  ['2h', 'ח', 'מרידיאנים'],
   ['2i', 'ט', 'לילה', 'dark'],
   ['2j', 'י', 'בוטני'],
-  ['2k', 'כ', 'ים וחול'],
-  ['2l', 'ל', 'במה'],
 ];
 
 function initLookSwitcher() {

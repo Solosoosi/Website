@@ -4,21 +4,21 @@ The website of an acupuncture clinic in Tel Aviv, in Hebrew. Clients see the tre
 
 All the text on the site is the practitioner's own wording, lightly proofread. Add new text only when it comes from him.
 
-The design is warm and natural:
-- **Look:** warm paper colors with terracotta, serif headings, thin lines, and a photo of the empty treatment room in an arch. Soft sunlight drifts slowly behind the opening screen.
-- **Fonts:** Frank Ruhl Libre for headings and Assistant for text. Light and dark themes.
+The design is warm and natural, in three versions (see **Design options** below):
+- **Look:** warm paper colors, serif headings, thin lines, and a photo of the empty treatment room on the opening screen. Light and dark themes.
+- **Fonts:** each version has its own heading font (Bellefair, Bona Nova or Suez One), with Assistant or Rubik for the text.
 - **Motion:**
-  - a short intro (once per visit); then the header slides in, each word of "טיפולי דיקור" rises out of its own slot, the lines of the treatment list draw in and the rows follow one by one, and the room photo rises, a curtain lifts off it and it slowly "breathes"
+  - a short intro (once per visit); then the header slides in, the headline and the treatment list come in, and the room photo rises
   - section titles rise out of a slot and the short line by their number draws in
-  - each treatment's photo is wiped in from the side, its text follows, and the line under it draws across
+  - each treatment's photo is wiped in, its text follows
   - photos drift a little inside their frames while scrolling
-  - gallery photos arrive one after another; the full-screen viewer opens out of the photo you tapped and slides between photos
-  - on computers the treatment photos lean slightly toward the mouse
+  - gallery photos arrive one after another; the full-screen viewer opens out of the photo you tapped and slides between photos (swipe on phones)
   - the About portrait: a curtain lifts and it warms from black and white into color; his quote lights up word by word
   - the big "טיפולי דיקור" at the very bottom rises into view
-  - buttons fill with a darker tone on hover and press in slightly on touch; the header slides away while scrolling down
+  - buttons fill with a darker tone on hover and press in slightly on touch; the header slides away while scrolling down and comes back on the way up
   - switching the theme ripples a circle out from the button
   - everything respects the "reduce motion" setting and "stop animations" in the accessibility menu
+- **Menu on phones and tablets:** the menu button opens a card under the header with the four sections, numbered 01–04 as on the page; the links come in one after another and the page behind dims. Tapping a link scrolls to its section; tapping outside the card (or Escape) only closes it.
 
 - **Pages:** home and booking (`#book` on GitHub Pages, `/book` on the server).
 - **Home page sections, in order:**
@@ -28,20 +28,12 @@ The design is warm and natural:
   - about, with his quote beside a short silent video of a treatment (it plays only while on screen, never with "reduce motion", "stop animations" or data saver on, and a button pauses it)
   - address and hours: Waze / Google Maps, an hours table with today marked, and what to know before a treatment
   - contact
-- **Design options:** nine versions share the same content (`data-look` on `<html>`). Each has its own colors, fonts, photo shapes and motion, in light and dark.
-  - **א – warm and natural** (`2`, the default): terracotta; the text beside an arched photo of the room.
-  - **ג – sand and honey** (`2c`): honey tones; a very large, light headline across the width that comes in letter by letter, a numbered treatment list beside a framed photo, big outlined numbers.
-  - **ה – sage and clay** (`2e`): the layout of א with colors from the `Color palettes` folder – cream and sand as the base, calm sage green for buttons and links, soft clay (a lighter terracotta) for small warm touches, and blush and pale blue as light glows.
-  - **ז – sunset** (`2g`): golden-hour colors; the room photo rises in a circle like the sun, and the sky behind the page turns from dawn to dusk as you scroll; the treatments as soft pills on the opening screen and as three warm cards below.
-  - **ח – meridians** (`2h`): a thin line with points runs through the opening screen like an acupuncture meridian – it draws itself, then its points light up (on wider screens); on tablets and computers a point travels down the page edge as you scroll; photos in capsules, the treatments in circles. Fonts: Noto Serif Hebrew and IBM Plex Sans Hebrew.
-  - **ט – night** (`2i`): opens in the dark theme; warm dark with gold lines and a candle glow that flickers behind the photo; the headline appears letter by letter. Font: Bona Nova.
-  - **י – botanical** (`2j`): deep leaf green; two big leaves sway at the edges of the opening screen, and the headline's letters spring into place. Each photo has its own botanical frame: the room photo a leaf with a thin outline that opens out around it, the treatments a leaf, a pebble that slowly changes shape and a petal, the gallery six shapes mixed (leaf, arch, pebble, petal, seed), the about photo a seed with a soft green pebble behind it, and the video an arch in a light mat like a framed picture. Fonts: Suez One and Rubik.
-  - **כ – sea and sand** (`2k`): pale blue and sand; soft rounded shapes, waves drifting between the sections, and photos that float gently. Font: Varela Round.
-  - **ל – stage** (`2l`): on wide screens (1100 px and up) the page runs beside a large photo panel that changes with what you're reading – the room, each treatment, the gallery, about; on smaller screens it's a regular page. Font: Heebo.
+- **Design options:** three versions share the same content (`data-look` on `<html>`). Each has its own colors, fonts, photo shapes and motion, in light and dark.
+  - **ז – sunset** (`2g`, the default): golden-hour colors. The room photo rises in a circle like the sun, with soft rays of light turning slowly around it; the sky behind the page turns from dawn to dusk as you scroll, and near the bottom a few stars come out. The treatments as soft pills on the opening screen and as three warm cards below. Font: Bellefair.
+  - **ט – night** (`2i`, opens in the dark theme): warm dark with gold lines. A candle glow flickers behind the photo and a few embers drift up around it; on computers a warm light follows the mouse over the opening screen. The headline appears letter by letter; the treatment photos and the portrait have a thin gold line inside them, like a mount; the logo's light flickers like a candle. On computers, pointing at a treatment in the opening list shows its photo beside the mouse, and the treatment photos lean toward the mouse. Font: Bona Nova.
+  - **י – botanical** (`2j`): deep leaf green. Two big leaves sway at the edges of the opening screen and a few small leaves drift down across it; the headline's letters spring into place; the logo is a leaf and a small leaf sits beside each section number. Each photo has its own botanical frame: the room photo a leaf with a thin outline that opens out around it, the treatments a leaf, a pebble that slowly changes shape and a petal, the gallery six shapes mixed (leaf, arch, pebble, petal, seed – on computers a frame softly changes shape under the mouse), the about photo a seed with a soft green pebble behind it, and the video an arch in a light mat like a framed picture. Fonts: Suez One and Rubik.
 
-  On computers, ג, ט and ל show a small photo of a treatment beside the mouse while it's over that treatment in the opening screen's list. Photos lean toward the mouse in א, ג, ה, ט and ל.
-
-  Open the site with `?options` at the end of the address (for example `https://solosoosi.github.io/Website/?options`) to get a switcher (a bar at the bottom on computers, a round button on phones); the pick is remembered on that device. Normal visitors never see it and get version א.
+  Open the site with `?options` at the end of the address (for example `https://solosoosi.github.io/Website/?options`) to get a switcher (a bar at the bottom on computers, a round button on phones); the pick is remembered on that device. Normal visitors never see it and get version ז.
 - **The treatment video:** `public/images/clinic.mp4` (12 seconds, silent, 720×900, about 820 KB) and its still `clinic-poster.jpg` are made from `Videos/WhatsApp Video 2026-10-30 at 10.49.57 AM.mp4`: cropped to 4:5, cut between two near-identical moments (4.0 s and 17.0 s) and joined with a short fade so it loops smoothly. 720 px is the full width of the file WhatsApp sent; the original from the phone (sent as a file, not as a video) would make a sharper copy.
 - **Treatment photos:** cosmetic = needles on the face; dry needling = needles along the back; stress = a relaxed client with needles on the forehead and face (best match – confirm with David).
 - **Accessibility menu** (the person icon in the header): bigger text, high contrast, underlined links, stop animations, readable font. Also an accessibility statement.

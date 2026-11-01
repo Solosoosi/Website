@@ -11,7 +11,7 @@
   <script src="/js/theme-init.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Bellefair&family=Bona+Nova:wght@400;700&family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Heebo:wght@300;400;500;700&family=IBM+Plex+Sans+Hebrew:wght@300;400;500&family=Noto+Serif+Hebrew:wght@300;400;500;600&family=Rubik:wght@300;400;500;600&family=Suez+One&family=Varela+Round&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Bellefair&family=Bona+Nova:wght@400;700&family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Rubik:wght@300;400;500;600&family=Suez+One&display=swap">
   <link rel="stylesheet" href="/css/styles.css">
   <script type="module" src="/js/home.js"></script>
 </head>
@@ -55,11 +55,6 @@
     <!-- Hero: what he does. The design comes in versions (data-look on <html>). -->
     <section class="hero" id="hero">
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <!-- A meridian: a flowing line with points through the opening screen (some versions only) -->
-      <div class="meridian" aria-hidden="true">
-        <svg viewBox="0 0 1000 600" preserveAspectRatio="none"><path pathLength="1" d="M 40 110 C 210 40, 330 210, 470 170 S 690 70, 760 250 S 880 470, 980 520"/></svg>
-        <span data-pt="1"></span><span data-pt="2"></span><span data-pt="3"></span><span data-pt="4"></span>
-      </div>
       <div class="container hero-inner">
         <div class="hero-head">
           <p class="pill-label" data-biz="street"></p>
@@ -288,18 +283,8 @@
     </div>
   </footer>
 
-  <!-- Decorative layers used by some versions: a background that changes while scrolling,
-       and a photo panel that follows the sections on wide screens. -->
-  <div class="page-deco" aria-hidden="true"><span></span></div>
-  <div class="stage" aria-hidden="true">
-    <img data-scene="hero" src="images/room.jpg" srcset="images/room.jpg 960w, images/room-1440.jpg 1440w" sizes="46vw" alt="" width="960" height="1200" loading="lazy">
-    <img data-scene="svc-dry-needling" src="images/stage-dry-needling.jpg" srcset="images/stage-dry-needling.jpg 900w, images/stage-dry-needling-1350.jpg 1350w" sizes="46vw" alt="" width="900" height="1200" loading="lazy">
-    <img data-scene="svc-cosmetic" src="images/stage-cosmetic.jpg" srcset="images/stage-cosmetic.jpg 900w, images/stage-cosmetic-1350.jpg 1350w" sizes="46vw" alt="" width="900" height="1200" loading="lazy">
-    <img data-scene="svc-stress" src="images/stage-stress.jpg" srcset="images/stage-stress.jpg 900w, images/stage-stress-1350.jpg 1350w" sizes="46vw" alt="" width="900" height="1200" loading="lazy">
-    <img data-scene="gallery" src="images/gal-5-1080.jpg" srcset="images/gal-5-1080.jpg 1080w, images/large/gal-5.jpg 1536w" sizes="46vw" alt="" width="1080" height="1350" loading="lazy">
-    <img data-scene="about" src="images/about.jpg" srcset="images/about.jpg 900w, images/about-1350.jpg 1350w, images/about-1800.jpg 1800w" sizes="46vw" alt="" width="900" height="1125" loading="lazy">
-    <img data-scene="visit" src="images/room.jpg" srcset="images/room.jpg 960w, images/room-1440.jpg 1440w" sizes="46vw" alt="" width="960" height="1200" loading="lazy">
-  </div>
+  <!-- Version ז: the sky behind the page, from dawn at the top to dusk (and a few stars) further down -->
+  <div class="page-deco" aria-hidden="true"><span></span><span class="stars"></span></div>
   <a class="whatsapp-fab" data-biz-href="whatsapp" target="_blank" rel="noopener" data-i18n-attr="aria-label:a11y.whatsapp" data-icon="whatsapp" hidden></a>
   <nav class="action-bar" data-i18n-attr="aria-label:mobile.bar">
     <a class="btn btn-primary" href="/book" data-i18n="mobile.book"></a>

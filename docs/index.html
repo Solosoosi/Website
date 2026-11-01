@@ -33,12 +33,12 @@
     if (sessionStorage.getItem('intro')) r.classList.add('no-intro');
     else sessionStorage.setItem('intro', '1');
   } catch (e) {}
-  r.setAttribute('data-look', '2');
+  r.setAttribute('data-look', '2g');
   try {
     if (/[?&]options(=|&|$)/.test(location.search)) {
       r.classList.add('show-looks');
       var lk = localStorage.getItem('look');
-      if (/^2[ceg-l]?$/.test(lk || '')) r.setAttribute('data-look', lk);
+      if (/^2[gij]$/.test(lk || '')) r.setAttribute('data-look', lk);
     }
   } catch (e) {}
   if (location.hash !== '#book') r.classList.add('bar-wait');
@@ -49,7 +49,7 @@
 })();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Bellefair&family=Bona+Nova:wght@400;700&family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Heebo:wght@300;400;500;700&family=IBM+Plex+Sans+Hebrew:wght@300;400;500&family=Noto+Serif+Hebrew:wght@300;400;500;600&family=Rubik:wght@300;400;500;600&family=Suez+One&family=Varela+Round&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Bellefair&family=Bona+Nova:wght@400;700&family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Rubik:wght@300;400;500;600&family=Suez+One&display=swap">
   <style>
 /* ==========================================================================
    David Neeman – acupuncture clinic, Tel Aviv
@@ -2248,6 +2248,10 @@ html.a11y-contrast .words .w {
   color: var(--ink);
   box-shadow: var(--shadow-lift);
   animation: blur-in 0.35s var(--ease);
+  /* On short screens (a phone turned sideways, bigger text) it scrolls inside */
+  max-height: calc(100dvh - var(--header-h) - 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .a11y-panel h2 {
@@ -2897,12 +2901,14 @@ html.a11y-contrast .words .w {
 }
 
 /* ==========================================================================
-   Design options. The site uses the "natural" family (data-look starting
-   with 2 on <html>; 2 is the default). Everything above is the shared base.
-   Open the site with ?options to compare the versions.
+   Design options: three versions, set with data-look on <html> – ז sunset
+   (2g, the default), ט night (2i) and י botanical (2j). They share the
+   "natural" base right below (the [data-look^='2'] rules); each version then
+   adds its own colors, fonts, photo shapes and motion further down.
+   Open the site with ?options to compare them.
    ========================================================================== */
 
-/* ---------- Version א (the default): warm paper, terracotta, serif headings ---------- */
+/* ---------- The shared base: warm paper, serif headings, thin lines ---------- */
 
 :root {
   --start: 0%;
@@ -2986,10 +2992,15 @@ html.a11y-contrast .words .w {
   display: none;
 }
 
-[data-look^='2'] .glass,
-[data-look^='2'] .header-inner {
+[data-look^='2'] .glass {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+/* The header is frosted, so the page scrolling behind it stays soft */
+[data-look^='2'] .header-inner {
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
 }
 
 [data-look^='2'] .header-inner {
@@ -3250,6 +3261,7 @@ html.a11y-contrast .words .w {
 
 [data-look^='2'] .stack-card,
 [data-look^='2'] .stack-card:nth-child(n) {
+  scroll-margin-top: 0;
   position: relative;
   top: auto;
   min-height: 0;
@@ -3490,13 +3502,6 @@ html.a11y-contrast .words .w {
   }
 }
 
-[data-look='2c'] .statement-media {
-  border-radius: var(--radius);
-  outline: 1px solid var(--line-strong);
-  outline-offset: 14px;
-  box-shadow: none;
-}
-
 /* The big name at the very bottom rises into view */
 [data-look^='2'] .footer-mark span {
   transition: transform 1.6s var(--ease);
@@ -3558,6 +3563,104 @@ html.a11y-contrast .words .w {
   [data-look^='2'] .main-nav a.is-current::after,
   [data-look^='2'] .main-nav a[aria-current='page']::after {
     transform: none;
+  }
+}
+
+/* Phones and tablets: the menu opens as a card under the header over a softly
+   dimmed page. Each link carries its section's number (01–04, as on the page)
+   and the links come in one after another. A tap outside only closes it. */
+@media (max-width: 1140px) {
+  [data-look^='2'] .main-nav {
+    padding: 6px 12px;
+    transform-origin: 50% 0;
+  }
+
+  [data-look^='2'] .main-nav ul {
+    gap: 0;
+    counter-reset: nav;
+  }
+
+  [data-look^='2'] .main-nav li {
+    counter-increment: nav;
+    opacity: 0;
+    translate: 0 -8px;
+    transition: opacity 0.3s var(--ease), translate 0.5s var(--ease);
+  }
+
+  [data-look^='2'] .main-nav li + li {
+    border-top: 1px solid var(--line);
+  }
+
+  [data-look^='2'] .main-nav.is-open li {
+    opacity: 1;
+    translate: none;
+  }
+
+  [data-look^='2'] .main-nav.is-open li:nth-child(2) {
+    transition-delay: 0.05s;
+  }
+
+  [data-look^='2'] .main-nav.is-open li:nth-child(3) {
+    transition-delay: 0.1s;
+  }
+
+  [data-look^='2'] .main-nav.is-open li:nth-child(4) {
+    transition-delay: 0.15s;
+  }
+
+  [data-look^='2'] .main-nav a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-block: 4px;
+    padding: 14px 12px;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    transition: background-color 0.25s, color 0.25s, padding 0.4s var(--ease);
+  }
+
+  [data-look^='2'] .main-nav a::before {
+    content: '0' counter(nav);
+    min-width: 2.4ch;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+
+  [data-look^='2'] .main-nav a:active {
+    padding-inline-start: 18px;
+  }
+
+  html.menu-open body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 48;
+    background: rgb(28 18 12 / 0.24);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    animation: fade-in 0.35s var(--ease);
+  }
+
+  html.menu-open[data-theme='dark'] body::before {
+    background: rgb(0 0 0 / 0.5);
+  }
+}
+
+/* The menu button turns as it switches between the lines and the X */
+.nav-toggle svg {
+  animation: icon-turn 0.45s var(--ease);
+}
+
+@keyframes icon-turn {
+  from {
+    opacity: 0;
+    rotate: -90deg;
+    scale: 0.6;
   }
 }
 
@@ -3635,409 +3738,9 @@ html.a11y-contrast .words .w {
   }
 }
 
-/* ---------- Version ג: sand and honey – editorial, very large type ---------- */
-
-:root[data-look='2c'] {
-  --bg: #f5eee2;
-  --bg-2: #ece2d1;
-  --surface: #fbf7ef;
-  --glass: #fbf7ef;
-  --glass-strong: #fbf7ef;
-  --glass-border: #e2d5bf;
-  --ink: #2a2118;
-  --ink-2: #4c4033;
-  --muted: #75685a;
-  --line: rgb(42 33 24 / 0.14);
-  --line-strong: rgb(42 33 24 / 0.3);
-  --accent: #8f6118;
-  --accent-2: #c18b2f;
-  --accent-ink: #74500f;
-  --on-accent: #ffffff;
-  --accent-soft: #f0e2c3;
-  --glow-1: #f1ddb8;
-  --glow-2: #efe3cc;
-  --glow-3: #f3d9c2;
-  --glow-4: #ece0c7;
-  --open: #4f7d3c;
-  --photo-bg: #e9dcc6;
-  --shadow-soft: 0 10px 30px -18px rgb(80 55 15 / 0.25);
-  --shadow-lift: 0 26px 60px -30px rgb(80 55 15 / 0.35);
-  --header-bg: rgb(245 238 226 / 0.92);
-  --font-body: 'Heebo', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  --fs-base: 1.02rem;
-  --radius-sm: 2px;
-  --radius: 4px;
-  --radius-lg: 6px;
-  --radius-xl: 8px;
-}
-
-:root[data-look='2c'][data-theme='dark'] {
-  --bg: #16120d;
-  --bg-2: #1c1711;
-  --surface: #241e16;
-  --glass: #241e16;
-  --glass-strong: #241e16;
-  --glass-border: #3a3022;
-  --ink: #f4ebdc;
-  --ink-2: #d9cdb8;
-  --muted: #a89a83;
-  --line: rgb(244 235 220 / 0.12);
-  --line-strong: rgb(244 235 220 / 0.26);
-  --accent: #e2b45e;
-  --accent-2: #edc983;
-  --accent-ink: #e8be6b;
-  --on-accent: #2a1c04;
-  --accent-soft: #3a2e17;
-  --glow-1: #3a2c15;
-  --glow-2: #2b251a;
-  --glow-3: #382618;
-  --glow-4: #30291a;
-  --open: #9fd08a;
-  --photo-bg: #2a2319;
-  --shadow-soft: 0 10px 30px -18px rgb(0 0 0 / 0.6);
-  --shadow-lift: 0 26px 60px -30px rgb(0 0 0 / 0.7);
-  --header-bg: rgb(22 18 13 / 0.92);
-}
-
-/* The headline fills the width: one word on each side, the photo beside the list */
-[data-look='2c'] .hero {
-  padding-top: calc(64px + clamp(28px, 6svh, 72px));
-}
-
-[data-look='2c'] .hero-inner {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
-  grid-template-areas:
-    'pill pill'
-    'title title'
-    'list photo'
-    'ctas photo';
-  align-items: start;
-  column-gap: clamp(28px, 6vw, 96px);
-  row-gap: 0;
-}
-
-[data-look='2c'] .hero-head {
-  display: contents;
-}
-
-[data-look='2c'] .hero-head .pill-label {
-  grid-area: pill;
-  justify-self: start;
-}
-
-[data-look='2c'] .hero-title {
-  grid-area: title;
-  width: 100%;
-  margin-bottom: clamp(24px, 5svh, 52px);
-  font-weight: 300;
-}
-
-[data-look='2c'] .hero-title .line {
-  font-size: clamp(3.6rem, min(11.5vw, 17svh), 9.6rem);
-  line-height: 0.86;
-  letter-spacing: -0.025em;
-}
-
-[data-look='2c'] .hero-title .line > span {
-  display: block;
-}
-
-[data-look='2c'] .hero-title .line > .grad {
-  text-align: end;
-}
-
-[data-look='2c'] .hero-treatments {
-  grid-area: list;
-  align-self: start;
-  max-width: none;
-  margin: 0 0 34px;
-}
-
-[data-look='2c'] .hero-treatments img {
-  display: none;
-}
-
-[data-look='2c'] .hero-treatments .ht-num {
-  display: inline-block;
-  flex: none;
-  min-width: 2.4ch;
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  color: var(--accent);
-}
-
-[data-look='2c'] .hero-treatments a {
-  align-items: baseline;
-  gap: 18px;
-  padding-block: 14px;
-  font-size: clamp(1.35rem, 1.9vw, 1.7rem);
-  font-weight: 400;
-}
-
-[data-look='2c'] .hero-treatments .ht-go {
-  align-self: center;
-}
-
-[data-look='2c'] .hero-ctas {
-  grid-area: ctas;
-  align-self: start;
-}
-
-/* A plain photo with a thin frame that opens out around it; on wide screens it
-   is exactly as tall as the list and the button beside it. */
-[data-look='2c'] .hero-room {
-  grid-area: photo;
-  align-self: stretch;
-  justify-self: end;
-  width: 100%;
-  max-width: 420px;
-  aspect-ratio: auto;
-  contain: size;
-  border-radius: var(--radius);
-  outline: 1px solid var(--line-strong);
-  outline-offset: 14px;
-  box-shadow: none;
-  animation:
-    rise-in 1.4s var(--ease) calc(var(--intro) + 0.1s) both,
-    frame-out 1.6s var(--ease) calc(var(--intro) + 0.6s) both;
-}
-
-[data-look='2c'] .section-title {
-  font-weight: 300;
-  font-size: clamp(3rem, 7vw, 6rem);
-  letter-spacing: -0.02em;
-}
-
-/* Treatments: a big outlined number, the text, and the photo at the side */
-[data-look='2c'] .stack-card,
-[data-look='2c'] .stack-card:nth-child(n) {
-  grid-template-columns: minmax(0, 0.34fr) minmax(0, 1fr) minmax(0, 0.55fr);
-  grid-template-areas:
-    'num name img'
-    'num desc img'
-    'num foot img';
-  align-items: start;
-  align-content: center;
-  column-gap: clamp(20px, 4vw, 64px);
-}
-
-[data-look='2c'] .stack-body {
-  display: contents;
-}
-
-[data-look='2c'] .stack-img {
-  grid-area: img;
-  height: auto;
-  min-height: 0;
-  aspect-ratio: 4 / 5;
-  border-radius: var(--radius);
-}
-
-[data-look='2c'] .stack-num {
-  grid-area: num;
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(4rem, 9vw, 8rem);
-  font-weight: 300;
-  line-height: 0.8;
-  letter-spacing: 0;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--accent);
-}
-
-html.a11y-contrast[data-look='2c'] .stack-num {
-  color: var(--accent-ink);
-  -webkit-text-stroke: 0;
-}
-
-[data-look='2c'] .stack-name {
-  grid-area: name;
-  font-weight: 300;
-  font-size: clamp(2.2rem, 4vw, 3.4rem);
-}
-
-[data-look='2c'] .stack-desc {
-  grid-area: desc;
-}
-
-[data-look='2c'] .stack-foot {
-  grid-area: foot;
-}
-
-/* Gallery: square photos close together */
-[data-look='2c'] .mosaic,
-[data-look='2c'] .mosaic-col {
-  gap: 8px;
-}
-
-[data-look='2c'] .mosaic-item {
-  aspect-ratio: 1;
-  border-radius: var(--radius-sm);
-}
-
-[data-look='2c'] .about-photo .blob {
-  border-radius: var(--radius);
-  outline: 1px solid var(--line-strong);
-  outline-offset: 14px;
-}
-
-@media (max-width: 900px) {
-  [data-look='2c'] .hero-inner {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'pill' 'title' 'list' 'ctas' 'photo';
-  }
-
-  [data-look='2c'] .hero-room {
-    justify-self: center;
-    width: calc(100% - 28px);
-    max-width: 380px;
-    margin-top: 56px;
-    aspect-ratio: 3 / 4;
-    contain: none;
-  }
-}
-
-@media (max-width: 860px) {
-  [data-look='2c'] .stack-card,
-  [data-look='2c'] .stack-card:nth-child(n) {
-    grid-template-columns: auto minmax(0, 1fr);
-    grid-template-areas:
-      'img img'
-      'num name'
-      'desc desc'
-      'foot foot';
-    align-items: center;
-    row-gap: 16px;
-  }
-
-  [data-look='2c'] .stack-img {
-    aspect-ratio: 1;
-  }
-
-  [data-look='2c'] .stack-num {
-    font-size: clamp(3rem, 14vw, 4.2rem);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html.js:not(.a11y-still)[data-look='2c'] .stack-card:nth-child(n):not(.is-in) .stack-img {
-    clip-path: inset(0 100% 0 0);
-  }
-
-  html.js:not(.a11y-still)[data-look='2c'] .about-photo.reveal:not(.is-visible) .blob {
-    outline-offset: 0;
-    outline-color: transparent;
-  }
-
-  [data-look='2c'] .about-photo .blob {
-    transition: outline-offset 1.4s var(--ease) 0.5s, outline-color 1s 0.5s;
-  }
-}
-
-/* ---------- Version ה: sage and clay – the colors from the palettes folder ----------
-   Cream and sand as the base, calm sage green for buttons and links, soft clay
-   (a lighter terracotta) for small warm touches, blush and pale blue as light glows. */
-
-:root[data-look='2e'] {
-  --bg: #f6f2ec;
-  --bg-2: #ece6dc;
-  --surface: #fffdfa;
-  --glass: #fffdfa;
-  --glass-strong: #fffdfa;
-  --glass-border: #e2dccf;
-  --ink: #2a2d27;
-  --ink-2: #4a4c43;
-  --muted: #6c6b60;
-  --line: rgb(42 45 39 / 0.12);
-  --line-strong: rgb(42 45 39 / 0.24);
-  --accent: #5e705f;
-  --accent-2: #8fa08b;
-  --accent-ink: #4a5b4b;
-  --on-accent: #ffffff;
-  --accent-soft: #e3e9df;
-  --spark: #a86a52;
-  --spark-ink: #8c533e;
-  --blush: #f5e2d7;
-  --curtain: var(--blush);
-  --glow-1: #e1e8d8;
-  --glow-2: #e0ebee;
-  --glow-3: #f4ddd1;
-  --glow-4: #efe6d6;
-  --open: #4f7a52;
-  --photo-bg: #e7e1d5;
-  --shadow-soft: 0 10px 30px -18px rgb(50 55 45 / 0.25);
-  --shadow-lift: 0 26px 60px -30px rgb(50 55 45 / 0.35);
-  --header-bg: rgb(246 242 236 / 0.92);
-}
-
-:root[data-look='2e'][data-theme='dark'] {
-  --bg: #151916;
-  --bg-2: #1a1f1b;
-  --surface: #212722;
-  --glass: #212722;
-  --glass-strong: #212722;
-  --glass-border: #323a33;
-  --ink: #eef0e8;
-  --ink-2: #d1d6ca;
-  --muted: #9fa597;
-  --line: rgb(238 240 232 / 0.12);
-  --line-strong: rgb(238 240 232 / 0.24);
-  --accent: #a9c0a5;
-  --accent-2: #c2d4be;
-  --accent-ink: #b7cbb3;
-  --on-accent: #142016;
-  --accent-soft: #273028;
-  --spark: #e2a58b;
-  --spark-ink: #e7b29b;
-  --blush: #33261f;
-  --glow-1: #243026;
-  --glow-2: #1e282b;
-  --glow-3: #32241e;
-  --glow-4: #2a2a22;
-  --open: #93cf9b;
-  --photo-bg: #262c27;
-  --shadow-soft: 0 10px 30px -18px rgb(0 0 0 / 0.6);
-  --shadow-lift: 0 26px 60px -30px rgb(0 0 0 / 0.7);
-  --header-bg: rgb(21 25 22 / 0.92);
-}
-
-[data-look='2e'] .hero-title .line > .grad,
-[data-look='2e'] .hero-treatments .ht-go {
-  color: var(--spark);
-}
-
-[data-look='2e'] .stack-num {
-  color: var(--spark-ink);
-}
-
-[data-look='2e'] .pill-label::before {
-  background: var(--spark);
-  box-shadow: 0 0 0 4px var(--blush);
-}
-
-/* A second, pale-blue light drifts on the other side of the opening screen */
-[data-look='2e'] .hero::after {
-  content: '';
-  display: block;
-  position: absolute;
-  z-index: 0;
-  inset: auto;
-  top: 18%;
-  inset-inline-start: -18vmax;
-  width: 46vmax;
-  height: 46vmax;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--glow-2) 90%, transparent) 0%, transparent 66%);
-  animation: sun 30s ease-in-out -8s infinite alternate-reverse;
-}
-
 /* ---------- Pieces that only some versions show ---------- */
 
-.meridian,
 .page-deco,
-.stage,
 .hover-preview {
   display: none;
 }
@@ -4083,33 +3786,16 @@ html.a11y-contrast[data-look='2c'] .stack-num {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  [data-look='2c'] .hover-preview,
-  [data-look='2i'] .hover-preview,
-  [data-look='2l'] .hover-preview {
+  [data-look='2i'] .hover-preview {
     display: block;
   }
 }
 
-/* Treatment photos lean toward the mouse (א, ג, ה, ט, ל),
-   and in ג the headline comes in letter by letter. */
-[data-look='2'] .stack-img,
-[data-look='2c'] .stack-img,
-[data-look='2e'] .stack-img,
-[data-look='2i'] .stack-img,
-[data-look='2l'] .stack-img {
+/* Treatment photos lean toward the mouse (ט) */
+[data-look='2i'] .stack-img {
   --tilt: 1;
   transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry));
   transition: clip-path 1.3s var(--ease) var(--card-d, 0s), transform 0.6s var(--ease);
-}
-
-[data-look='2c'] .hero-title .line > span,
-[data-look='2c'] .hero-title .line > .grad {
-  animation: none;
-}
-
-[data-look='2c'] .hero-title .ch {
-  display: inline-block;
-  animation: ch-rise 0.95s var(--ease) calc(var(--intro) + 0.1s + var(--ci, 0) * 0.05s) both;
 }
 
 /* ==========================================================================
@@ -4205,6 +3891,9 @@ html.a11y-contrast[data-look='2c'] .stack-num {
 [data-look='2g'] .page-deco span {
   position: absolute;
   inset: 0;
+}
+
+[data-look='2g'] .page-deco span:first-child {
   background: linear-gradient(180deg, #f3d6e2 0%, #e4dbf1 55%, #d9e1f2 100%);
   opacity: var(--p, 0);
 }
@@ -4213,7 +3902,7 @@ html.a11y-contrast[data-look='2c'] .stack-num {
   background: linear-gradient(180deg, #34202f 0%, #261a31 55%, #1b1628 100%);
 }
 
-[data-look='2g'][data-theme='dark'] .page-deco span {
+[data-look='2g'][data-theme='dark'] .page-deco span:first-child {
   background: linear-gradient(180deg, #201b38 0%, #171428 60%, #100f1d 100%);
 }
 
@@ -4231,6 +3920,7 @@ html.a11y-contrast[data-look='2c'] .stack-num {
 }
 
 [data-look='2g'] .hero-inner {
+  --sun: clamp(210px, min(23vw, 34svh), 310px);
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas: 'photo' 'head';
   justify-items: center;
@@ -4247,7 +3937,7 @@ html.a11y-contrast[data-look='2c'] .stack-num {
 [data-look='2g'] .hero-room:nth-child(n) {
   grid-area: photo;
   justify-self: center;
-  width: clamp(210px, min(23vw, 34svh), 310px);
+  width: var(--sun);
   aspect-ratio: 1;
   border-radius: 50%;
   box-shadow:
@@ -4421,242 +4111,90 @@ html.a11y-contrast[data-look='2c'] .stack-num {
   }
 }
 
-/* ==========================================================================
-   Version ח: meridians – a thin line with points flows through the opening
-   screen like an acupuncture meridian; a point travels down the page edge
-   ========================================================================== */
-
-:root[data-look='2h'] {
-  --bg: #f7f4ee;
-  --bg-2: #efebe3;
-  --surface: #fdfbf7;
-  --glass: #fdfbf7;
-  --glass-strong: #fdfbf7;
-  --glass-border: #e3ddd2;
-  --ink: #1f2a33;
-  --ink-2: #3e4a54;
-  --muted: #626c76;
-  --line: rgb(31 42 51 / 0.12);
-  --line-strong: rgb(31 42 51 / 0.26);
-  --accent: #1f3a4a;
-  --accent-2: #4f6b7a;
-  --accent-ink: #1a3140;
-  --on-accent: #ffffff;
-  --accent-soft: #e2e8ea;
-  --spark: #c4583f;
-  --spark-ink: #a8452f;
-  --curtain: #e6e2d8;
-  --glow-1: #efe7da;
-  --glow-2: #e3e9ec;
-  --glow-3: #f2e2da;
-  --glow-4: #ebe6dc;
-  --open: #3f7d5a;
-  --photo-bg: #e8e3d9;
-  --shadow-soft: 0 10px 30px -20px rgb(20 35 45 / 0.25);
-  --shadow-lift: 0 26px 60px -32px rgb(20 35 45 / 0.35);
-  --header-bg: rgb(247 244 238 / 0.9);
-  --font-display: 'Noto Serif Hebrew', 'Frank Ruhl Libre', serif;
-  --font-body: 'IBM Plex Sans Hebrew', 'Assistant', system-ui, sans-serif;
-  --radius-sm: 4px;
-  --radius: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-}
-
-:root[data-look='2h'][data-theme='dark'] {
-  --bg: #10161b;
-  --bg-2: #141c22;
-  --surface: #18222a;
-  --glass: #18222a;
-  --glass-strong: #18222a;
-  --glass-border: #283540;
-  --ink: #e8eef1;
-  --ink-2: #c9d3d8;
-  --muted: #98a6ae;
-  --line: rgb(232 238 241 / 0.12);
-  --line-strong: rgb(232 238 241 / 0.26);
-  --accent: #a7c7d6;
-  --accent-2: #c2dae4;
-  --accent-ink: #b5d2df;
-  --on-accent: #0c1a22;
-  --accent-soft: #1f2d36;
-  --spark: #f08f72;
-  --spark-ink: #f4a48c;
-  --curtain: #1d2730;
-  --glow-1: #1d2730;
-  --glow-2: #172129;
-  --glow-3: #2a1f1c;
-  --glow-4: #1e2622;
-  --photo-bg: #1c252c;
-  --shadow-soft: 0 10px 30px -18px rgb(0 0 0 / 0.6);
-  --shadow-lift: 0 26px 60px -30px rgb(0 0 0 / 0.7);
-  --header-bg: rgb(16 22 27 / 0.9);
-}
-
-[data-look='2h'] .hero::before {
-  opacity: 0.6;
-}
-
-[data-look='2h'] .hero-title,
-[data-look='2h'] .section-title,
-[data-look='2h'] .stack-name {
-  font-weight: 400;
-}
-
-[data-look='2h'] .hero-title .line > .grad,
-[data-look='2h'] .hero-treatments .ht-go {
-  color: var(--spark);
-}
-
-[data-look='2h'] .stack-num,
-[data-look='2h'] .sec-num {
-  color: var(--spark-ink);
-}
-
-/* The meridian through the opening screen: the line draws, then its points light up */
-[data-look='2h'] .meridian {
-  display: block;
+/* Soft rays of light turn slowly around the sun (the room photo) */
+[data-look='2g'] .hero-inner::before {
+  content: '';
   position: absolute;
-  top: 9%;
-  bottom: 6%;
-  inset-inline-end: 3%;
-  width: 46%;
-  z-index: 0;
+  z-index: -1;
+  top: calc(var(--sun) / 2);
+  left: 50%;
+  width: calc(var(--sun) * 3.4);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--glow-4) 85%, transparent) 0deg 2.5deg, transparent 2.5deg 12deg);
+  -webkit-mask: radial-gradient(circle, transparent 17%, #000 24%, rgb(0 0 0 / 0.5) 42%, transparent 68%);
+  mask: radial-gradient(circle, transparent 17%, #000 24%, rgb(0 0 0 / 0.5) 42%, transparent 68%);
+  opacity: 0.6;
   pointer-events: none;
+  animation:
+    fade-in 2.4s var(--ease) calc(var(--intro) + 0.9s) both,
+    spin 160s linear infinite;
 }
 
-@media (max-width: 900px) {
-  [data-look='2h'] .meridian {
+[data-look='2g'][data-theme='dark'] .hero-inner::before {
+  opacity: 0.4;
+}
+
+/* Dusk: near the bottom of the page a few soft stars come out in the sky, twinkling */
+[data-look='2g'] .page-deco .stars {
+  opacity: clamp(0, calc((var(--p, 0) - 0.55) * 2.2), 0.75);
+}
+
+/* Phones: fewer of them */
+@media (max-width: 760px) {
+  [data-look='2g'] .page-deco .stars::after {
     display: none;
   }
 }
 
-[data-look='2h'] .meridian svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-[dir='rtl'][data-look='2h'] .meridian svg {
-  transform: scaleX(-1);
-}
-
-[data-look='2h'] .meridian path {
-  fill: none;
-  stroke: color-mix(in srgb, var(--spark) 55%, transparent);
-  stroke-width: 1.4;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-  animation: draw-line 2.8s var(--ease) calc(var(--intro) + 0.2s) both;
-}
-
-[data-look='2h'] .meridian span {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  margin: -6px;
-  border-radius: 50%;
-  background: var(--spark);
-  box-shadow: 0 0 0 5px color-mix(in srgb, var(--spark) 18%, transparent);
-  animation:
-    point-in 0.7s var(--ease) both,
-    point-pulse 3.4s ease-in-out infinite;
-}
-
-[data-look='2h'] .meridian [data-pt='1'] {
-  inset-inline-start: 4%;
-  top: 18.3%;
-  animation-delay: calc(var(--intro) + 0.5s), calc(var(--intro) + 1.2s);
-}
-
-[data-look='2h'] .meridian [data-pt='2'] {
-  inset-inline-start: 47%;
-  top: 28.3%;
-  animation-delay: calc(var(--intro) + 1.1s), calc(var(--intro) + 1.8s);
-}
-
-[data-look='2h'] .meridian [data-pt='3'] {
-  inset-inline-start: 76%;
-  top: 41.7%;
-  animation-delay: calc(var(--intro) + 1.6s), calc(var(--intro) + 2.3s);
-}
-
-[data-look='2h'] .meridian [data-pt='4'] {
-  inset-inline-start: 98%;
-  top: 86.7%;
-  animation-delay: calc(var(--intro) + 2.1s), calc(var(--intro) + 2.8s);
-}
-
-/* Down the page edge: a line, and a point that travels along it as you scroll */
-@media (min-width: 761px) {
-  [data-look='2h'] .page-deco {
-    display: block;
-    position: fixed;
-    top: 14vh;
-    bottom: 14vh;
-    inset-inline-end: clamp(10px, 2vw, 30px);
-    z-index: 30;
-    width: 1px;
-    background: linear-gradient(transparent, var(--line-strong) 10%, var(--line-strong) 90%, transparent);
-    pointer-events: none;
-  }
-
-  [data-look='2h'] .page-deco span {
-    position: absolute;
-    top: 0;
-    left: -4.5px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--spark);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--spark) 22%, transparent);
-    translate: 0 calc(var(--p, 0) * (72vh - 10px));
-  }
-}
-
-/* Photos in capsules; the treatments in circles with a point on the edge */
-[data-look='2h'] .hero-room,
-[data-look='2h'] .about-photo .blob,
-[data-look='2h'] .statement-media,
-[data-look='2h'] .mosaic-item {
-  border-radius: 999px;
-}
-
-[data-look='2h'] .hero-room {
-  width: min(100%, 420px);
-  justify-self: center;
-}
-
-[data-look='2h'] .stack-img {
-  justify-self: center;
-  width: min(100%, 400px);
-  height: auto;
-  min-height: 0;
-  aspect-ratio: 1;
-  border-radius: 50%;
-}
-
-[data-look='2h'] .stack-num {
-  display: inline-grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--spark);
-  border-radius: 50%;
-  letter-spacing: 0.04em;
-}
-
-[data-look='2h'] .sec-num::before {
+[data-look='2g'] .page-deco .stars::before,
+[data-look='2g'] .page-deco .stars::after {
   content: '';
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--spark);
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2.9px 2.9px at 8% 12%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.2px 2.2px at 19% 31%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(3.6px 3.6px at 27% 8%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.3px 2.3px at 38% 22%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(3.1px 3.1px at 52% 6%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.2px 2.2px at 61% 27%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(3.4px 3.4px at 73% 14%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.3px 2.3px at 84% 33%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.9px 2.9px at 93% 9%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.2px 2.2px at 46% 38%, rgb(255 255 255 / 0.85), transparent);
+  animation: twinkle 4.5s ease-in-out infinite alternate;
+  pointer-events: none;
 }
 
-[data-look='2h'] .mosaic,
-[data-look='2h'] .mosaic-col {
-  gap: clamp(12px, 1.6vw, 22px);
+[data-look='2g'] .page-deco .stars::after {
+  background-image:
+    radial-gradient(2.5px 2.5px at 4% 26%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(3.2px 3.2px at 14% 4%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.2px 2.2px at 33% 35%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.7px 2.7px at 43% 11%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.2px 2.2px at 57% 19%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(3.2px 3.2px at 67% 4%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.3px 2.3px at 79% 24%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.7px 2.7px at 89% 18%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(2.2px 2.2px at 97% 37%, rgb(255 255 255 / 0.85), transparent);
+  animation-duration: 6s;
+  animation-delay: -3s;
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.35;
+  }
+}
+
+/* The video's play/pause button sits in the middle at the bottom of its round frame */
+[data-look='2g'] .video-toggle {
+  inset-inline-end: auto;
+  left: 50%;
+  bottom: 18px;
+  translate: -50% 0;
 }
 
 /* ==========================================================================
@@ -4793,6 +4331,146 @@ html.a11y-contrast[data-look='2c'] .stack-num {
   }
 }
 
+/* Embers drift up slowly in the dark around the photo, as if from the candle */
+[data-look='2i'] .hero .aurora {
+  display: block;
+  --ember: color-mix(in srgb, var(--accent-2) 80%, #fff);
+}
+
+[data-look='2i'] .hero .aurora span,
+[data-look='2i'] .hero .aurora::before,
+[data-look='2i'] .hero .aurora::after {
+  content: '';
+  position: absolute;
+  top: auto;
+  bottom: 12%;
+  inset-inline: auto 5%;
+  width: 3px;
+  height: 3px;
+  aspect-ratio: auto;
+  border-radius: 50%;
+  background: var(--ember);
+  box-shadow: 0 0 8px 2px color-mix(in srgb, var(--accent-2) 65%, transparent);
+  opacity: 0;
+  animation: ember 11s linear infinite;
+  animation-delay: -1s;
+}
+
+[data-look='2i'] .hero .aurora span:nth-child(2) {
+  bottom: 6%;
+  inset-inline-end: 46%;
+  width: 2.5px;
+  height: 2.5px;
+  animation-duration: 14s;
+  animation-delay: -5s;
+}
+
+[data-look='2i'] .hero .aurora span:nth-child(3) {
+  bottom: 36%;
+  inset-inline-end: 2%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 12s;
+  animation-delay: -8s;
+}
+
+[data-look='2i'] .hero .aurora span:nth-child(4) {
+  bottom: 26%;
+  inset-inline-end: 49%;
+  animation-duration: 16s;
+  animation-delay: -3s;
+}
+
+[data-look='2i'] .hero .aurora::before {
+  bottom: 2%;
+  inset-inline-end: 24%;
+  width: 2.5px;
+  height: 2.5px;
+  animation-duration: 13s;
+  animation-delay: -10s;
+}
+
+[data-look='2i'] .hero .aurora::after {
+  bottom: 44%;
+  inset-inline-end: 40%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 15s;
+  animation-delay: -6.5s;
+}
+
+@keyframes ember {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+
+  14% {
+    opacity: 0.85;
+  }
+
+  50% {
+    transform: translate3d(-16px, -22vh, 0);
+  }
+
+  75% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(20px, -44vh, 0);
+  }
+}
+
+/* On computers a warm candle light follows the mouse across the opening screen */
+@media (hover: hover) and (pointer: fine) {
+  [data-look='2i'] .hero::after {
+    display: block;
+    background: radial-gradient(420px circle at var(--mx, 72%) var(--my, 42%), color-mix(in srgb, var(--glow-1) 55%, transparent), transparent 70%);
+  }
+}
+
+/* A thin gold line inside the treatment photos and the portrait, like a mount */
+[data-look='2i'] .stack-img::after,
+[data-look='2i'] .about-photo .blob::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  z-index: 1;
+  border: 1px solid rgb(255 232 194 / 0.6);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* The logo's light flickers softly, like a candle */
+[data-look='2i'] .brand-orb::after {
+  animation: flame 3.6s ease-in-out infinite;
+}
+
+@keyframes flame {
+  0%,
+  100% {
+    scale: 1;
+    box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  28% {
+    scale: 1.07;
+    box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 80%, transparent);
+  }
+
+  52% {
+    scale: 0.96;
+    box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  76% {
+    scale: 1.03;
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 65%, transparent);
+  }
+}
+
 /* ==========================================================================
    Version י: botanical – deep leaf green, big leaves that sway, each photo
    in its own botanical frame, and a headline whose letters spring into place
@@ -4903,7 +4581,7 @@ html.a11y-contrast[data-look='2c'] .stack-num {
   z-index: 0;
   border-radius: 0 100% 0 100%;
   background:
-    linear-gradient(135deg, transparent 49.3%, rgb(255 255 255 / 0.45) 49.7%, rgb(255 255 255 / 0.45) 50.3%, transparent 50.7%),
+    linear-gradient(45deg, transparent 49.3%, rgb(255 255 255 / 0.45) 49.7%, rgb(255 255 255 / 0.45) 50.3%, transparent 50.7%),
     linear-gradient(135deg, var(--leaf-1), var(--leaf-2));
   pointer-events: none;
 }
@@ -4938,7 +4616,7 @@ html.a11y-contrast[data-look='2c'] .stack-num {
 :root[data-look='2j'] {
   --f-leaf: 46% 0 46% 0 / 34% 0 34% 0;
   --f-leaf-b: 0 46% 0 46% / 0 34% 0 34%;
-  --f-arch: 999px 999px var(--radius) var(--radius);
+  --f-arch: 50% 50% var(--radius) var(--radius) / 40% 40% var(--radius) var(--radius);
   --f-pebble: 42% 58% 63% 37% / 41% 44% 56% 59%;
   --f-petal: 50% 50% 50% 7%;
   --f-seed: 50% 50% 50% 50% / 60% 60% 40% 40%;
@@ -5049,6 +4727,119 @@ html.a11y-contrast[data-look='2c'] .stack-num {
   border-radius: 999px;
 }
 
+/* A few small leaves drift down across the opening screen */
+[data-look='2j'] .hero .aurora {
+  display: block;
+}
+
+[data-look='2j'] .hero .aurora span {
+  top: -32px;
+  bottom: auto;
+  inset-inline: 22% auto;
+  width: 16px;
+  aspect-ratio: 1;
+  border-radius: 0 100% 0 100%;
+  background:
+    linear-gradient(45deg, transparent 46%, rgb(255 255 255 / 0.5) 48.5% 51.5%, transparent 54%),
+    linear-gradient(135deg, var(--leaf-1), var(--leaf-2));
+  opacity: 0;
+  animation: leaf-fall 19s linear infinite;
+  animation-delay: -4s;
+}
+
+[data-look='2j'] .hero .aurora span:nth-child(2) {
+  inset-inline-start: 58%;
+  width: 12px;
+  animation-duration: 23s;
+  animation-delay: -12s;
+}
+
+[data-look='2j'] .hero .aurora span:nth-child(3) {
+  inset-inline-start: 7%;
+  width: 20px;
+  animation-duration: 21s;
+  animation-delay: -16s;
+}
+
+[data-look='2j'] .hero .aurora span:nth-child(4) {
+  inset-inline-start: 82%;
+  width: 14px;
+  animation-duration: 26s;
+  animation-delay: -7s;
+}
+
+@keyframes leaf-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  10% {
+    opacity: 0.6;
+  }
+
+  35% {
+    transform: translate3d(-36px, 32vh, 0) rotate(120deg);
+  }
+
+  65% {
+    transform: translate3d(18px, 62vh, 0) rotate(220deg);
+  }
+
+  88% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(-12px, 96vh, 0) rotate(340deg);
+  }
+}
+
+/* A small leaf beside each section number */
+[data-look='2j'] .sec-num::before {
+  content: '';
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 0 100% 0 100%;
+  background: var(--accent-2);
+}
+
+/* The logo is a leaf that sways a little */
+[data-look='2j'] .brand-orb {
+  border-radius: 0 100% 0 100%;
+  background:
+    linear-gradient(45deg, transparent 47%, rgb(255 255 255 / 0.55) 48.6% 51.4%, transparent 53%),
+    linear-gradient(135deg, var(--leaf-1), var(--leaf-2));
+  transform-origin: 0 100%;
+  animation: sway 6s ease-in-out infinite alternate;
+}
+
+[data-look='2j'] .brand-orb::after {
+  display: none;
+}
+
+[data-look='2j'] .intro-orb {
+  border-radius: 0 100% 0 100%;
+  background:
+    linear-gradient(45deg, transparent 47%, rgb(255 255 255 / 0.55) 48.6% 51.4%, transparent 53%),
+    linear-gradient(135deg, var(--leaf-1), var(--leaf-2));
+  box-shadow: 0 18px 40px -16px var(--accent);
+}
+
+/* On computers a gallery frame softly changes shape under the mouse */
+@media (hover: hover) {
+  [data-look='2j'] .mosaic-item {
+    transition: opacity 0.9s var(--ease), transform 1.1s var(--ease), border-radius 0.9s var(--ease);
+    transition-delay: calc(var(--cd, 0s) + var(--rd, 0s)), calc(var(--cd, 0s) + var(--rd, 0s)), 0s;
+  }
+
+  [data-look='2j'] .mosaic-col:nth-child(n) .mosaic-item:nth-child(n):hover {
+    border-radius: var(--f-pebble);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html.js:not(.a11y-still)[data-look='2j'] .stack-card:nth-child(n):not(.is-in) .stack-img {
     clip-path: inset(100% 0 0 0);
@@ -5060,358 +4851,7 @@ html.a11y-contrast[data-look='2c'] .stack-num {
   }
 }
 
-/* ==========================================================================
-   Version כ: sea and sand – pale blue and sand, soft rounded shapes, waves
-   that drift between the sections, and photos that float gently
-   ========================================================================== */
-
-:root[data-look='2k'] {
-  --bg: #f1f6f6;
-  --bg-2: #e2eef0;
-  --surface: #fbfdfd;
-  --glass: #fbfdfd;
-  --glass-strong: #fbfdfd;
-  --glass-border: #d5e3e6;
-  --ink: #16323a;
-  --ink-2: #33505a;
-  --muted: #536c75;
-  --line: rgb(22 50 58 / 0.12);
-  --line-strong: rgb(22 50 58 / 0.25);
-  --accent: #1f5f6b;
-  --accent-2: #5fa3ad;
-  --accent-ink: #184e58;
-  --on-accent: #ffffff;
-  --accent-soft: #d8ebee;
-  --spark: #1f5f6b;
-  --sand: #efe3d0;
-  --curtain: #d8ebee;
-  --glow-1: #d4ebee;
-  --glow-2: #e5f1f2;
-  --glow-3: #f1e6d6;
-  --glow-4: #dfeef0;
-  --open: #2f8a6e;
-  --photo-bg: #dce9eb;
-  --shadow-soft: 0 12px 30px -18px rgb(20 70 80 / 0.25);
-  --shadow-lift: 0 28px 64px -30px rgb(20 70 80 / 0.35);
-  --header-bg: rgb(241 246 246 / 0.88);
-  --font-display: 'Varela Round', 'Assistant', system-ui, sans-serif;
-  --radius-sm: 14px;
-  --radius: 22px;
-  --radius-lg: 32px;
-  --radius-xl: 40px;
-}
-
-:root[data-look='2k'][data-theme='dark'] {
-  --bg: #0e1c21;
-  --bg-2: #11232a;
-  --surface: #142a31;
-  --glass: #142a31;
-  --glass-strong: #142a31;
-  --glass-border: #22404a;
-  --ink: #e3f0f2;
-  --ink-2: #c3d8dc;
-  --muted: #8fb0b7;
-  --line: rgb(227 240 242 / 0.12);
-  --line-strong: rgb(227 240 242 / 0.25);
-  --accent: #8fd0d8;
-  --accent-2: #b5e2e7;
-  --accent-ink: #a3dbe2;
-  --on-accent: #082026;
-  --accent-soft: #183a43;
-  --spark: #8fd0d8;
-  --sand: #2a2a22;
-  --curtain: #163038;
-  --glow-1: #143841;
-  --glow-2: #112a31;
-  --glow-3: #2b2a22;
-  --glow-4: #13323a;
-  --photo-bg: #173038;
-  --shadow-soft: 0 12px 30px -18px rgb(0 0 0 / 0.6);
-  --shadow-lift: 0 28px 64px -30px rgb(0 0 0 / 0.7);
-  --header-bg: rgb(14 28 33 / 0.88);
-}
-
-[data-look='2k'] .btn,
-[data-look='2k'] .pill-label,
-[data-look='2k'] .status,
-[data-look='2k'] .header-inner {
-  border-radius: 999px;
-}
-
-[data-look='2k'] .hero-title,
-[data-look='2k'] .section-title,
-[data-look='2k'] .stack-name {
-  font-weight: 400;
-}
-
-[data-look='2k'] .hero-title .line {
-  font-size: clamp(2.8rem, 7.6vw, 6.2rem);
-}
-
-/* Waves drifting along the top of each section */
-[data-look='2k'] .section {
-  overflow-x: clip;
-}
-
-[data-look='2k'] .section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: calc(100% + 600px);
-  height: 36px;
-  background: var(--accent-2);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='36' viewBox='0 0 600 36'%3E%3Cpath d='M0 18 C 75 2, 150 2, 225 18 S 375 34, 450 18 S 525 2, 600 18' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M0 26 C 75 10, 150 10, 225 26 S 375 42, 450 26 S 525 10, 600 26' fill='none' stroke='black' stroke-width='1' opacity='.6'/%3E%3C/svg%3E") repeat-x 0 0 / 600px 36px;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='36' viewBox='0 0 600 36'%3E%3Cpath d='M0 18 C 75 2, 150 2, 225 18 S 375 34, 450 18 S 525 2, 600 18' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M0 26 C 75 10, 150 10, 225 26 S 375 42, 450 26 S 525 10, 600 26' fill='none' stroke='black' stroke-width='1' opacity='.6'/%3E%3C/svg%3E") repeat-x 0 0 / 600px 36px;
-  opacity: 0.45;
-  pointer-events: none;
-  animation: wave-drift 18s linear infinite;
-}
-
-[data-look='2k'] .section-alt {
-  background: linear-gradient(180deg, var(--bg-2), var(--bg-2));
-}
-
-[data-look='2k'] #visit {
-  background: linear-gradient(180deg, transparent, var(--sand) 22%, var(--sand) 78%, transparent);
-}
-
-/* Soft pebble shapes that float */
-[data-look='2k'] .hero-room,
-[data-look='2k'] .about-photo .blob,
-[data-look='2k'] .statement-media {
-  border-radius: 46% 54% 42% 58% / 38% 40% 60% 62%;
-}
-
-[data-look='2k'] .hero-room {
-  animation:
-    rise-in 1.4s var(--ease) calc(var(--intro) + 0.1s) both,
-    float 7s ease-in-out calc(var(--intro) + 1.6s) infinite;
-}
-
-[data-look='2k'] .stack-img {
-  border-radius: var(--radius-xl);
-}
-
-[data-look='2k'] .mosaic-item {
-  border-radius: var(--radius-lg);
-  animation: float 8s ease-in-out infinite;
-}
-
-[data-look='2k'] .mosaic-col:nth-child(2) .mosaic-item {
-  animation-delay: -2.6s;
-}
-
-[data-look='2k'] .mosaic-col:nth-child(3) .mosaic-item {
-  animation-delay: -5.2s;
-}
-
-/* The treatments as rounded rows under the headline */
-[data-look='2k'] .hero-treatments {
-  gap: 10px;
-}
-
-[data-look='2k'] .hero-treatments::before,
-[data-look='2k'] .hero-treatments li::after {
-  display: none;
-}
-
-[data-look='2k'] .hero-treatments a,
-[data-look='2k'] .hero-treatments a:hover {
-  padding-block: 8px;
-  padding-inline: 8px 20px;
-  border-radius: 999px;
-  background: var(--surface);
-  box-shadow: var(--shadow-soft);
-  font-family: var(--font-body);
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-[data-look='2k'] .hero-treatments a::before {
-  inset: 0;
-  border-radius: 999px;
-}
-
-/* ==========================================================================
-   Version ל: stage – on wide screens the page runs beside a large photo panel
-   that changes with what you're reading (the room, each treatment, the
-   gallery, about); the headline's letters slide up into place
-   ========================================================================== */
-
-:root[data-look='2l'] {
-  --bg: #f5f0e8;
-  --bg-2: #ece4d8;
-  --surface: #fffcf7;
-  --glass: #fffcf7;
-  --glass-strong: #fffcf7;
-  --glass-border: #e4dacb;
-  --ink: #1e1a16;
-  --ink-2: #463f37;
-  --muted: #6b6258;
-  --line: rgb(30 26 22 / 0.12);
-  --line-strong: rgb(30 26 22 / 0.26);
-  --accent: #6b3f2a;
-  --accent-2: #9a6a4f;
-  --accent-ink: #58321f;
-  --on-accent: #ffffff;
-  --accent-soft: #eadccf;
-  --spark: #b0623e;
-  --curtain: #eadccf;
-  --glow-1: #f0dfcf;
-  --glow-2: #ebe4d8;
-  --glow-3: #f0dcd2;
-  --glow-4: #efe5d5;
-  --open: #4f7a52;
-  --photo-bg: #e7ddd0;
-  --shadow-soft: 0 10px 30px -20px rgb(50 30 15 / 0.25);
-  --shadow-lift: 0 26px 60px -32px rgb(50 30 15 / 0.35);
-  --header-bg: rgb(245 240 232 / 0.92);
-  --font-body: 'Heebo', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  --radius-sm: 0px;
-  --radius: 2px;
-  --radius-lg: 4px;
-  --radius-xl: 6px;
-}
-
-:root[data-look='2l'][data-theme='dark'] {
-  --bg: #15110e;
-  --bg-2: #1a1511;
-  --surface: #1e1814;
-  --glass: #1e1814;
-  --glass-strong: #1e1814;
-  --glass-border: #352b23;
-  --ink: #f2e9df;
-  --ink-2: #d8cbbe;
-  --muted: #ab9b8c;
-  --line: rgb(242 233 223 / 0.12);
-  --line-strong: rgb(242 233 223 / 0.26);
-  --accent: #dfa684;
-  --accent-2: #ecc1a4;
-  --accent-ink: #e8b595;
-  --on-accent: #1f0f06;
-  --accent-soft: #33261d;
-  --spark: #e39b74;
-  --curtain: #2a211a;
-  --glow-1: #33261d;
-  --glow-2: #231d18;
-  --glow-3: #33221b;
-  --glow-4: #2a221a;
-  --photo-bg: #241d17;
-  --shadow-soft: 0 10px 30px -18px rgb(0 0 0 / 0.6);
-  --shadow-lift: 0 26px 60px -30px rgb(0 0 0 / 0.7);
-  --header-bg: rgb(21 17 14 / 0.92);
-}
-
-[data-look='2l'] .hero::before {
-  opacity: 0.6;
-}
-
-[data-look='2l'] .hero-title,
-[data-look='2l'] .section-title,
-[data-look='2l'] .stack-name {
-  font-weight: 400;
-}
-
-[data-look='2l'] .hero-title .line > .grad {
-  color: var(--spark);
-}
-
-[data-look='2l'] .hero-title .line > span,
-[data-look='2l'] .hero-title .line > .grad {
-  animation: none;
-}
-
-[data-look='2l'] .hero-title .ch {
-  display: inline-block;
-  animation: ch-rise 1s var(--ease) calc(var(--intro) + 0.08s + var(--ci, 0) * 0.045s) both;
-}
-
-@media (min-width: 1100px) {
-  [data-look='2l'] .stage {
-    display: block;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    inset-inline-end: 0;
-    z-index: 1;
-    width: 44vw;
-    overflow: hidden;
-    background: var(--photo-bg);
-  }
-
-  [data-look='2l'] .stage img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 1.1s var(--ease);
-  }
-
-  [data-look='2l'] .stage[data-scene='hero'] [data-scene='hero'],
-  [data-look='2l'] .stage[data-scene='svc-dry-needling'] [data-scene='svc-dry-needling'],
-  [data-look='2l'] .stage[data-scene='svc-cosmetic'] [data-scene='svc-cosmetic'],
-  [data-look='2l'] .stage[data-scene='svc-stress'] [data-scene='svc-stress'],
-  [data-look='2l'] .stage[data-scene='gallery'] [data-scene='gallery'],
-  [data-look='2l'] .stage[data-scene='about'] [data-scene='about'],
-  [data-look='2l'] .stage[data-scene='visit'] [data-scene='visit'] {
-    opacity: 1;
-    animation: stage-in 9s ease-out both;
-  }
-
-  [data-look='2l'] main,
-  [data-look='2l'] .site-footer {
-    margin-inline-end: 44vw;
-  }
-
-  /* The panel shows the photos, so the column beside it is all words */
-  [data-look='2l'] .hero-room,
-  [data-look='2l'] .stack-img,
-  [data-look='2l'] .about-photo {
-    display: none;
-  }
-
-  [data-look='2l'] .hero-inner,
-  [data-look='2l'] .stack-card,
-  [data-look='2l'] .stack-card:nth-child(n),
-  [data-look='2l'] .about {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  [data-look='2l'] .hero-title .line {
-    font-size: clamp(3rem, 6vw, 6rem);
-  }
-
-  [data-look='2l'] .mosaic {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  /* The column beside the panel is narrower: cards stack instead of sitting three in a row */
-  [data-look='2l'] .visit,
-  [data-look='2l'] .final-card {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  [data-look='2l'] body[data-route='book'] .stage {
-    display: none;
-  }
-
-  [data-look='2l'] body[data-route='book'] main,
-  [data-look='2l'] body[data-route='book'] .site-footer {
-    margin-inline-end: 0;
-  }
-}
-
 /* ---------- Keyframes for the new versions ---------- */
-
-@keyframes ch-rise {
-  from {
-    opacity: 0;
-    transform: translateY(0.9em);
-  }
-}
 
 @keyframes ch-glow {
   from {
@@ -5449,25 +4889,6 @@ html.a11y-contrast[data-look='2c'] .stack-num {
   to {
     opacity: 0.8;
     transform: scale(1.12);
-  }
-}
-
-@keyframes draw-line {
-  from {
-    stroke-dashoffset: 1;
-  }
-}
-
-@keyframes point-in {
-  from {
-    opacity: 0;
-    transform: scale(0);
-  }
-}
-
-@keyframes point-pulse {
-  50% {
-    box-shadow: 0 0 0 11px color-mix(in srgb, var(--spark) 6%, transparent);
   }
 }
 
@@ -5524,28 +4945,6 @@ html.a11y-contrast[data-look='2c'] .stack-num {
 
   to {
     rotate: -7deg;
-  }
-}
-
-@keyframes wave-drift {
-  to {
-    transform: translateX(-600px);
-  }
-}
-
-@keyframes float {
-  50% {
-    translate: 0 -10px;
-  }
-}
-
-@keyframes stage-in {
-  from {
-    scale: 1.04;
-  }
-
-  to {
-    scale: 1;
   }
 }
 
@@ -5646,13 +5045,6 @@ html.a11y-contrast[data-look='2c'] .stack-num {
 
   to {
     scale: 1.07;
-  }
-}
-
-@keyframes frame-out {
-  from {
-    outline-offset: 0;
-    outline-color: transparent;
   }
 }
 
@@ -6334,11 +5726,6 @@ html.js .reveal:not(.is-visible) {
     <!-- Hero: what he does. The design comes in versions (data-look on <html>). -->
     <section class="hero" id="hero">
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <!-- A meridian: a flowing line with points through the opening screen (some versions only) -->
-      <div class="meridian" aria-hidden="true">
-        <svg viewBox="0 0 1000 600" preserveAspectRatio="none"><path pathLength="1" d="M 40 110 C 210 40, 330 210, 470 170 S 690 70, 760 250 S 880 470, 980 520"/></svg>
-        <span data-pt="1"></span><span data-pt="2"></span><span data-pt="3"></span><span data-pt="4"></span>
-      </div>
       <div class="container hero-inner">
         <div class="hero-head">
           <p class="pill-label" data-biz="street"></p>
@@ -6694,18 +6081,8 @@ html.js .reveal:not(.is-visible) {
     </div>
   </footer>
 
-  <!-- Decorative layers used by some versions: a background that changes while scrolling,
-       and a photo panel that follows the sections on wide screens. -->
-  <div class="page-deco" aria-hidden="true"><span></span></div>
-  <div class="stage" aria-hidden="true">
-    <img data-scene="hero" src="images/room.jpg" srcset="images/room.jpg 960w, images/room-1440.jpg 1440w" sizes="46vw" alt="" width="960" height="1200" loading="lazy">
-    <img data-scene="svc-dry-needling" src="images/stage-dry-needling.jpg" srcset="images/stage-dry-needling.jpg 900w, images/stage-dry-needling-1350.jpg 1350w" sizes="46vw" alt="" width="900" height="1200" loading="lazy">
-    <img data-scene="svc-cosmetic" src="images/stage-cosmetic.jpg" srcset="images/stage-cosmetic.jpg 900w, images/stage-cosmetic-1350.jpg 1350w" sizes="46vw" alt="" width="900" height="1200" loading="lazy">
-    <img data-scene="svc-stress" src="images/stage-stress.jpg" srcset="images/stage-stress.jpg 900w, images/stage-stress-1350.jpg 1350w" sizes="46vw" alt="" width="900" height="1200" loading="lazy">
-    <img data-scene="gallery" src="images/gal-5-1080.jpg" srcset="images/gal-5-1080.jpg 1080w, images/large/gal-5.jpg 1536w" sizes="46vw" alt="" width="1080" height="1350" loading="lazy">
-    <img data-scene="about" src="images/about.jpg" srcset="images/about.jpg 900w, images/about-1350.jpg 1350w, images/about-1800.jpg 1800w" sizes="46vw" alt="" width="900" height="1125" loading="lazy">
-    <img data-scene="visit" src="images/room.jpg" srcset="images/room.jpg 960w, images/room-1440.jpg 1440w" sizes="46vw" alt="" width="960" height="1200" loading="lazy">
-  </div>
+  <!-- Version ז: the sky behind the page, from dawn at the top to dusk (and a few stars) further down -->
+  <div class="page-deco" aria-hidden="true"><span></span><span class="stars"></span></div>
   <a class="whatsapp-fab" data-biz-href="whatsapp" target="_blank" rel="noopener" data-i18n-attr="aria-label:a11y.whatsapp" data-icon="whatsapp" hidden></a>
   <nav class="action-bar" data-i18n-attr="aria-label:mobile.bar">
     <a class="btn btn-primary" href="#book" data-i18n="mobile.book"></a>
@@ -7910,14 +7287,39 @@ function initHeader() {
   }
 
   if (nav && toggle) {
+    const isOpen = () => nav.classList.contains('is-open');
     const setOpen = (open) => {
+      if (open === isOpen()) return;
       nav.classList.toggle('is-open', open);
+      root.classList.toggle('menu-open', open); // dims the page behind the menu
       toggle.setAttribute('aria-expanded', String(open));
       toggle.innerHTML = svg(open ? 'close' : 'menu');
     };
-    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
     nav.addEventListener('click', (e) => e.target.closest('a') && setOpen(false));
-    document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen()) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    // A tap outside the open menu closes it. On the page itself the tap does only
+    // that (it doesn't also open a photo or follow a link underneath); the other
+    // header buttons still work.
+    document.addEventListener(
+      'click',
+      (e) => {
+        if (!isOpen() || nav.contains(e.target) || toggle.contains(e.target)) return;
+        setOpen(false);
+        if (!header?.contains(e.target)) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      },
+      true,
+    );
+    // Wide screens show the links in the header instead.
+    window.matchMedia('(min-width: 1141px)').addEventListener('change', () => setOpen(false));
   }
 
   // Theme switch: a soft circle that ripples out from the button (where supported).
@@ -7981,15 +7383,9 @@ function initMagneticButtons() {
 
 // [id, letter, name, theme it opens in]
 const LOOKS = [
-  ['2', 'א', 'טבעי וחם'],
-  ['2c', 'ג', 'חול ודבש'],
-  ['2e', 'ה', 'מרווה וחימר'],
   ['2g', 'ז', 'שקיעה'],
-  ['2h', 'ח', 'מרידיאנים'],
   ['2i', 'ט', 'לילה', 'dark'],
   ['2j', 'י', 'בוטני'],
-  ['2k', 'כ', 'ים וחול'],
-  ['2l', 'ל', 'במה'],
 ];
 
 function initLookSwitcher() {
@@ -8186,7 +7582,6 @@ function renderServices() {
     else card.classList.add('is-in');
   }
   refreshScrollFx();
-  watchStage();
 }
 
 // ---------------------------------------------------------------------------
@@ -8638,40 +8033,6 @@ function initTilt() {
   });
 }
 
-// Wide screens, some versions: a photo panel beside the page that changes with the
-// section (and the treatment) in the middle of the screen.
-const stage = document.querySelector('.stage');
-const stageWatch =
-  stage && 'IntersectionObserver' in window
-    ? new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) if (e.isIntersecting) stage.dataset.scene = e.target.dataset.scene;
-        },
-        { rootMargin: '-45% 0px -50% 0px' },
-      )
-    : null;
-
-function watchStage() {
-  if (!stageWatch) return;
-  const scenes = [
-    ['#hero', 'hero'],
-    ['#treatments .section-head', 'svc-dry-needling'],
-    ...[...document.querySelectorAll('.stack-card')].map((card) => [`#${card.id}`, card.id]),
-    ['#gallery', 'gallery'],
-    ['#about', 'about'],
-    ['#visit', 'visit'],
-    ['#contact', 'visit'],
-  ];
-  for (const [selector, scene] of scenes) {
-    const node = document.querySelector(selector);
-    if (node && !node.dataset.scene) {
-      node.dataset.scene = scene;
-      stageWatch.observe(node);
-    }
-  }
-  stage.dataset.scene ||= 'hero';
-}
-
 // Phones: the bottom bar (book · WhatsApp · call) waits until the opening
 // screen's own booking button has scrolled away, so the two never show at once.
 function initActionBar() {
@@ -8794,7 +8155,6 @@ initClinicVideo();
 splitHeadline();
 initHoverPreview();
 initTilt();
-watchStage();
 
 loadConfig()
   .then((cfg) => {

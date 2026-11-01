@@ -220,12 +220,12 @@ const themeInit = `(function () {
     if (sessionStorage.getItem('intro')) r.classList.add('no-intro');
     else sessionStorage.setItem('intro', '1');
   } catch (e) {}
-  r.setAttribute('data-look', '2');
+  r.setAttribute('data-look', '2g');
   try {
     if (/[?&]options(=|&|$)/.test(location.search)) {
       r.classList.add('show-looks');
       var lk = localStorage.getItem('look');
-      if (/^2[ceg-l]?$/.test(lk || '')) r.setAttribute('data-look', lk);
+      if (/^2[gij]$/.test(lk || '')) r.setAttribute('data-look', lk);
     }
   } catch (e) {}
   if (location.hash !== '#book') r.classList.add('bar-wait');

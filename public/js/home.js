@@ -101,7 +101,6 @@ function renderServices() {
     else card.classList.add('is-in');
   }
   refreshScrollFx();
-  watchStage();
 }
 
 // ---------------------------------------------------------------------------
@@ -553,40 +552,6 @@ function initTilt() {
   });
 }
 
-// Wide screens, some versions: a photo panel beside the page that changes with the
-// section (and the treatment) in the middle of the screen.
-const stage = document.querySelector('.stage');
-const stageWatch =
-  stage && 'IntersectionObserver' in window
-    ? new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) if (e.isIntersecting) stage.dataset.scene = e.target.dataset.scene;
-        },
-        { rootMargin: '-45% 0px -50% 0px' },
-      )
-    : null;
-
-function watchStage() {
-  if (!stageWatch) return;
-  const scenes = [
-    ['#hero', 'hero'],
-    ['#treatments .section-head', 'svc-dry-needling'],
-    ...[...document.querySelectorAll('.stack-card')].map((card) => [`#${card.id}`, card.id]),
-    ['#gallery', 'gallery'],
-    ['#about', 'about'],
-    ['#visit', 'visit'],
-    ['#contact', 'visit'],
-  ];
-  for (const [selector, scene] of scenes) {
-    const node = document.querySelector(selector);
-    if (node && !node.dataset.scene) {
-      node.dataset.scene = scene;
-      stageWatch.observe(node);
-    }
-  }
-  stage.dataset.scene ||= 'hero';
-}
-
 // Phones: the bottom bar (book · WhatsApp · call) waits until the opening
 // screen's own booking button has scrolled away, so the two never show at once.
 function initActionBar() {
@@ -709,7 +674,6 @@ initClinicVideo();
 splitHeadline();
 initHoverPreview();
 initTilt();
-watchStage();
 
 loadConfig()
   .then((cfg) => {
