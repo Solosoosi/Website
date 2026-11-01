@@ -5814,8 +5814,9 @@ html.a11y-still[data-look^='2l'] {
   color: #1d1a16;
 }
 
-/* Phones, and phones turned sideways: a round button that opens the list */
-@media (max-width: 760px), (max-height: 500px) {
+/* Phones, phones turned sideways, and laptop-height screens (where the bar would cover the
+   opening screen's button): a round button that opens the list */
+@media (max-width: 760px), (max-height: 820px) {
   .look-switcher {
     --switch-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
     inset-inline: auto 14px;
@@ -5917,6 +5918,15 @@ html.a11y-still[data-look^='2l'] {
 
   [dir='rtl'] .look-list {
     transform-origin: 100% 100%;
+  }
+}
+
+/* Tablets and laptops: the round button sits just above the WhatsApp button, clear of the opening screen */
+@media (min-width: 761px) and (min-height: 501px) and (max-height: 820px) {
+  .look-switcher,
+  html.bar-wait .look-switcher {
+    --switch-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+    inset-inline: auto 25px;
   }
 }
 
