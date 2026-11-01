@@ -25,6 +25,10 @@ let refreshScrollFx = () => {};
 
 const arrow = () => el('span', { class: 'flip-rtl', html: svg('arrow') });
 
+// Each treatment photo also exists in a small and a large copy (scripts/make-images.py),
+// so every screen gets a sharp version without downloading more than it needs.
+const sized = (image, width) => image.replace(/\.jpg$/, `-${width}.jpg`);
+
 // ---------------------------------------------------------------------------
 // Treatments: cards that stack as you scroll
 // ---------------------------------------------------------------------------
@@ -56,7 +60,18 @@ function renderServices() {
         el(
           'div',
           { class: 'stack-img', 'data-parallax': '14' },
-          s.image ? el('img', { src: s.image, alt: pick(s.name), width: 700, height: 700, loading: 'lazy' }) : null,
+          s.image
+            ? el('img', {
+                // lazy and the size options first, so the browser fetches only the one it needs
+                loading: 'lazy',
+                srcset: `${s.image} 700w, ${sized(s.image, 1200)} 1200w, ${sized(s.image, 1600)} 1600w`,
+                sizes: '(max-width: 860px) 92vw, 50vw',
+                src: s.image,
+                alt: pick(s.name),
+                width: 700,
+                height: 700,
+              })
+            : null,
         ),
         el(
           'div',
@@ -86,6 +101,7 @@ function renderServices() {
     else card.classList.add('is-in');
   }
   refreshScrollFx();
+  watchStage();
 }
 
 // ---------------------------------------------------------------------------
@@ -118,6 +134,7 @@ function initScrollFx() {
   const mosaic = $('mosaic');
   const cols = [...document.querySelectorAll('.mosaic-col')];
   const wide = window.matchMedia('(min-width: 761px)');
+  const deco = document.querySelector('.page-deco');
   let queued = false;
 
   function update() {
@@ -164,6 +181,9 @@ function initScrollFx() {
       }
     }
 
+    // How far down the page we are (0–1), for backgrounds that change while scrolling.
+    if (deco) deco.style.setProperty('--p', (window.scrollY / Math.max(1, document.documentElement.scrollHeight - vh)).toFixed(4));
+
     // Photos drift a little inside their frames (--py), and frames can grow as
     // they come up the screen (--enter: 0 at the bottom edge, 1 at the top).
     const moving = [...document.querySelectorAll('[data-parallax]')];
@@ -173,7 +193,8 @@ function initScrollFx() {
       let py = 0;
       let enter = 1;
       if (!still && r.height) {
-        const amp = Math.min(Number(node.dataset.parallax) || 0, r.height * 0.035);
+        // Photos are only 4% larger than their frames, so they never drift past the edge.
+        const amp = Math.min(Number(node.dataset.parallax) || 0, r.height * 0.017);
         const c = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2)));
         py = -c * amp;
         enter = clamp01((vh - r.top) / vh);
@@ -251,6 +272,24 @@ function initLightbox(items) {
     item.addEventListener('click', () => {
       show(i);
       dialog.showModal();
+      // The photo grows out of the tile that was tapped.
+      if (reducedMotion() || !img.animate) return;
+      const from = item.getBoundingClientRect();
+      const grow = () => {
+        const to = img.getBoundingClientRect();
+        if (!to.width || !dialog.open) return;
+        const dx = from.left + from.width / 2 - (to.left + to.width / 2);
+        const dy = from.top + from.height / 2 - (to.top + to.height / 2);
+        img.animate(
+          [
+            { transform: `translate(${dx}px, ${dy}px) scale(${from.width / to.width})`, opacity: 0.4 },
+            { transform: 'none', opacity: 1 },
+          ],
+          { duration: 560, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+        );
+      };
+      if (img.decode) img.decode().then(grow, grow);
+      else grow();
     }),
   );
   dialog.addEventListener('click', (e) => e.target === dialog && dialog.close());
@@ -403,7 +442,9 @@ function renderHeroTreatments() {
           'a',
           { href: `#svc-${s.id}` },
           el('span', { class: 'ht-num', 'aria-hidden': 'true' }, `0${i + 1}`),
-          s.image ? el('img', { src: s.image, alt: '', width: 76, height: 76 }) : null,
+          s.image
+            ? el('img', { srcset: `${sized(s.image, 300)} 300w, ${s.image} 700w`, sizes: '84px', src: sized(s.image, 300), alt: '', width: 76, height: 76 })
+            : null,
           el('span', { class: 'ht-name' }, pick(s.name)),
           el('span', { class: 'ht-go flip-rtl', 'aria-hidden': 'true', html: svg('arrow') }),
         ),
@@ -412,6 +453,138 @@ function renderHeroTreatments() {
       return item;
     }),
   );
+}
+
+// ---------------------------------------------------------------------------
+// Effects that some design versions switch on with CSS
+// ---------------------------------------------------------------------------
+
+// The headline's letters each get their own span (with --ci, their position), so a
+// version can bring them in one by one. Screen readers get the words via aria-label.
+function splitHeadline() {
+  const title = document.querySelector('.hero-title');
+  if (!title) return;
+  const words = [...title.querySelectorAll('.line > span')];
+  const split = () => {
+    let i = 0;
+    for (const word of words) {
+      if (word.firstElementChild?.classList.contains('ch')) {
+        i += word.children.length;
+        continue;
+      }
+      const letters = [...word.textContent].map((c) => {
+        const span = el('span', { class: 'ch' }, c);
+        span.style.setProperty('--ci', String(i++));
+        return span;
+      });
+      if (letters.length) word.replaceChildren(...letters);
+    }
+    title.setAttribute('aria-label', words.map((w) => w.textContent).join(' '));
+  };
+  split();
+  // The words are rewritten whenever the page text is applied again; split them again.
+  new MutationObserver(split).observe(title, { childList: true, subtree: true, characterData: true });
+}
+
+// Computers: pointing at a treatment in the opening list shows its photo beside the
+// mouse (only versions that style .hover-preview show it).
+function initHoverPreview() {
+  const list = $('hero-treatments');
+  const hero = document.querySelector('.hero');
+  if (!list || !hero || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  // The card is up to 250px wide in a 4:5 frame, so the square photo fills about 320px
+  const photo = el('img', { alt: '', width: 700, height: 700, sizes: '320px' });
+  const card = el('div', { class: 'hover-preview', 'aria-hidden': 'true' }, photo);
+  hero.append(card);
+  let x = 0;
+  let y = 0;
+  let tx = 0;
+  let ty = 0;
+  let frame = null;
+  const loop = () => {
+    x += (tx - x) * 0.16;
+    y += (ty - y) * 0.16;
+    card.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
+    frame = Math.abs(tx - x) + Math.abs(ty - y) > 0.4 ? requestAnimationFrame(loop) : null;
+  };
+  const aim = (e) => {
+    const r = hero.getBoundingClientRect();
+    tx = e.clientX - r.left;
+    ty = e.clientY - r.top;
+  };
+  list.addEventListener('pointerover', (e) => {
+    const link = e.target.closest('a');
+    const service = link && config?.services.find((s) => link.getAttribute('href') === `#svc-${s.id}`);
+    if (!service?.image || reducedMotion()) return;
+    photo.srcset = `${service.image} 700w, ${sized(service.image, 1200)} 1200w`;
+    photo.src = service.image;
+    if (!card.classList.contains('is-on')) {
+      aim(e);
+      x = tx;
+      y = ty;
+      card.style.translate = `${x}px ${y}px`;
+    }
+    card.classList.add('is-on');
+  });
+  list.addEventListener('pointermove', (e) => {
+    aim(e);
+    frame ??= requestAnimationFrame(loop);
+  });
+  list.addEventListener('pointerleave', () => card.classList.remove('is-on'));
+}
+
+// Computers: in versions that set --tilt: 1, a treatment photo leans toward the mouse.
+function initTilt() {
+  const list = $('services-list');
+  if (!list || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  list.addEventListener('pointermove', (e) => {
+    const box = e.target.closest('.stack-img');
+    if (!box || reducedMotion() || getComputedStyle(box).getPropertyValue('--tilt').trim() !== '1') return;
+    const r = box.getBoundingClientRect();
+    box.style.setProperty('--ry', `${(((e.clientX - r.left) / r.width - 0.5) * 7).toFixed(2)}deg`);
+    box.style.setProperty('--rx', `${((0.5 - (e.clientY - r.top) / r.height) * 7).toFixed(2)}deg`);
+  });
+  list.addEventListener('pointerout', (e) => {
+    const box = e.target.closest('.stack-img');
+    if (box && !box.contains(e.relatedTarget)) {
+      box.style.setProperty('--rx', '0deg');
+      box.style.setProperty('--ry', '0deg');
+    }
+  });
+}
+
+// Wide screens, some versions: a photo panel beside the page that changes with the
+// section (and the treatment) in the middle of the screen.
+const stage = document.querySelector('.stage');
+const stageWatch =
+  stage && 'IntersectionObserver' in window
+    ? new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) if (e.isIntersecting) stage.dataset.scene = e.target.dataset.scene;
+        },
+        { rootMargin: '-45% 0px -50% 0px' },
+      )
+    : null;
+
+function watchStage() {
+  if (!stageWatch) return;
+  const scenes = [
+    ['#hero', 'hero'],
+    ['#treatments .section-head', 'svc-dry-needling'],
+    ...[...document.querySelectorAll('.stack-card')].map((card) => [`#${card.id}`, card.id]),
+    ['#gallery', 'gallery'],
+    ['#about', 'about'],
+    ['#visit', 'visit'],
+    ['#contact', 'visit'],
+  ];
+  for (const [selector, scene] of scenes) {
+    const node = document.querySelector(selector);
+    if (node && !node.dataset.scene) {
+      node.dataset.scene = scene;
+      stageWatch.observe(node);
+    }
+  }
+  stage.dataset.scene ||= 'hero';
 }
 
 // Phones: the bottom bar (book · WhatsApp · call) waits until the opening
@@ -533,6 +706,10 @@ initCursorGlow();
 initActionBar();
 initStripProgress();
 initClinicVideo();
+splitHeadline();
+initHoverPreview();
+initTilt();
+watchStage();
 
 loadConfig()
   .then((cfg) => {

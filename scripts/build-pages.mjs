@@ -66,6 +66,14 @@ if (absolute) throw new Error(`build-pages: absolute links left: ${absolute.join
 
 const config = JSON.parse(read('config/site.json'));
 
+// Treatment photos also come in smaller and larger sizes (scripts/make-images.py).
+for (const s of config.services) {
+  for (const width of s.image ? [300, 1200, 1600] : []) {
+    const file = path.join(root, 'public', s.image.replace(/\.jpg$/, `-${width}.jpg`));
+    if (!fs.existsSync(file)) throw new Error(`build-pages: missing ${path.relative(root, file)} – run scripts/make-images.py`);
+  }
+}
+
 let site = read('public/js/site.js');
 site = replaceOnce(site, 'export function loadConfig()', 'function serverLoadConfig()');
 site = replaceOnce(site, 'export async function api(', 'async function serverApi(');
@@ -217,7 +225,7 @@ const themeInit = `(function () {
     if (/[?&]options(=|&|$)/.test(location.search)) {
       r.classList.add('show-looks');
       var lk = localStorage.getItem('look');
-      if (/^2[b-f]?$/.test(lk || '')) r.setAttribute('data-look', lk);
+      if (/^2[ceg-l]?$/.test(lk || '')) r.setAttribute('data-look', lk);
     }
   } catch (e) {}
   if (location.hash !== '#book') r.classList.add('bar-wait');

@@ -593,13 +593,17 @@ function initMagneticButtons() {
 // design (data-look on <html>). The switcher never shows on the normal site.
 // ---------------------------------------------------------------------------
 
+// [id, letter, name, theme it opens in]
 const LOOKS = [
   ['2', 'א', 'טבעי וחם'],
-  ['2b', 'ב', 'זית ופשתן'],
   ['2c', 'ג', 'חול ודבש'],
-  ['2d', 'ד', 'שקט ומינימלי'],
   ['2e', 'ה', 'מרווה וחימר'],
-  ['2f', 'ו', 'שמנת ואדמה'],
+  ['2g', 'ז', 'שקיעה'],
+  ['2h', 'ח', 'מרידיאנים'],
+  ['2i', 'ט', 'לילה', 'dark'],
+  ['2j', 'י', 'בוטני'],
+  ['2k', 'כ', 'ים וחול'],
+  ['2l', 'ל', 'במה'],
 ];
 
 function initLookSwitcher() {
@@ -625,9 +629,10 @@ function initLookSwitcher() {
   list.addEventListener('click', (e) => {
     const button = e.target.closest('button');
     if (!button) return;
-    root.dataset.look = button.dataset.lookId;
-    storageSet('look', button.dataset.lookId);
-    setTheme('light');
+    const [id, , , theme = 'light'] = LOOKS.find(([lookId]) => lookId === button.dataset.lookId);
+    root.dataset.look = id;
+    storageSet('look', id);
+    setTheme(theme);
     sync();
     setOpen(false);
     replayHero();

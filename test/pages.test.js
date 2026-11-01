@@ -19,6 +19,12 @@ test('GitHub Pages build produces a working single page', () => {
   for (const img of html.matchAll(/src="(images\/[^"]+)"/g)) {
     assert.ok(fs.existsSync(path.join(out, img[1])), `missing ${img[1]}`);
   }
+  for (const set of html.matchAll(/srcset="([^"]+)"/g)) {
+    for (const candidate of set[1].split(',')) {
+      const file = candidate.trim().split(/\s+/)[0];
+      assert.ok(fs.existsSync(path.join(out, file)), `missing ${file}`);
+    }
+  }
 
   // The inline module must parse.
   const script = html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
