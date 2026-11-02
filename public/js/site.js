@@ -623,68 +623,6 @@ function initMagneticButtons() {
   window.addEventListener('blur', release);
 }
 
-// ---------------------------------------------------------------------------
-// Design options: open the site with ?options to compare the versions of the
-// design (data-look on <html>). The switcher never shows on the normal site.
-// ---------------------------------------------------------------------------
-
-// [id, letter, name, theme it opens in]
-const LOOKS = [
-  ['2g', 'ז', 'שקיעה'],
-  ['2j', 'י', 'בוטני'],
-  ['2lm', 'מ', 'אליפסה'],
-  ['2ln', 'נ', 'ערפל'],
-  ['2ls', 'ס', 'אדווה'],
-];
-
-function initLookSwitcher() {
-  if (!root.classList.contains('show-looks')) return;
-  const current = () => LOOKS.find(([id]) => id === root.dataset.look) || LOOKS[0];
-  const buttons = LOOKS.map(([id, letter, name]) =>
-    el('button', { type: 'button', 'data-look-id': id }, el('b', {}, letter), name),
-  );
-  // On phones the list folds into one round button.
-  const toggle = el('button', { type: 'button', class: 'look-toggle', 'aria-expanded': 'false', 'aria-label': 'בחירת עיצוב' });
-  const list = el('div', { class: 'look-list' }, ...buttons);
-  const bar = el('div', { class: 'look-switcher', role: 'group', 'aria-label': 'בחירת עיצוב' }, toggle, list);
-  const setOpen = (open) => {
-    bar.classList.toggle('is-open', open);
-    toggle.setAttribute('aria-expanded', String(open));
-  };
-  const sync = () => {
-    const [id, letter] = current();
-    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lookId === id)));
-    toggle.replaceChildren(letter, el('span', {}, 'עיצוב'));
-  };
-  toggle.addEventListener('click', () => setOpen(!bar.classList.contains('is-open')));
-  list.addEventListener('click', (e) => {
-    const button = e.target.closest('button');
-    if (!button) return;
-    const [id, , , theme = 'light'] = LOOKS.find(([lookId]) => lookId === button.dataset.lookId);
-    root.dataset.look = id;
-    storageSet('look', id);
-    setTheme(theme);
-    sync();
-    setOpen(false);
-    replayHero();
-    window.dispatchEvent(new Event('resize'));
-  });
-  document.addEventListener('click', (e) => bar.contains(e.target) || setOpen(false));
-  document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
-  sync();
-  document.body.append(bar);
-}
-
-// After switching versions, play the opening animation again.
-function replayHero() {
-  const hero = document.querySelector('.hero');
-  if (!hero?.getAnimations) return;
-  for (const animation of hero.getAnimations({ subtree: true })) {
-    animation.cancel();
-    animation.play();
-  }
-}
-
 // Underline the nav link of the section on screen.
 function initScrollSpy() {
   const links = [...document.querySelectorAll('.main-nav a[href^="#"]')];
@@ -737,7 +675,6 @@ applyTranslations();
 initReveal();
 initScrollSpy();
 initMagneticButtons();
-initLookSwitcher();
 syncThemeColor();
 loadConfig().catch(() => {});
 setInterval(renderStatus, 60_000);

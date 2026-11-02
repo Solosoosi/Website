@@ -294,14 +294,7 @@ const themeInit = `(function () {
     if (sessionStorage.getItem('intro')) r.classList.add('no-intro');
     else sessionStorage.setItem('intro', '1');
   } catch (e) {}
-  r.setAttribute('data-look', '2g');
-  try {
-    if (/[?&]options(=|&|$)/.test(location.search)) {
-      r.classList.add('show-looks');
-      var lk = localStorage.getItem('look');
-      if (/^2(g|j|l[mns])$/.test(lk || '')) r.setAttribute('data-look', lk);
-    }
-  } catch (e) {}
+  r.setAttribute('data-look', '2ln');
   if (location.hash !== '#book') r.classList.add('bar-wait');
   if (th !== 'light' && th !== 'dark') th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   r.setAttribute('data-theme', th);

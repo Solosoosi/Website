@@ -33,14 +33,7 @@
     if (sessionStorage.getItem('intro')) r.classList.add('no-intro');
     else sessionStorage.setItem('intro', '1');
   } catch (e) {}
-  r.setAttribute('data-look', '2g');
-  try {
-    if (/[?&]options(=|&|$)/.test(location.search)) {
-      r.classList.add('show-looks');
-      var lk = localStorage.getItem('look');
-      if (/^2(g|j|l[mns])$/.test(lk || '')) r.setAttribute('data-look', lk);
-    }
-  } catch (e) {}
+  r.setAttribute('data-look', '2ln');
   if (location.hash !== '#book') r.classList.add('bar-wait');
   if (th !== 'light' && th !== 'dark') th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   r.setAttribute('data-theme', th);
@@ -49,7 +42,7 @@
 })();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300..600&family=Fredoka:wght@600&family=Gveret+Levin&family=Heebo:wght@200..500&family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans+Hebrew:wght@300;400;500&family=Manrope:wght@700&family=Noto+Sans+Hebrew:wdth,wght@62.5..100,200..500&family=Noto+Serif+Hebrew:wdth,wght@62.5..100,200..500&family=Rubik:wght@300;400;500;600&family=Varela+Round&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans+Hebrew:wght@300;400;500&family=Manrope:wght@700&family=Noto+Sans+Hebrew:wdth,wght@62.5..100,200..500&display=swap">
   <style>
 /* ==========================================================================
    David Neeman – acupuncture clinic, Tel Aviv
@@ -2916,11 +2909,10 @@ html.a11y-contrast .words .w {
 }
 
 /* ==========================================================================
-   Design options: two versions, set with data-look on <html> – ז sunset
-   (2g, the default) and י botanical (2j). They share the
-   "natural" base right below (the [data-look^='2'] rules); each version then
-   adds its own colors, fonts, photo shapes and motion further down.
-   Open the site with ?options to compare them.
+   The design: ערפל (mist), set with data-look="2ln" on <html> (theme-init.js).
+   It is built in layers: the "natural" base right below (the [data-look^='2']
+   rules), then the logo rules ([data-look^='2l']), then ערפל's own colors,
+   fonts and shapes.
    ========================================================================== */
 
 /* ---------- The shared base: warm paper, soft headings, thin lines ---------- */
@@ -3780,794 +3772,12 @@ html.a11y-contrast .words .w {
 }
 
 /* ==========================================================================
-   Version ז: sunset – golden-hour colors; the room photo rises like the sun,
-   and the sky turns from dawn to dusk as you scroll
+   Built around the client's logo: "DAVID NEEMAN" in its thin oval, cool
+   colors and precise, thin lines ([data-look^='2l']; ערפל's own palette,
+   fonts and shapes follow in its section below)
    ========================================================================== */
 
-:root[data-look='2g'] {
-  --bg: #fbf1ea;
-  --bg-2: #f7e4da;
-  --surface: #fffaf6;
-  --glass: rgb(255 250 246 / 0.8);
-  --glass-strong: #fffaf6;
-  --glass-border: #f1dccf;
-  --ink: #3b2633;
-  --ink-2: #5b4352;
-  --muted: #765d6b;
-  --line: rgb(59 38 51 / 0.12);
-  --line-strong: rgb(59 38 51 / 0.24);
-  --accent: #8a4a5f;
-  --accent-2: #c7798a;
-  --accent-ink: #723a4e;
-  --on-accent: #ffffff;
-  --accent-soft: #f6dfe2;
-  --spark: #c2603f;
-  --curtain: #f8dccd;
-  --glow-1: #f9d6bf;
-  --glow-2: #e8d8f0;
-  --glow-3: #f5d0d8;
-  --glow-4: #fbe3c4;
-  --open: #4f8a5a;
-  --photo-bg: #f1e0d6;
-  --shadow-soft: 0 12px 34px -20px rgb(138 74 95 / 0.35);
-  --shadow-lift: 0 30px 70px -34px rgb(138 74 95 / 0.45);
-  --header-bg: rgb(255 246 240 / 0.84);
-  --font-display: 'Varela Round', 'Rubik', sans-serif;
-  --font-body: 'Varela Round', 'Rubik', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  --radius-sm: 14px;
-  --radius: 18px;
-  --radius-lg: 26px;
-  --radius-xl: 34px;
-}
-
-:root[data-look='2g'][data-theme='dark'] {
-  --bg: #1d1526;
-  --bg-2: #241a30;
-  --surface: #2a2036;
-  --glass: rgb(42 32 54 / 0.82);
-  --glass-strong: #2a2036;
-  --glass-border: #3c2f4a;
-  --ink: #f7eaf0;
-  --ink-2: #ddcbd7;
-  --muted: #b5a0b2;
-  --line: rgb(247 234 240 / 0.12);
-  --line-strong: rgb(247 234 240 / 0.24);
-  --accent: #f2a7b6;
-  --accent-2: #f7c3cc;
-  --accent-ink: #f6b6c3;
-  --on-accent: #2b0f1b;
-  --accent-soft: #3b2740;
-  --spark: #f3a77e;
-  --curtain: #3a2436;
-  --glow-1: #4a2b38;
-  --glow-2: #2c2650;
-  --glow-3: #46283d;
-  --glow-4: #42301f;
-  --photo-bg: #2f2438;
-  --shadow-soft: 0 12px 34px -18px rgb(0 0 0 / 0.6);
-  --shadow-lift: 0 30px 70px -30px rgb(0 0 0 / 0.7);
-  --header-bg: rgb(29 21 38 / 0.84);
-}
-
-[data-look='2g'] .btn,
-[data-look='2g'] .pill-label,
-[data-look='2g'] .status,
-[data-look='2g'] .header-inner {
-  border-radius: 999px;
-}
-
-[data-look='2g'] .section-alt {
-  background: none;
-}
-
-/* The sky behind the whole page: dawn at the top, dusk further down */
-[data-look='2g'] .page-deco {
-  display: block;
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(180deg, #fde4d0 0%, #f9dad6 48%, #f1e2ee 100%);
-}
-
-[data-look='2g'] .page-deco span {
-  position: absolute;
-  inset: 0;
-}
-
-[data-look='2g'] .page-deco span:first-child {
-  background: linear-gradient(180deg, #f3d6e2 0%, #e4dbf1 55%, #d9e1f2 100%);
-  opacity: var(--p, 0);
-}
-
-[data-look='2g'][data-theme='dark'] .page-deco {
-  background: linear-gradient(180deg, #34202f 0%, #261a31 55%, #1b1628 100%);
-}
-
-[data-look='2g'][data-theme='dark'] .page-deco span:first-child {
-  background: linear-gradient(180deg, #201b38 0%, #171428 60%, #100f1d 100%);
-}
-
-[data-look='2g'] .hero::before {
-  inset-inline: 0;
-  top: -4%;
-  width: min(130vw, 1150px);
-  margin-inline: auto;
-  background: radial-gradient(circle, color-mix(in srgb, var(--glow-4) 95%, transparent) 0%, color-mix(in srgb, var(--glow-1) 70%, transparent) 32%, transparent 64%);
-  animation: sun-glow 9s ease-in-out infinite alternate;
-}
-
-[data-look='2g'] .hero {
-  padding-top: calc(64px + clamp(28px, 5svh, 64px));
-}
-
-[data-look='2g'] .hero-inner {
-  --sun: clamp(210px, min(23vw, 34svh), 310px);
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: 'photo' 'head';
-  justify-items: center;
-  row-gap: clamp(22px, 3vw, 36px);
-}
-
-[data-look='2g'] .hero-head {
-  grid-area: head;
-  justify-items: center;
-  text-align: center;
-}
-
-[data-look='2g'] .hero-room,
-[data-look='2g'] .hero-room:nth-child(n) {
-  grid-area: photo;
-  justify-self: center;
-  width: var(--sun);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 10px color-mix(in srgb, var(--glow-4) 70%, transparent),
-    0 0 0 24px color-mix(in srgb, var(--glow-1) 40%, transparent),
-    var(--shadow-lift);
-  animation:
-    sunrise 1.9s var(--ease) calc(var(--intro) + 0.05s) both,
-    sun-ring 7s ease-in-out calc(var(--intro) + 2s) infinite alternate;
-}
-
-[data-look='2g'] .hero-title {
-  font-weight: 400;
-}
-
-[data-look='2g'] .hero-title .line {
-  font-size: clamp(3.2rem, 9vw, 7.2rem);
-}
-
-[data-look='2g'] .hero-title .line > .grad {
-  background: linear-gradient(100deg, #c2603f 0%, #b5536d 45%, #8a4a5f 90%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation:
-    word-in 1.3s var(--ease) calc(var(--intro) + 0.2s) both,
-    sheen 9s ease-in-out infinite;
-}
-
-[data-look='2g'][data-theme='dark'] .hero-title .line > .grad {
-  background-image: linear-gradient(100deg, #f6b38c 0%, #f2a7b6 50%, #d9b3f0 90%);
-}
-
-/* The treatments as soft pills under the headline */
-[data-look='2g'] .hero-treatments {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px 12px;
-  max-width: 720px;
-  margin: 8px 0 32px;
-}
-
-[data-look='2g'] .hero-treatments::before,
-[data-look='2g'] .hero-treatments li::after,
-[data-look='2g'] .hero-treatments a::before,
-[data-look='2g'] .hero-treatments .ht-go {
-  display: none;
-}
-
-[data-look='2g'] .hero-treatments a,
-[data-look='2g'] .hero-treatments a:hover {
-  gap: 10px;
-  padding-block: 6px;
-  padding-inline: 6px 18px;
-  border: 1px solid var(--glass-border);
-  border-radius: 999px;
-  background: var(--glass);
-  box-shadow: var(--shadow-soft);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 600;
-  transition: transform 0.4s var(--ease), border-color 0.25s;
-}
-
-[data-look='2g'] .hero-treatments img {
-  width: 38px;
-  height: 38px;
-}
-
-@media (hover: hover) {
-  [data-look='2g'] .hero-treatments a:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent-2);
-  }
-}
-
-[data-look='2g'] .hero-ctas {
-  justify-content: center;
-}
-
-/* Treatments: three warm cards */
-[data-look='2g'] .stack {
-  gap: clamp(18px, 2.4vw, 30px);
-  border-top: 0;
-}
-
-[data-look='2g'] .stack-card,
-[data-look='2g'] .stack-card:nth-child(n) {
-  --card-d: calc(var(--i, 0) * 0.12s);
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
-  align-content: start;
-  align-items: stretch;
-  gap: 20px;
-  padding: 14px 14px 26px;
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  background: linear-gradient(170deg, var(--surface) 35%, color-mix(in srgb, var(--glow-3) 60%, var(--surface)));
-}
-
-[data-look='2g'] .stack-card:nth-child(2) {
-  background: linear-gradient(170deg, var(--surface) 35%, color-mix(in srgb, var(--glow-2) 70%, var(--surface)));
-}
-
-[data-look='2g'] .stack-card:nth-child(3) {
-  background: linear-gradient(170deg, var(--surface) 35%, color-mix(in srgb, var(--glow-1) 70%, var(--surface)));
-}
-
-[data-look='2g'] .stack-card::after {
-  display: none;
-}
-
-[data-look='2g'] .stack-card:nth-child(even) .stack-img {
-  order: 0;
-}
-
-[data-look='2g'] .stack-img {
-  height: auto;
-  min-height: 0;
-  aspect-ratio: 1;
-  border-radius: calc(var(--radius-xl) - 10px);
-}
-
-[data-look='2g'] .stack-body {
-  display: flex;
-  flex-direction: column;
-  padding-inline: 8px;
-}
-
-[data-look='2g'] .stack-foot {
-  margin-top: auto;
-}
-
-[data-look='2g'] .stack-name,
-[data-look='2g'] .section-title {
-  font-weight: 400;
-}
-
-@media (min-width: 981px) {
-  [data-look='2g'] .stack {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  [data-look='2g'] .stack-name {
-    font-size: clamp(2rem, 2.6vw, 2.4rem);
-  }
-}
-
-[data-look='2g'] .mosaic-col {
-  transform: translate3d(0, var(--shift, 0px), 0);
-}
-
-[data-look='2g'] .mosaic-col:nth-child(2) {
-  margin-top: clamp(48px, 9vw, 140px);
-}
-
-[data-look='2g'] .mosaic-item {
-  border-radius: var(--radius-lg);
-}
-
-[data-look='2g'] .about-photo .blob,
-[data-look='2g'] .statement-media {
-  border-radius: 999px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html.js:not(.a11y-still)[data-look='2g'] .stack-card:nth-child(n):not(.is-in) .stack-img {
-    clip-path: inset(100% 0 0 0);
-  }
-}
-
-/* Soft rays of light turn slowly around the sun (the room photo) */
-[data-look='2g'] .hero-inner::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  top: calc(var(--sun) / 2);
-  left: 50%;
-  width: calc(var(--sun) * 3.4);
-  aspect-ratio: 1;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--glow-4) 85%, transparent) 0deg 2.5deg, transparent 2.5deg 12deg);
-  -webkit-mask: radial-gradient(circle, transparent 17%, #000 24%, rgb(0 0 0 / 0.5) 42%, transparent 68%);
-  mask: radial-gradient(circle, transparent 17%, #000 24%, rgb(0 0 0 / 0.5) 42%, transparent 68%);
-  opacity: 0.6;
-  pointer-events: none;
-  animation:
-    fade-in 2.4s var(--ease) calc(var(--intro) + 0.9s) both,
-    spin 160s linear infinite;
-}
-
-[data-look='2g'][data-theme='dark'] .hero-inner::before {
-  opacity: 0.4;
-}
-
-/* Dusk: near the bottom of the page a few soft stars come out in the sky, twinkling */
-[data-look='2g'] .page-deco .stars {
-  opacity: clamp(0, calc((var(--p, 0) - 0.55) * 2.2), 0.75);
-}
-
-/* Phones: fewer of them */
-@media (max-width: 760px) {
-  [data-look='2g'] .page-deco .stars::after {
-    display: none;
-  }
-}
-
-[data-look='2g'] .page-deco .stars::before,
-[data-look='2g'] .page-deco .stars::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(2.9px 2.9px at 8% 12%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.2px 2.2px at 19% 31%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(3.6px 3.6px at 27% 8%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.3px 2.3px at 38% 22%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(3.1px 3.1px at 52% 6%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.2px 2.2px at 61% 27%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(3.4px 3.4px at 73% 14%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.3px 2.3px at 84% 33%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.9px 2.9px at 93% 9%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.2px 2.2px at 46% 38%, rgb(255 255 255 / 0.85), transparent);
-  animation: twinkle 4.5s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-
-[data-look='2g'] .page-deco .stars::after {
-  background-image:
-    radial-gradient(2.5px 2.5px at 4% 26%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(3.2px 3.2px at 14% 4%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.2px 2.2px at 33% 35%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.7px 2.7px at 43% 11%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.2px 2.2px at 57% 19%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(3.2px 3.2px at 67% 4%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.3px 2.3px at 79% 24%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.7px 2.7px at 89% 18%, rgb(255 255 255 / 0.85), transparent),
-    radial-gradient(2.2px 2.2px at 97% 37%, rgb(255 255 255 / 0.85), transparent);
-  animation-duration: 6s;
-  animation-delay: -3s;
-}
-
-@keyframes twinkle {
-  from {
-    opacity: 0.35;
-  }
-}
-
-/* The video's play/pause button sits in the middle at the bottom of its round frame */
-[data-look='2g'] .video-toggle {
-  inset-inline-end: auto;
-  left: 50%;
-  bottom: 18px;
-  translate: -50% 0;
-}
-
-/* ==========================================================================
-   Version י: botanical – deep leaf green, big leaves that sway, each photo
-   in its own botanical frame, and a headline whose letters spring into place
-   ========================================================================== */
-
-:root[data-look='2j'] {
-  --bg: #f4f2e9;
-  --bg-2: #e8ecdc;
-  --surface: #fbfaf3;
-  --glass: #fbfaf3;
-  --glass-strong: #fbfaf3;
-  --glass-border: #dde2cf;
-  --ink: #1f2a1f;
-  --ink-2: #3c4a3b;
-  --muted: #5a6757;
-  --line: rgb(31 42 31 / 0.12);
-  --line-strong: rgb(31 42 31 / 0.25);
-  --accent: #2f5a3a;
-  --accent-2: #6f9a6a;
-  --accent-ink: #264a30;
-  --on-accent: #ffffff;
-  --accent-soft: #dfe8d5;
-  --spark: #c4634e;
-  --leaf-1: #a9c79a;
-  --leaf-2: #6f9a66;
-  --curtain: #dfe8d5;
-  --glow-1: #dfe9cf;
-  --glow-2: #ecefdf;
-  --glow-3: #f4dfd4;
-  --glow-4: #e7ecd6;
-  --open: #3f7d4a;
-  --photo-bg: #e4e8d6;
-  --shadow-soft: 0 12px 30px -18px rgb(30 60 30 / 0.25);
-  --shadow-lift: 0 28px 60px -30px rgb(30 60 30 / 0.35);
-  --header-bg: rgb(244 242 233 / 0.9);
-  /* Fredoka is loaded in semibold (600) only, so every heading here is soft and full */
-  --font-display: 'Fredoka', 'Rubik', sans-serif;
-  --font-body: 'Rubik', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  --radius-sm: 14px;
-  --radius: 20px;
-  --radius-lg: 28px;
-  --radius-xl: 36px;
-}
-
-:root[data-look='2j'][data-theme='dark'] {
-  --bg: #121a14;
-  --bg-2: #162019;
-  --surface: #1a251d;
-  --glass: #1a251d;
-  --glass-strong: #1a251d;
-  --glass-border: #2b3a2e;
-  --ink: #e8efe3;
-  --ink-2: #cbd6c5;
-  --muted: #9cab97;
-  --line: rgb(232 239 227 / 0.12);
-  --line-strong: rgb(232 239 227 / 0.25);
-  --accent: #9fc79a;
-  --accent-2: #bcdab6;
-  --accent-ink: #b2d4ac;
-  --on-accent: #10200f;
-  --accent-soft: #223024;
-  --spark: #ee9a83;
-  --leaf-1: #2f4d31;
-  --leaf-2: #3f6640;
-  --curtain: #1f2b21;
-  --glow-1: #213425;
-  --glow-2: #1a241c;
-  --glow-3: #33241e;
-  --glow-4: #1f2c20;
-  --photo-bg: #1d2a20;
-  --shadow-soft: 0 12px 30px -18px rgb(0 0 0 / 0.6);
-  --shadow-lift: 0 28px 60px -30px rgb(0 0 0 / 0.7);
-  --header-bg: rgb(18 26 20 / 0.9);
-}
-
-[data-look='2j'] .btn,
-[data-look='2j'] .pill-label,
-[data-look='2j'] .status,
-[data-look='2j'] .header-inner {
-  border-radius: 999px;
-}
-
-[data-look='2j'] .hero-title .line > .grad {
-  color: var(--spark);
-}
-
-[data-look='2j'] .hero-title .line > span,
-[data-look='2j'] .hero-title .line > .grad {
-  animation: none;
-}
-
-[data-look='2j'] .hero-title .ch {
-  display: inline-block;
-  animation: ch-bounce 0.95s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--intro) + 0.1s + var(--ci, 0) * 0.055s) both;
-}
-
-[data-look='2j'] .hero-title,
-[data-look='2j'] .section-title,
-[data-look='2j'] .stack-name {
-  font-weight: 400;
-}
-
-/* Two big leaves at the edges of the opening screen, swaying slowly */
-[data-look='2j'] .hero::before,
-[data-look='2j'] .hero::after {
-  content: '';
-  display: block;
-  position: absolute;
-  z-index: 0;
-  border-radius: 0 100% 0 100%;
-  background:
-    linear-gradient(45deg, transparent 49.3%, rgb(255 255 255 / 0.45) 49.7%, rgb(255 255 255 / 0.45) 50.3%, transparent 50.7%),
-    linear-gradient(135deg, var(--leaf-1), var(--leaf-2));
-  pointer-events: none;
-}
-
-[data-look='2j'] .hero::before {
-  top: 9%;
-  inset-inline-end: -40px;
-  inset-inline-start: auto;
-  width: clamp(130px, 18vw, 280px);
-  height: auto;
-  aspect-ratio: 1;
-  margin: 0;
-  opacity: 0.5;
-  transform-origin: 100% 100%;
-  animation: sway 7s ease-in-out infinite alternate;
-}
-
-[data-look='2j'] .hero::after {
-  inset: auto;
-  bottom: 6%;
-  inset-inline-start: -30px;
-  width: clamp(90px, 11vw, 170px);
-  aspect-ratio: 1;
-  opacity: 0.4;
-  transform-origin: 0 0;
-  animation: sway-b 9s ease-in-out infinite alternate;
-}
-
-/* Photo frames: each photo gets its own botanical shape – leaf, arch, pebble,
-   petal, seed – and some a frame detail: a thin outline, a soft shape behind,
-   or a mat like a framed picture. */
-:root[data-look='2j'] {
-  --f-leaf: 46% 0 46% 0 / 34% 0 34% 0;
-  --f-leaf-b: 0 46% 0 46% / 0 34% 0 34%;
-  --f-arch: 50% 50% var(--radius) var(--radius) / 40% 40% var(--radius) var(--radius);
-  --f-pebble: 42% 58% 63% 37% / 41% 44% 56% 59%;
-  --f-petal: 50% 50% 50% 7%;
-  --f-seed: 50% 50% 50% 50% / 60% 60% 40% 40%;
-}
-
-/* The room photo: a leaf with a thin outline that opens out around it */
-[data-look='2j'] .hero-room {
-  border-radius: var(--f-leaf);
-  outline: 1.5px solid color-mix(in srgb, var(--accent-2) 75%, transparent);
-  outline-offset: 12px;
-  animation:
-    rise-in 1.4s var(--ease) calc(var(--intro) + 0.1s) both,
-    frame-out 1.6s var(--ease) calc(var(--intro) + 1.3s) both;
-}
-
-/* The small photos in the treatment list (and on the booking page): little leaves */
-[data-look='2j'] .hero-treatments img,
-[data-look='2j'] .service-thumb {
-  border-radius: 50% 0 50% 0;
-}
-
-[data-look='2j'] .hero-treatments li:nth-child(even) img,
-[data-look='2j'] .service-option:nth-child(even) .service-thumb {
-  border-radius: 0 50% 0 50%;
-}
-
-/* The three treatments: a leaf, a pebble that slowly changes shape, a petal */
-[data-look='2j'] .stack-card:nth-child(3n + 1) .stack-img {
-  border-radius: 0 40% 0 40% / 0 40% 0 40%;
-}
-
-[data-look='2j'] .stack-card:nth-child(3n + 2) .stack-img {
-  border-radius: var(--f-pebble);
-  animation: morph 18s ease-in-out infinite;
-}
-
-[data-look='2j'] .stack-card:nth-child(3n + 3) .stack-img {
-  border-radius: var(--f-petal);
-}
-
-/* Gallery: six shapes mixed so that no two neighbours match */
-[data-look='2j'] .mosaic-item {
-  border-radius: var(--f-arch);
-}
-
-[data-look='2j'] .mosaic-col:nth-child(1) .mosaic-item:nth-child(2) {
-  border-radius: var(--f-petal);
-}
-
-[data-look='2j'] .mosaic-col:nth-child(1) .mosaic-item:nth-child(3),
-[data-look='2j'] .mosaic-col:nth-child(3) .mosaic-item:nth-child(1) {
-  border-radius: var(--f-leaf-b);
-}
-
-[data-look='2j'] .mosaic-col:nth-child(2) .mosaic-item:nth-child(1),
-[data-look='2j'] .mosaic-col:nth-child(3) .mosaic-item:nth-child(3) {
-  border-radius: var(--f-leaf);
-}
-
-[data-look='2j'] .mosaic-col:nth-child(2) .mosaic-item:nth-child(2) {
-  border-radius: var(--f-pebble);
-}
-
-[data-look='2j'] .mosaic-col:nth-child(2) .mosaic-item:nth-child(3) {
-  border-radius: var(--f-seed);
-}
-
-/* About: a seed shape with a soft green pebble behind it that slowly changes shape */
-[data-look='2j'] .about-photo {
-  isolation: isolate;
-}
-
-[data-look='2j'] .about-photo .blob {
-  border-radius: var(--f-seed);
-}
-
-[data-look='2j'] .about-photo::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: 9% -4% -6% 7%;
-  border-radius: var(--f-pebble);
-  background: linear-gradient(150deg, var(--leaf-1), var(--leaf-2));
-  opacity: 0.45;
-  animation: morph 22s ease-in-out infinite reverse;
-  transition: opacity 1.2s var(--ease) 0.2s, transform 1.6s var(--ease) 0.2s;
-  pointer-events: none;
-}
-
-/* The video: an arch in a light mat, like a framed picture */
-[data-look='2j'] .statement-media {
-  padding: 10px;
-  border: 1px solid var(--glass-border);
-  border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
-  background: var(--surface);
-}
-
-[data-look='2j'] .statement-media video {
-  border-radius: 999px 999px calc(var(--radius-lg) - 10px) calc(var(--radius-lg) - 10px);
-}
-
-[data-look='2j'] .video-toggle {
-  bottom: 22px;
-  inset-inline-end: 22px;
-}
-
-[data-look='2j'] .hero-treatments a::before {
-  border-radius: 999px;
-}
-
-/* A few small leaves drift down across the opening screen */
-[data-look='2j'] .hero .aurora {
-  display: block;
-}
-
-[data-look='2j'] .hero .aurora span {
-  top: -32px;
-  bottom: auto;
-  inset-inline: 22% auto;
-  width: 16px;
-  aspect-ratio: 1;
-  border-radius: 0 100% 0 100%;
-  background:
-    linear-gradient(45deg, transparent 46%, rgb(255 255 255 / 0.5) 48.5% 51.5%, transparent 54%),
-    linear-gradient(135deg, var(--leaf-1), var(--leaf-2));
-  opacity: 0;
-  animation: leaf-fall 19s linear infinite;
-  animation-delay: -4s;
-}
-
-[data-look='2j'] .hero .aurora span:nth-child(2) {
-  inset-inline-start: 58%;
-  width: 12px;
-  animation-duration: 23s;
-  animation-delay: -12s;
-}
-
-[data-look='2j'] .hero .aurora span:nth-child(3) {
-  inset-inline-start: 7%;
-  width: 20px;
-  animation-duration: 21s;
-  animation-delay: -16s;
-}
-
-[data-look='2j'] .hero .aurora span:nth-child(4) {
-  inset-inline-start: 82%;
-  width: 14px;
-  animation-duration: 26s;
-  animation-delay: -7s;
-}
-
-@keyframes leaf-fall {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-
-  10% {
-    opacity: 0.6;
-  }
-
-  35% {
-    transform: translate3d(-36px, 32vh, 0) rotate(120deg);
-  }
-
-  65% {
-    transform: translate3d(18px, 62vh, 0) rotate(220deg);
-  }
-
-  88% {
-    opacity: 0.5;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate3d(-12px, 96vh, 0) rotate(340deg);
-  }
-}
-
-/* A small leaf beside each section number */
-[data-look='2j'] .sec-num::before {
-  content: '';
-  flex: none;
-  width: 11px;
-  height: 11px;
-  border-radius: 0 100% 0 100%;
-  background: var(--accent-2);
-}
-
-/* The logo is a leaf that sways a little */
-[data-look='2j'] .brand-orb {
-  border-radius: 0 100% 0 100%;
-  background:
-    linear-gradient(45deg, transparent 47%, rgb(255 255 255 / 0.55) 48.6% 51.4%, transparent 53%),
-    linear-gradient(135deg, var(--leaf-1), var(--leaf-2));
-  transform-origin: 0 100%;
-  animation: sway 6s ease-in-out infinite alternate;
-}
-
-[data-look='2j'] .brand-orb::after {
-  display: none;
-}
-
-[data-look='2j'] .intro-orb {
-  border-radius: 0 100% 0 100%;
-  background:
-    linear-gradient(45deg, transparent 47%, rgb(255 255 255 / 0.55) 48.6% 51.4%, transparent 53%),
-    linear-gradient(135deg, var(--leaf-1), var(--leaf-2));
-  box-shadow: 0 18px 40px -16px var(--accent);
-}
-
-/* On computers a gallery frame softly changes shape under the mouse */
-@media (hover: hover) {
-  [data-look='2j'] .mosaic-item {
-    transition: opacity 0.9s var(--ease), transform 1.1s var(--ease), border-radius 0.9s var(--ease);
-    transition-delay: calc(var(--cd, 0s) + var(--rd, 0s)), calc(var(--cd, 0s) + var(--rd, 0s)), 0s;
-  }
-
-  [data-look='2j'] .mosaic-col:nth-child(n) .mosaic-item:nth-child(n):hover {
-    border-radius: var(--f-pebble);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html.js:not(.a11y-still)[data-look='2j'] .stack-card:nth-child(n):not(.is-in) .stack-img {
-    clip-path: inset(100% 0 0 0);
-  }
-
-  html.js:not(.a11y-still)[data-look='2j'] .about-photo.reveal:not(.is-visible)::before {
-    opacity: 0;
-    transform: scale(0.85) rotate(-6deg);
-  }
-}
-
-/* ==========================================================================
-   Versions built around the logo – מ oval (2lm), נ mist (2ln), ס ripple (2ls):
-   "DAVID NEEMAN" in its thin oval, cool colors and precise, thin lines.
-   Their ids all start with "2l", so [data-look^='2l'] is what they share;
-   each version below adds its own palette, fonts and shapes.
-   ========================================================================== */
-
-/* The logo shows only in these versions */
+/* The logo shows on the site's pages (they all set data-look) */
 .brand-logo,
 .hero-logo,
 .intro-logo,
@@ -4632,11 +3842,6 @@ html.a11y-still[data-look^='2l'] {
   overflow: visible;
   direction: ltr;
   color: var(--ink);
-}
-
-/* Parts that only some versions use */
-:is(.hero-logo, .intro-logo, .footer-logo) :is(.logo-guides, .logo-window, .logo-ripple) {
-  display: none;
 }
 
 [data-look^='2l'] :is(.hero-logo, .intro-logo, .footer-logo) .logo-ring {
@@ -4725,22 +3930,22 @@ html.a11y-still[data-look^='2l'] {
   display: none;
 }
 
-/* מ and נ: the full logo where the text column has room for it (the curtain matches, so its
-   logo can land on this one) */
+/* The full logo where the text column has room for it (the curtain matches, so its logo can
+   land on this one) */
 @media (min-width: 1100px) and (min-height: 820px) {
-  :is([data-look='2lm'], [data-look='2ln']) :is(.hero-logo, .intro-logo) .logo-word {
+  [data-look='2ln'] :is(.hero-logo, .intro-logo) .logo-word {
     transform: none;
   }
 
-  :is([data-look='2lm'], [data-look='2ln']) :is(.hero-logo, .intro-logo) .logo-tag {
+  [data-look='2ln'] :is(.hero-logo, .intro-logo) .logo-tag {
     display: inline;
   }
 
-  :root:is([data-look='2lm'], [data-look='2ln']) .hero-logo {
+  :root[data-look='2ln'] .hero-logo {
     width: min(100%, 600px);
   }
 
-  :root:is([data-look='2lm'], [data-look='2ln']) .intro-logo {
+  :root[data-look='2ln'] .intro-logo {
     width: min(80vw, 720px);
   }
 }
@@ -5010,228 +4215,6 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
 }
 
 /* ==========================================================================
-   מ – oval: the logo's own world. Its off-white and black, light condensed
-   serif headings, and the oval everywhere: photos sit in tall ovals with a
-   thin ring around them, and the rings draw themselves in.
-   ========================================================================== */
-
-:root[data-look='2lm'] {
-  --bg: #eff0eb;
-  --bg-2: #e7e9e3;
-  --surface: #f7f8f4;
-  --glass: #f7f8f4;
-  --glass-strong: #f7f8f4;
-  --glass-border: #d8dad3;
-  --ink: #111211;
-  --ink-2: #393a37;
-  --muted: #666863;
-  --line: rgb(17 18 17 / 0.12);
-  --line-strong: rgb(17 18 17 / 0.3);
-  --accent: #111211;
-  --accent-2: #9a9c96;
-  --accent-ink: #3a3b38;
-  --on-accent: #f7f8f4;
-  --accent-soft: #e2e4de;
-  --spark: #111211;
-  --curtain: #e4e6e0;
-  --glow-1: #e7e9e3;
-  --glow-2: #e9ebe5;
-  --glow-3: #e7e9e3;
-  --glow-4: #e9ebe5;
-  --open: #4c7a5f;
-  --photo-bg: #e1e3dd;
-  --header-bg: rgb(239 240 235 / 0.86);
-  --font-display: 'Noto Serif Hebrew', 'Frank Ruhl Libre', serif;
-  --font-body: 'Assistant', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  font-stretch: 62.5%;
-}
-
-:root[data-look='2lm'][data-theme='dark'] {
-  --bg: #101110;
-  --bg-2: #151614;
-  --surface: #191a18;
-  --glass: #191a18;
-  --glass-strong: #191a18;
-  --glass-border: #2b2c29;
-  --ink: #ecede8;
-  --ink-2: #c6c8c1;
-  --muted: #8e908a;
-  --line: rgb(236 237 232 / 0.12);
-  --line-strong: rgb(236 237 232 / 0.3);
-  --accent: #ecede8;
-  --accent-2: #6f716b;
-  --accent-ink: #c9cbc4;
-  --on-accent: #101110;
-  --accent-soft: #232421;
-  --spark: #ecede8;
-  --curtain: #1d1e1c;
-  --glow-1: #161715;
-  --glow-2: #171816;
-  --glow-3: #161715;
-  --glow-4: #171816;
-  --open: #8cc7a2;
-  --photo-bg: #1d1e1c;
-  --header-bg: rgb(16 17 16 / 0.86);
-}
-
-[data-look='2lm'] .btn,
-[data-look='2lm'] .status,
-[data-look='2lm'] .pill-label,
-[data-look='2lm'] .header-inner {
-  border-radius: 999px;
-}
-
-/* The second word of the headline is drawn in outline: a precise line */
-[data-look='2lm'] .hero-title .line > .grad {
-  color: transparent;
-  -webkit-text-stroke: 1.2px var(--ink);
-}
-
-/* The treatments under the headline: the condensed serif, a thin rule between */
-[data-look='2lm'] .hero-treatments a {
-  font-size: 1.45rem;
-  font-weight: 400;
-}
-
-[data-look='2lm'] .hero-treatments img {
-  border-radius: 50%;
-}
-
-/* The room: a tall oval, and a thin ring that settles around it */
-[data-look='2lm'] .hero-room {
-  justify-self: center;
-  width: min(100%, 400px);
-  aspect-ratio: 3 / 4.2;
-  border: 1px solid var(--line-strong);
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow: 0 0 0 16px var(--bg), 0 0 0 17px var(--line-strong);
-  animation: oval-ring 1.6s var(--ease) calc(var(--intro) + 0.6s) both;
-}
-
-[data-look='2lm'] .hero-room img {
-  animation:
-    oval-open 1.5s var(--ease) calc(var(--intro) + 0.1s) both,
-    breathe-img 18s ease-in-out calc(var(--intro) + 2.6s) infinite alternate;
-}
-
-[data-look='2lm'] .hero-room::after {
-  display: none;
-}
-
-/* Treatments: each photo a tall oval with a ring around it */
-@media (min-width: 861px) {
-  [data-look='2lm'] .stack-card,
-  [data-look='2lm'] .stack-card:nth-child(n) {
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  }
-}
-
-[data-look='2lm'] .stack-img {
-  justify-self: center;
-  width: min(100%, 360px);
-  height: auto;
-  min-height: 0;
-  aspect-ratio: 3 / 4;
-  border-radius: 50%;
-  outline: 1px solid var(--line-strong);
-  outline-offset: 12px;
-  clip-path: none;
-}
-
-[data-look='2lm'] .stack-img img {
-  border-radius: 50%;
-}
-
-[data-look='2lm'] .stack-num {
-  color: var(--muted);
-}
-
-/* Section numbers sit in a small oval, like the logo's, which draws itself around the number
-   as the section comes into view */
-[data-look='2lm'] .sec-num {
-  position: relative;
-  width: fit-content;
-  padding: 5px 15px 5px 13px;
-  border: 1px solid transparent;
-  border-radius: 50%;
-}
-
-[data-look='2lm'] .sec-num::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border: 1px solid var(--line-strong);
-  border-radius: 50%;
-  -webkit-mask: conic-gradient(from 90deg, #000 var(--sweep), transparent 0);
-  mask: conic-gradient(from 90deg, #000 var(--sweep), transparent 0);
-  transition: --sweep 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.25s;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html.js:not(.a11y-still)[data-look='2lm'] .reveal:not(.is-visible) .sec-num::before {
-    --sweep: 0deg;
-  }
-}
-
-[data-look='2lm'] .sec-num::after {
-  display: none;
-}
-
-[data-look='2lm'] .service-thumb,
-[data-look='2lm'] .service-thumb img {
-  border-radius: 50%;
-}
-
-/* Gallery: thin white mats inside each photo; two of them are ovals */
-[data-look='2lm'] .mosaic-item {
-  border-radius: 0;
-}
-
-[data-look='2lm'] .mosaic-item::after {
-  content: '';
-  position: absolute;
-  inset: 12px;
-  border: 1px solid rgb(255 255 255 / 0.7);
-  border-radius: inherit;
-  pointer-events: none;
-  transition: inset 0.6s var(--ease);
-}
-
-[data-look='2lm'] .mosaic-col:nth-child(1) .mosaic-item:nth-child(2),
-[data-look='2lm'] .mosaic-col:nth-child(3) .mosaic-item:nth-child(1) {
-  border-radius: 50%;
-}
-
-@media (hover: hover) {
-  [data-look='2lm'] .mosaic-item:hover::after {
-    inset: 20px;
-  }
-}
-
-/* About: the portrait in an oval, a ring offset around it */
-[data-look='2lm'] .about-photo .blob {
-  border-radius: 50%;
-  outline: 1px solid var(--line-strong);
-  outline-offset: 14px;
-}
-
-/* The video: an oval too */
-[data-look='2lm'] .statement-media {
-  border-radius: 50%;
-  outline: 1px solid var(--line-strong);
-  outline-offset: 12px;
-  overflow: hidden;
-}
-
-[data-look='2lm'] .video-toggle {
-  inset-inline-end: auto;
-  left: 50%;
-  bottom: 22px;
-  translate: -50% 0;
-}
-
-/* ==========================================================================
    נ – mist: cool blue-grey, like an architect's drawing. A faint grid of
    hairlines behind the page, viewfinder corners on the photos, the logo's
    oval as a dashed construction line, numbers set like measurements.
@@ -5336,22 +4319,24 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
   height: 1px;
 }
 
-/* The logo on its construction drawing: the oval's axes, the corners of its box, its two foci
-   and lines along the top and bottom of the name. They draw first and stay, faint. */
+/* The logo on its construction drawing, all of it outside the name: centre marks on the oval's
+   four sides, the corners of its box and its two foci. They draw first and stay, faint. Inside
+   the oval a plate the colour of the page keeps the background grid off the name. */
+[data-look='2ln'] :is(.hero-logo, .intro-logo, .footer-logo) .logo-plate {
+  fill: var(--bg);
+  stroke: none;
+}
+
+[data-look='2ln'] .hero-logo .logo-plate {
+  opacity: calc(1 - var(--dock));
+}
+
 [data-look='2ln'] :is(.hero-logo, .intro-logo, .footer-logo) .logo-guides {
   display: inline;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.2;
   opacity: 0.42;
-}
-
-[data-look='2ln'] .logo-guides .g-axis {
-  stroke-dasharray: 7 7;
-}
-
-[data-look='2ln'] .logo-guides .g-name {
-  stroke-dasharray: 3 6;
 }
 
 [data-look='2ln'] .logo-guides .g-focus {
@@ -5374,10 +4359,6 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
 
 [data-look='2ln'] .footer-mark.is-visible .footer-logo .logo-guides > * {
   animation: guide-in 1s var(--ease) var(--gi, 0s) both;
-}
-
-[data-look='2ln'] .logo-guides .g-name {
-  --gi: 0.15s;
 }
 
 [data-look='2ln'] .logo-guides .g-ticks {
@@ -5501,329 +4482,23 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
   border-radius: 0;
 }
 
-/* ==========================================================================
-   ס – ripple: cool sage, calm. The opening screen is centered like the logo,
-   and the room photo sits in the logo's own wide oval, with thin rings
-   rippling out around it, slowly, like water. Photos are circles and ovals.
-   ========================================================================== */
-
-:root[data-look='2ls'] {
-  --bg: #ecefec;
-  --bg-2: #e2e7e3;
-  --surface: #f5f7f4;
-  --glass: #f5f7f4;
-  --glass-strong: #f5f7f4;
-  --glass-border: #d2dad4;
-  --ink: #17201b;
-  --ink-2: #36433c;
-  --muted: #5e6e65;
-  --line: rgb(23 32 27 / 0.12);
-  --line-strong: rgb(23 32 27 / 0.28);
-  --accent: #3e5b4c;
-  --accent-2: #93aa9d;
-  --accent-ink: #2e4639;
-  --on-accent: #f5f7f4;
-  --accent-soft: #dbe4dd;
-  --spark: #3e5b4c;
-  --curtain: #dce4de;
-  --glow-1: #e3e9e4;
-  --glow-2: #e6ebe7;
-  --glow-3: #e3e9e4;
-  --glow-4: #e6ebe7;
-  --open: #3e7a58;
-  --photo-bg: #dce3de;
-  --header-bg: rgb(236 239 236 / 0.86);
-  --font-display: 'Heebo', 'Assistant', sans-serif;
-  --font-body: 'Heebo', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-}
-
-:root[data-look='2ls'][data-theme='dark'] {
-  --bg: #0f1411;
-  --bg-2: #131a16;
-  --surface: #17201b;
-  --glass: #17201b;
-  --glass-strong: #17201b;
-  --glass-border: #26332c;
-  --ink: #e3eae5;
-  --ink-2: #bdcac2;
-  --muted: #87988f;
-  --line: rgb(227 234 229 / 0.11);
-  --line-strong: rgb(227 234 229 / 0.26);
-  --accent: #a2c1b0;
-  --accent-2: #4f6b5c;
-  --accent-ink: #bcd5c8;
-  --on-accent: #0f1411;
-  --accent-soft: #1a251f;
-  --spark: #a2c1b0;
-  --curtain: #18211c;
-  --glow-1: #131a16;
-  --glow-2: #141c17;
-  --glow-3: #131a16;
-  --glow-4: #141c17;
-  --open: #86c8a3;
-  --photo-bg: #18211c;
-  --header-bg: rgb(15 20 17 / 0.86);
-}
-
-[data-look='2ls'] :is(.hero-title, .section-title, .stack-name, .visit-address, .final-title, .words, .page-hero h1) {
-  font-weight: 200;
-  letter-spacing: -0.01em;
-}
-
-/* Section numbers in a small circle */
-[data-look='2ls'] .sec-num {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border: 1px solid var(--line-strong);
-  border-radius: 50%;
-  letter-spacing: 0.04em;
-}
-
-[data-look='2ls'] .sec-num::after {
-  display: none;
-}
-
-[data-look='2ls'] .btn,
-[data-look='2ls'] .status,
-[data-look='2ls'] .pill-label,
-[data-look='2ls'] .header-inner {
-  border-radius: 999px;
-}
-
-/* Centered, like the logo: the full logo is the centerpiece. The room is inside its oval, faint
-   at first, and comes into focus as the name rises into the header (home.js sets --dock) */
-[data-look='2ls'] .hero {
-  padding-top: calc(64px + clamp(36px, 9svh, 120px));
-}
-
-[data-look='2ls'] .hero-inner {
-  grid-template-columns: minmax(0, 1fr);
-  justify-items: center;
-}
-
-[data-look='2ls'] .hero-head {
-  width: 100%;
-  justify-items: center;
-  text-align: center;
-}
-
-[data-look='2ls'] .hero-room {
-  display: none;
-}
-
-[data-look='2ls'] .hero-logo {
-  width: min(100%, 640px, calc(30svh * 852 / 312));
-  margin: 0 0 clamp(18px, 3svh, 34px);
-}
-
-@media (min-width: 700px) and (min-height: 640px) {
-  [data-look='2ls'] :is(.hero-logo, .intro-logo) .logo-word {
-    transform: none;
-  }
-
-  [data-look='2ls'] :is(.hero-logo, .intro-logo) .logo-tag {
-    display: inline;
-  }
-
-  [data-look='2ls'] .intro-logo {
-    width: min(80vw, 720px);
-  }
-}
-
-/* once the logo has drawn itself the room slowly develops inside the oval, softly; scrolling
-   brings it fully into focus while the oval is still on screen */
-[data-look='2ls'] .hero-logo {
-  --window-rest: 0.3;
-}
-
-[data-look='2ls'][data-theme='dark'] .hero-logo {
-  --window-rest: 0.2;
-}
-
-[data-look='2ls'] .hero-logo .logo-window {
-  display: inline;
-  /* soft at rest; clears once the name has left the oval */
-  opacity: calc(var(--window-rest) + (1 - var(--window-rest)) * clamp(0, (var(--dock) - 0.25) / 0.35, 1));
-}
-
-[data-look='2ls'] .hero-logo .logo-window image {
-  transform-box: fill-box;
-  transform-origin: 50% 62%;
-  transform: scale(calc(1.12 - 0.12 * clamp(0, (var(--dock) - 0.2) / 0.55, 1)));
-  animation: window-develop 2.6s ease-in-out calc(var(--intro) + 1.5s) both;
-}
-
-/* the oval stays: it is the window's frame */
-[data-look='2ls'] .hero-logo .logo-ring {
-  stroke-dashoffset: 0;
-}
-
-/* Thin rings ripple out around the oval, one after another, slowly, like water */
-[data-look='2ls'] :is(.hero-logo, .footer-logo) .logo-ripple {
-  display: inline;
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-  transform-box: fill-box;
-  transform-origin: center;
-  opacity: 0;
-  /* fixed start times: the curtain's timing changes once it's gone, which would make them jump */
-  animation: ripple 6s cubic-bezier(0.2, 0.6, 0.3, 1) 3.4s infinite;
-}
-
-[data-look='2ls'] :is(.hero-logo, .footer-logo) .logo-ripple + .logo-ripple {
-  animation-delay: 6.4s;
-}
-
-[data-look='2ls'] .footer-logo .logo-ripple {
-  animation-delay: 2.4s;
-}
-
-[data-look='2ls'] .footer-logo .logo-ripple + .logo-ripple {
-  animation-delay: 5.4s;
-}
-
-[data-look='2ls'] .hero-title .line > .grad {
-  color: var(--accent);
-}
-
-[data-look='2ls'] .hero-treatments {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px 12px;
-  max-width: 720px;
-  margin: 8px 0 32px;
-}
-
-[data-look='2ls'] .hero-treatments::before,
-[data-look='2ls'] .hero-treatments li::after,
-[data-look='2ls'] .hero-treatments a::before,
-[data-look='2ls'] .hero-treatments .ht-go {
-  display: none;
-}
-
-[data-look='2ls'] .hero-treatments a {
-  padding: 6px 18px 6px 6px;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 400;
-  transition: border-color 0.3s, background-color 0.3s, color 0.3s;
-}
-
-[data-look='2ls'] .hero-treatments img {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-}
-
-@media (hover: hover) {
-  [data-look='2ls'] .hero-treatments a:hover {
-    padding-inline-start: 18px;
-    border-color: var(--accent);
-    background: var(--accent-soft);
-  }
-}
-
-[data-look='2ls'] .hero-ctas {
-  justify-content: center;
-}
-
-/* Phones: a more compact opening screen, so the booking button shows on the first screen */
-@media (max-width: 560px) {
-  [data-look='2ls'] .hero {
-    padding-top: calc(64px + 26px);
-  }
-
-  [data-look='2ls'] .hero-logo {
-    margin-bottom: 14px;
-  }
-
-  [data-look='2ls'] .hero-treatments {
-    gap: 8px;
-    margin: 2px 0 22px;
-  }
-
-  [data-look='2ls'] .hero-treatments a {
-    padding: 4px 14px 4px 4px;
-    font-size: 0.95rem;
-  }
-
-  [data-look='2ls'] .hero-treatments img {
-    width: 30px;
-    height: 30px;
-  }
-}
-
-/* Treatments: round photos, each in a ring */
-[data-look='2ls'] .stack-img {
-  justify-self: center;
-  width: min(100%, 340px);
-  height: auto;
-  min-height: 0;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  outline: 1px solid var(--line-strong);
-  outline-offset: 12px;
-  clip-path: none;
-}
-
-[data-look='2ls'] .stack-img img,
-[data-look='2ls'] .service-thumb,
-[data-look='2ls'] .service-thumb img {
-  border-radius: 50%;
-}
-
-[data-look='2ls'] .mosaic-item {
-  border-radius: 999px;
-}
-
-[data-look='2ls'] .mosaic-col:nth-child(2) .mosaic-item {
-  border-radius: 0;
-}
-
-[data-look='2ls'] .about-photo .blob {
-  border-radius: 50%;
-  outline: 1px solid var(--line-strong);
-  outline-offset: 14px;
-}
-
-[data-look='2ls'] .statement-media {
-  border-radius: 999px;
-  outline: 1px solid var(--line-strong);
-  outline-offset: 12px;
-}
-
-[data-look='2ls'] .video-toggle {
-  inset-inline-end: auto;
-  left: 50%;
-  bottom: 22px;
-  translate: -50% 0;
-}
-
-/* Small phones (iPhone SE and the like): מ and נ get a more compact opening screen, so its
-   booking button shows without scrolling (and the bottom bar stays away until it scrolls off) */
+/* Small phones (iPhone SE and the like): a more compact opening screen, so its booking button
+   shows without scrolling (and the bottom bar stays away until it scrolls off) */
 @media (max-width: 560px) and (max-height: 640px) {
-  :is([data-look='2lm'], [data-look='2ln']) .hero-logo {
+  [data-look='2ln'] .hero-logo {
     width: min(100%, 260px);
     margin-bottom: 12px;
   }
 
-  :is([data-look='2lm'], [data-look='2ln']) .hero-title {
+  [data-look='2ln'] .hero-title {
     margin-bottom: 14px;
   }
 
-  :is([data-look='2lm'], [data-look='2ln']) .hero-treatments a {
+  [data-look='2ln'] .hero-treatments a {
     padding-block: 6px;
   }
 
-  :is([data-look='2lm'], [data-look='2ln']) .hero-treatments img {
+  [data-look='2ln'] .hero-treatments img {
     width: 32px;
     height: 32px;
   }
@@ -5895,12 +4570,6 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
   }
 }
 
-@keyframes window-develop {
-  from {
-    opacity: 0;
-  }
-}
-
 @keyframes logo-wait {
   from {
     visibility: hidden;
@@ -5908,23 +4577,6 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
 
   to {
     visibility: visible;
-  }
-}
-
-@keyframes oval-open {
-  from {
-    clip-path: ellipse(0% 0% at 50% 50%);
-    scale: 1.12;
-  }
-
-  to {
-    clip-path: ellipse(50% 50% at 50% 50%);
-  }
-}
-
-@keyframes oval-ring {
-  from {
-    box-shadow: 0 0 0 0 var(--bg), 0 0 0 0 transparent;
   }
 }
 
@@ -5953,83 +4605,6 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
   from {
     opacity: 0;
     inset: 40px;
-  }
-}
-
-@keyframes ripple {
-  0% {
-    opacity: 0;
-    transform: scale(1);
-  }
-
-  12% {
-    opacity: 0.55;
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(1.26, 1.16);
-  }
-}
-
-/* ---------- Keyframes for the new versions ---------- */
-
-@keyframes ch-bounce {
-  from {
-    opacity: 0;
-    transform: translateY(0.7em) scale(0.6) rotate(-8deg);
-  }
-}
-
-@keyframes sunrise {
-  from {
-    opacity: 0;
-    translate: 0 40%;
-    scale: 0.9;
-  }
-}
-
-@keyframes sun-ring {
-  to {
-    box-shadow:
-      0 0 0 16px color-mix(in srgb, var(--glow-4) 55%, transparent),
-      0 0 0 36px color-mix(in srgb, var(--glow-1) 26%, transparent),
-      var(--shadow-lift);
-  }
-}
-
-@keyframes sun-glow {
-  to {
-    opacity: 0.8;
-    transform: scale(1.12);
-  }
-}
-
-@keyframes sway {
-  from {
-    rotate: -5deg;
-  }
-
-  to {
-    rotate: 6deg;
-  }
-}
-
-/* י: the outline around the room photo opens out from its edge */
-@keyframes frame-out {
-  from {
-    outline-color: transparent;
-    outline-offset: -2px;
-  }
-}
-
-@keyframes sway-b {
-  from {
-    rotate: 4deg;
-  }
-
-  to {
-    rotate: -7deg;
   }
 }
 
@@ -6146,178 +4721,6 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
   }
 }
 
-/* ---------- The bar for comparing the versions (only with ?options) ---------- */
-
-.look-switcher {
-  position: fixed;
-  inset-inline: 0;
-  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
-  z-index: 95;
-  width: max-content;
-  max-width: calc(100% - 24px);
-  margin-inline: auto;
-  font: 400 0.95rem/1.2 'Rubik', system-ui, sans-serif;
-}
-
-.look-toggle {
-  display: none;
-}
-
-.look-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px;
-  max-width: min(calc(100vw - 24px), 1040px);
-  padding: 5px;
-  border: 1px solid rgb(255 255 255 / 0.1);
-  border-radius: 28px;
-  background: #1d1a16;
-  box-shadow: 0 16px 40px -14px rgb(0 0 0 / 0.55);
-}
-
-.look-list button {
-  padding: 9px 16px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: #f3ede4;
-  font: inherit;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 0.25s, color 0.25s;
-}
-
-.look-list button b {
-  margin-inline-end: 6px;
-  font-weight: 700;
-}
-
-.look-list button:hover {
-  background: rgb(255 255 255 / 0.08);
-}
-
-.look-list button[aria-pressed='true'] {
-  background: #f3ede4;
-  color: #1d1a16;
-}
-
-/* Phones, phones turned sideways, and laptop-height screens (where the bar would cover the
-   opening screen's button): a round button that opens the list */
-@media (max-width: 760px), (max-height: 820px) {
-  .look-switcher {
-    --switch-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
-    inset-inline: auto 14px;
-    bottom: var(--switch-bottom);
-    max-width: none;
-    margin: 0;
-    transition: bottom 0.6s var(--ease);
-  }
-
-  html.bar-wait .look-switcher {
-    --switch-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
-  }
-
-  .look-toggle {
-    display: grid;
-    place-items: center;
-    width: 52px;
-    height: 52px;
-    padding: 0;
-    border: 1px solid rgb(255 255 255 / 0.14);
-    border-radius: 50%;
-    background: #1d1a16;
-    color: #f3ede4;
-    box-shadow: 0 12px 30px -10px rgb(0 0 0 / 0.55);
-    font: 600 1.1rem/1 'Rubik', system-ui, sans-serif;
-    cursor: pointer;
-  }
-
-  .look-toggle span {
-    display: block;
-    margin-top: 2px;
-    font-size: 0.6rem;
-    font-weight: 400;
-    opacity: 0.75;
-  }
-
-  .look-list {
-    position: absolute;
-    bottom: calc(100% + 10px);
-    inset-inline-end: 0;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 2px;
-    flex-wrap: nowrap;
-    width: max-content;
-    min-width: 200px;
-    /* the space above the round button, so the open list never runs off the top */
-    max-height: min(560px, calc(100svh - var(--switch-bottom) - 52px - 10px - 12px));
-    overflow-y: auto;
-    padding: 6px;
-    border-radius: 18px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(8px) scale(0.97);
-    transform-origin: 100% 100%;
-    transition: opacity 0.25s, transform 0.3s var(--ease), visibility 0s 0.3s;
-  }
-
-  [dir='rtl'] .look-list {
-    transform-origin: 0 100%;
-  }
-
-  .look-switcher.is-open .look-list {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    transition: opacity 0.25s, transform 0.3s var(--ease);
-  }
-
-  .look-list button {
-    min-height: 46px;
-    padding: 10px 16px;
-    border-radius: 12px;
-    font-size: 1.02rem;
-    text-align: start;
-  }
-}
-
-/* Short screens (phones turned sideways): the list in two columns, so all of it fits */
-@media (max-height: 500px) {
-  .look-switcher .look-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Sideways phones have the WhatsApp button in the corner, so the round button sits in the other one */
-@media (min-width: 761px) and (max-height: 500px) {
-  .look-switcher,
-  html.bar-wait .look-switcher {
-    --switch-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
-    inset-inline: 14px auto;
-  }
-
-  .look-list {
-    inset-inline: 0 auto;
-    transform-origin: 0 100%;
-  }
-
-  [dir='rtl'] .look-list {
-    transform-origin: 100% 100%;
-  }
-}
-
-/* Tablets and laptops: the round button sits just above the WhatsApp button, clear of the opening screen */
-@media (min-width: 761px) and (min-height: 501px) and (max-height: 820px) {
-  .look-switcher,
-  html.bar-wait .look-switcher {
-    --switch-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
-    inset-inline: auto 25px;
-  }
-}
-
 /* ==========================================================================
    Finishing touches: film grain
    ========================================================================== */
@@ -6371,13 +4774,6 @@ html.js .reveal:not(.is-visible) {
    with a soft, feathered edge (site.js sets --vt-x/--vt-y, the button, and
    --vt-end, the farthest corner). Meanwhile nothing fades on its own, so the
    whole page changes together. */
-/* how much of an oval is drawn (version מ's section numbers) */
-@property --sweep {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 360deg;
-}
-
 @property --vt-r {
   syntax: '<length>';
   inherits: false;
@@ -6407,13 +4803,6 @@ html.js .reveal:not(.is-visible) {
 @keyframes rise {
   from {
     transform: translateY(108%);
-  }
-}
-
-@keyframes media-in {
-  from {
-    opacity: 0;
-    transform: translateY(80px);
   }
 }
 
@@ -6482,18 +4871,6 @@ html.js .reveal:not(.is-visible) {
   }
 }
 
-@keyframes bob {
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes breathe-soft {
-  50% {
-    transform: scale(1.05);
-  }
-}
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -6503,18 +4880,6 @@ html.js .reveal:not(.is-visible) {
 @keyframes sheen {
   50% {
     background-position: 100% 0;
-  }
-}
-
-@keyframes halo {
-  0% {
-    opacity: 0.45;
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(3.4);
   }
 }
 
@@ -6864,15 +5229,15 @@ html.js .reveal:not(.is-visible) {
     <div class="intro" aria-hidden="true">
       <span class="intro-orb"></span>
       <span class="intro-name" data-biz="tagline"></span>
-      <svg class="intro-logo" viewBox="-2 -2 852 312" aria-hidden="true" focusable="false"><g class="logo-guides"><line class="g-axis" x1="-40" y1="154" x2="888" y2="154"></line><line class="g-axis" x1="424" y1="-34" x2="424" y2="342"></line><path class="g-ticks" d="M-22 0H-8M0-22V-8M870 0H856M848-22V-8M-22 308H-8M0 330V316M870 308H856M848 330V316"></path><circle class="g-focus" cx="29" cy="154" r="3"></circle><circle class="g-focus" cx="819" cy="154" r="3"></circle></g><ellipse class="logo-ring" cx="424" cy="154" rx="424" ry="154" pathLength="1"></ellipse><g class="logo-word"><g class="logo-guides"><line class="g-name" x1="64" y1="54" x2="784" y2="54"></line><line class="g-name" x1="64" y1="165" x2="784" y2="165"></line></g><use class="logo-l" href="images/logo-wordmark.svg#l1" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l2" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l3" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l4" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l5" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l6" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l7" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l8" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l9" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l10" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l11" x="119" y="54" width="610" height="111"></use></g><g class="logo-tag"><text x="424" y="216">HEALING &amp; THERAPY CLINIC</text><text x="424" y="235">ACUPUNCTURE-CUPPING-THAI MASSAGE-LYMPHATIC MASSAGE</text><text x="424" y="253">FASCIA THERAPY</text></g></svg>
+      <svg class="intro-logo" viewBox="-2 -2 852 312" aria-hidden="true" focusable="false"><ellipse class="logo-plate" cx="424" cy="154" rx="424" ry="154"></ellipse><g class="logo-guides"><line class="g-axis" x1="-40" y1="154" x2="-10" y2="154"></line><line class="g-axis" x1="858" y1="154" x2="888" y2="154"></line><line class="g-axis" x1="424" y1="-34" x2="424" y2="-10"></line><line class="g-axis" x1="424" y1="318" x2="424" y2="342"></line><path class="g-ticks" d="M-22 0H-8M0-22V-8M870 0H856M848-22V-8M-22 308H-8M0 330V316M870 308H856M848 330V316"></path><circle class="g-focus" cx="29" cy="154" r="3"></circle><circle class="g-focus" cx="819" cy="154" r="3"></circle></g><ellipse class="logo-ring" cx="424" cy="154" rx="424" ry="154" pathLength="1"></ellipse><g class="logo-word"><use class="logo-l" href="images/logo-wordmark.svg#l1" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l2" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l3" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l4" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l5" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l6" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l7" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l8" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l9" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l10" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l11" x="119" y="54" width="610" height="111"></use></g><g class="logo-tag"><text x="424" y="216">HEALING &amp; THERAPY CLINIC</text><text x="424" y="235">ACUPUNCTURE-CUPPING-THAI MASSAGE-LYMPHATIC MASSAGE</text><text x="424" y="253">FASCIA THERAPY</text></g></svg>
     </div>
 
-    <!-- Hero: what he does. The design comes in versions (data-look on <html>). -->
+    <!-- Hero: what he does, under his logo -->
     <section class="hero" id="hero">
       <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
       <div class="container hero-inner">
         <div class="hero-head">
-          <svg class="hero-logo" viewBox="-2 -2 852 312" aria-hidden="true" focusable="false"><ellipse class="logo-ripple" cx="424" cy="154" rx="424" ry="154"></ellipse><ellipse class="logo-ripple" cx="424" cy="154" rx="424" ry="154"></ellipse><clipPath id="logo-window-clip"><ellipse cx="424" cy="154" rx="424" ry="154"></ellipse></clipPath><g class="logo-window" clip-path="url(#logo-window-clip)"><image href="images/room.jpg" x="0" y="-466" width="848" height="1060" preserveAspectRatio="xMidYMid slice"></image></g><g class="logo-guides"><line class="g-axis" x1="-40" y1="154" x2="888" y2="154"></line><line class="g-axis" x1="424" y1="-34" x2="424" y2="342"></line><path class="g-ticks" d="M-22 0H-8M0-22V-8M870 0H856M848-22V-8M-22 308H-8M0 330V316M870 308H856M848 330V316"></path><circle class="g-focus" cx="29" cy="154" r="3"></circle><circle class="g-focus" cx="819" cy="154" r="3"></circle></g><ellipse class="logo-ring" cx="424" cy="154" rx="424" ry="154" pathLength="1"></ellipse><g class="logo-word"><g class="logo-guides"><line class="g-name" x1="64" y1="54" x2="784" y2="54"></line><line class="g-name" x1="64" y1="165" x2="784" y2="165"></line></g><use class="logo-l" href="images/logo-wordmark.svg#l1" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l2" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l3" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l4" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l5" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l6" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l7" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l8" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l9" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l10" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l11" x="119" y="54" width="610" height="111"></use></g><g class="logo-tag"><text x="424" y="216">HEALING &amp; THERAPY CLINIC</text><text x="424" y="235">ACUPUNCTURE-CUPPING-THAI MASSAGE-LYMPHATIC MASSAGE</text><text x="424" y="253">FASCIA THERAPY</text></g></svg>
+          <svg class="hero-logo" viewBox="-2 -2 852 312" aria-hidden="true" focusable="false"><ellipse class="logo-plate" cx="424" cy="154" rx="424" ry="154"></ellipse><g class="logo-guides"><line class="g-axis" x1="-40" y1="154" x2="-10" y2="154"></line><line class="g-axis" x1="858" y1="154" x2="888" y2="154"></line><line class="g-axis" x1="424" y1="-34" x2="424" y2="-10"></line><line class="g-axis" x1="424" y1="318" x2="424" y2="342"></line><path class="g-ticks" d="M-22 0H-8M0-22V-8M870 0H856M848-22V-8M-22 308H-8M0 330V316M870 308H856M848 330V316"></path><circle class="g-focus" cx="29" cy="154" r="3"></circle><circle class="g-focus" cx="819" cy="154" r="3"></circle></g><ellipse class="logo-ring" cx="424" cy="154" rx="424" ry="154" pathLength="1"></ellipse><g class="logo-word"><use class="logo-l" href="images/logo-wordmark.svg#l1" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l2" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l3" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l4" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l5" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l6" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l7" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l8" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l9" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l10" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l11" x="119" y="54" width="610" height="111"></use></g><g class="logo-tag"><text x="424" y="216">HEALING &amp; THERAPY CLINIC</text><text x="424" y="235">ACUPUNCTURE-CUPPING-THAI MASSAGE-LYMPHATIC MASSAGE</text><text x="424" y="253">FASCIA THERAPY</text></g></svg>
           <p class="pill-label" data-biz="street"></p>
           <h1 class="hero-title">
             <span class="line"><span data-i18n="hero.titleA"></span> <span class="grad" data-i18n="hero.titleB"></span></span>
@@ -7223,11 +5588,11 @@ html.js .reveal:not(.is-visible) {
           <a href="#top" data-i18n="a11y.top"></a>
         </span>
       </div>
-      <div class="footer-mark reveal" aria-hidden="true"><span data-i18n="hero.title"></span><svg class="footer-logo" viewBox="-2 -2 852 312" aria-hidden="true" focusable="false"><ellipse class="logo-ripple" cx="424" cy="154" rx="424" ry="154"></ellipse><ellipse class="logo-ripple" cx="424" cy="154" rx="424" ry="154"></ellipse><g class="logo-guides"><line class="g-axis" x1="-40" y1="154" x2="888" y2="154"></line><line class="g-axis" x1="424" y1="-34" x2="424" y2="342"></line><path class="g-ticks" d="M-22 0H-8M0-22V-8M870 0H856M848-22V-8M-22 308H-8M0 330V316M870 308H856M848 330V316"></path><circle class="g-focus" cx="29" cy="154" r="3"></circle><circle class="g-focus" cx="819" cy="154" r="3"></circle></g><ellipse class="logo-ring" cx="424" cy="154" rx="424" ry="154" pathLength="1"></ellipse><g class="logo-word"><g class="logo-guides"><line class="g-name" x1="64" y1="54" x2="784" y2="54"></line><line class="g-name" x1="64" y1="165" x2="784" y2="165"></line></g><use class="logo-l" href="images/logo-wordmark.svg#l1" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l2" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l3" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l4" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l5" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l6" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l7" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l8" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l9" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l10" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l11" x="119" y="54" width="610" height="111"></use></g><g class="logo-tag"><text x="424" y="216">HEALING &amp; THERAPY CLINIC</text><text x="424" y="235">ACUPUNCTURE-CUPPING-THAI MASSAGE-LYMPHATIC MASSAGE</text><text x="424" y="253">FASCIA THERAPY</text></g></svg></div>
+      <div class="footer-mark reveal" aria-hidden="true"><span data-i18n="hero.title"></span><svg class="footer-logo" viewBox="-2 -2 852 312" aria-hidden="true" focusable="false"><ellipse class="logo-plate" cx="424" cy="154" rx="424" ry="154"></ellipse><g class="logo-guides"><line class="g-axis" x1="-40" y1="154" x2="-10" y2="154"></line><line class="g-axis" x1="858" y1="154" x2="888" y2="154"></line><line class="g-axis" x1="424" y1="-34" x2="424" y2="-10"></line><line class="g-axis" x1="424" y1="318" x2="424" y2="342"></line><path class="g-ticks" d="M-22 0H-8M0-22V-8M870 0H856M848-22V-8M-22 308H-8M0 330V316M870 308H856M848 330V316"></path><circle class="g-focus" cx="29" cy="154" r="3"></circle><circle class="g-focus" cx="819" cy="154" r="3"></circle></g><ellipse class="logo-ring" cx="424" cy="154" rx="424" ry="154" pathLength="1"></ellipse><g class="logo-word"><use class="logo-l" href="images/logo-wordmark.svg#l1" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l2" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l3" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l4" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l5" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l6" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l7" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l8" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l9" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l10" x="119" y="54" width="610" height="111"></use><use class="logo-l" href="images/logo-wordmark.svg#l11" x="119" y="54" width="610" height="111"></use></g><g class="logo-tag"><text x="424" y="216">HEALING &amp; THERAPY CLINIC</text><text x="424" y="235">ACUPUNCTURE-CUPPING-THAI MASSAGE-LYMPHATIC MASSAGE</text><text x="424" y="253">FASCIA THERAPY</text></g></svg></div>
     </div>
   </footer>
 
-  <!-- Version ז: the sky behind the page, from dawn at the top to dusk (and a few stars) further down -->
+  <!-- The faint grid of hairline columns behind the page -->
   <div class="page-deco" aria-hidden="true"><span></span><span class="stars"></span></div>
   <a class="whatsapp-fab" data-biz-href="whatsapp" target="_blank" rel="noopener" data-i18n-attr="aria-label:a11y.whatsapp" data-icon="whatsapp" hidden></a>
   <nav class="action-bar" data-i18n-attr="aria-label:mobile.bar">
@@ -8580,68 +6945,6 @@ function initMagneticButtons() {
   window.addEventListener('blur', release);
 }
 
-// ---------------------------------------------------------------------------
-// Design options: open the site with ?options to compare the versions of the
-// design (data-look on <html>). The switcher never shows on the normal site.
-// ---------------------------------------------------------------------------
-
-// [id, letter, name, theme it opens in]
-const LOOKS = [
-  ['2g', 'ז', 'שקיעה'],
-  ['2j', 'י', 'בוטני'],
-  ['2lm', 'מ', 'אליפסה'],
-  ['2ln', 'נ', 'ערפל'],
-  ['2ls', 'ס', 'אדווה'],
-];
-
-function initLookSwitcher() {
-  if (!root.classList.contains('show-looks')) return;
-  const current = () => LOOKS.find(([id]) => id === root.dataset.look) || LOOKS[0];
-  const buttons = LOOKS.map(([id, letter, name]) =>
-    el('button', { type: 'button', 'data-look-id': id }, el('b', {}, letter), name),
-  );
-  // On phones the list folds into one round button.
-  const toggle = el('button', { type: 'button', class: 'look-toggle', 'aria-expanded': 'false', 'aria-label': 'בחירת עיצוב' });
-  const list = el('div', { class: 'look-list' }, ...buttons);
-  const bar = el('div', { class: 'look-switcher', role: 'group', 'aria-label': 'בחירת עיצוב' }, toggle, list);
-  const setOpen = (open) => {
-    bar.classList.toggle('is-open', open);
-    toggle.setAttribute('aria-expanded', String(open));
-  };
-  const sync = () => {
-    const [id, letter] = current();
-    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lookId === id)));
-    toggle.replaceChildren(letter, el('span', {}, 'עיצוב'));
-  };
-  toggle.addEventListener('click', () => setOpen(!bar.classList.contains('is-open')));
-  list.addEventListener('click', (e) => {
-    const button = e.target.closest('button');
-    if (!button) return;
-    const [id, , , theme = 'light'] = LOOKS.find(([lookId]) => lookId === button.dataset.lookId);
-    root.dataset.look = id;
-    storageSet('look', id);
-    setTheme(theme);
-    sync();
-    setOpen(false);
-    replayHero();
-    window.dispatchEvent(new Event('resize'));
-  });
-  document.addEventListener('click', (e) => bar.contains(e.target) || setOpen(false));
-  document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
-  sync();
-  document.body.append(bar);
-}
-
-// After switching versions, play the opening animation again.
-function replayHero() {
-  const hero = document.querySelector('.hero');
-  if (!hero?.getAnimations) return;
-  for (const animation of hero.getAnimations({ subtree: true })) {
-    animation.cancel();
-    animation.play();
-  }
-}
-
 // Underline the nav link of the section on screen.
 function initScrollSpy() {
   const links = [...document.querySelectorAll('.main-nav a[href^="#"]')];
@@ -8694,7 +6997,6 @@ applyTranslations();
 initReveal();
 initScrollSpy();
 initMagneticButtons();
-initLookSwitcher();
 syncThemeColor();
 loadConfig().catch(() => {});
 setInterval(renderStatus, 60_000);

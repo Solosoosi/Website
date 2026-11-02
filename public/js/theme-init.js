@@ -16,16 +16,8 @@
       if (a11y[k]) root.classList.add('a11y-' + k);
     });
   } catch (e) {}
-  // The design version (ז by default). ?options shows a switcher for comparing
-  // the versions (and remembers the pick).
-  root.setAttribute('data-look', '2g');
-  try {
-    if (/[?&]options(=|&|$)/.test(location.search)) {
-      root.classList.add('show-looks');
-      var look = localStorage.getItem('look');
-      if (/^2(g|j|l[mns])$/.test(look || '')) root.setAttribute('data-look', look);
-    }
-  } catch (e) {}
+  // The design: ערפל (mist).
+  root.setAttribute('data-look', '2ln');
   // Phones: on the home page the bottom bar waits until the opening button scrolls away.
   if (location.pathname === '/' || /\/index\.html$/.test(location.pathname)) root.classList.add('bar-wait');
   // The home page opens with a short intro – once per visit.
