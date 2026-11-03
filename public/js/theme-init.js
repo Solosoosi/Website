@@ -18,6 +18,19 @@
   } catch (e) {}
   // The design: ערפל (mist).
   root.setAttribute('data-look', '2ln');
+  // Its colour options: ?options shows a switcher to compare them (?options=wheat opens on one)
+  // and remembers the pick. The normal site always has the first.
+  try {
+    var opt = /[?&]options(?:=([a-z]*))?(?:&|$)/.exec(location.search);
+    if (opt) {
+      root.classList.add('show-palettes');
+      var pal = opt[1] || localStorage.getItem('palette') || '';
+      if (/^(oat|wheat|dune)$/.test(pal)) {
+        root.setAttribute('data-palette', pal);
+        localStorage.setItem('palette', pal);
+      }
+    }
+  } catch (e) {}
   // Phones: on the home page the bottom bar waits until the opening button scrolls away.
   if (location.pathname === '/' || /\/index\.html$/.test(location.pathname)) root.classList.add('bar-wait');
   // The home page opens with a short intro – once per visit.

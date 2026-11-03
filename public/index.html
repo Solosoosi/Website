@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>דוד נאמן</title>
   <meta name="description" content="">
-  <meta name="theme-color" content="#edebe3">
+  <meta name="theme-color" content="#ede3ce">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script src="/js/theme-init.js"></script>
@@ -88,6 +88,11 @@
           <p class="section-lead" data-i18n="treatments.lead"></p>
         </header>
         <ol class="stack" id="services-list" aria-live="polite"></ol>
+        <!-- Prices: a session, and a card of sessions (config/site.json → prices) -->
+        <div class="prices reveal" id="prices" hidden>
+          <h3 class="prices-title" data-i18n="prices.title"></h3>
+          <ul class="price-list" id="price-list"></ul>
+        </div>
       </div>
     </section>
 

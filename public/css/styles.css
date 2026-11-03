@@ -1300,6 +1300,82 @@ html.a11y-contrast .stack-num {
   }
 }
 
+/* ---------- Prices: a session, and a card of sessions, set like a price list ---------- */
+
+.prices {
+  margin-top: clamp(44px, 6vw, 80px);
+}
+
+.prices-title {
+  margin: 0 0 18px;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.1rem);
+  font-weight: 300;
+  line-height: 1.15;
+}
+
+.price-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 20px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.price {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: center;
+  align-items: center;
+  gap: 6px 20px;
+  min-height: 112px;
+  padding: clamp(18px, 2.4vw, 26px) clamp(18px, 2.6vw, 30px);
+  border: 1px solid var(--glass-border);
+  background: var(--surface);
+}
+
+.price-name {
+  grid-column: 1;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.price-meta {
+  grid-column: 1;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.price-sum {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  font-family: var(--font-mono, monospace);
+  font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* the card of sessions: the accent along its top edge */
+.price-pack {
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+
+@media (max-width: 640px) {
+  .price-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .price {
+    min-height: 0;
+  }
+}
+
 /* ==========================================================================
    About
    ========================================================================== */
@@ -4176,39 +4252,45 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
 }
 
 /* ==========================================================================
-   נ – mist (ערפל) in David's healing greenhouse: the colours of his concept board, linen and
-   natural stone, sage leaves, raw iron for the ink; at night, a greenhouse after dark. Still
-   drawn like an architect's sheet: a faint grid of hairlines behind the page, viewfinder corners
-   on the photos, the logo's oval as a dashed construction line, numbers set like measurements.
-   The room photo stands in an arched greenhouse window, and the page ends on layered ground.
+   נ – mist (ערפל), in the warm colours the client chose (his swatches 02–05: Oat Milk, Wheat,
+   Sandy Dune, Latte). Drawn like an architect's sheet: a faint grid of hairlines behind the
+   page, viewfinder corners on the photos, the logo's oval as a dashed construction line,
+   numbers set like measurements. The room photo stands in an arched greenhouse window, and
+   the page ends on layered ground.
+
+   Three ways to wear the colours (data-palette on <html>; ?options compares them):
+   - שיבולת (the default): an Oat Milk page, Wheat bands, Sandy Dune edges, coffee buttons
+   - חיטה (wheat): a Wheat page, Sandy Dune bands, Oat Milk cards, Latte edges, olive buttons
+   - דיונה (dune): a Sandy Dune page, Latte bands, Oat Milk cards, espresso buttons
+   At night each turns dark, with the swatches for the text and the buttons.
    ========================================================================== */
 
 :root[data-look='2ln'] {
-  --bg: #edebe3;
-  --bg-2: #e5e2d8;
-  --surface: #f5f4ee;
-  --glass: #f5f4ee;
-  --glass-strong: #f5f4ee;
-  --glass-border: #d9d5c8;
-  --ink: #1b241e;
-  --ink-2: #39443b;
-  --muted: #58635a;
-  --line: rgb(27 36 30 / 0.12);
-  --line-strong: rgb(27 36 30 / 0.28);
-  --accent: #4e5e50;
-  --accent-2: #a7b19b;
-  --accent-ink: #3e4c40;
-  --on-accent: #f5f4ee;
-  --accent-soft: #dde1d4;
-  --spark: #4e5e50;
-  --curtain: #e2dfd3;
-  --glow-1: #e6e4da;
-  --glow-2: #eae8df;
-  --glow-3: #e6e4da;
-  --glow-4: #eae8df;
+  --bg: #ede3ce;
+  --bg-2: #e5d9be;
+  --surface: #ede3ce;
+  --glass: #ede3ce;
+  --glass-strong: #ede3ce;
+  --glass-border: #d9c7a5;
+  --ink: #2b231c;
+  --ink-2: #4a3e33;
+  --muted: #685a4a;
+  --line: rgb(43 35 28 / 0.13);
+  --line-strong: rgb(43 35 28 / 0.3);
+  --accent: #5f4630;
+  --accent-2: #cbaf88;
+  --accent-ink: #4e3a28;
+  --on-accent: #ede3ce;
+  --accent-soft: #e5d9be;
+  --spark: #5f4630;
+  --curtain: #e5d9be;
+  --glow-1: #e8dcc4;
+  --glow-2: #ebe0ca;
+  --glow-3: #e8dcc4;
+  --glow-4: #ebe0ca;
   --open: #3d7a5c;
-  --photo-bg: #e0dccf;
-  --header-bg: rgb(237 235 227 / 0.86);
+  --photo-bg: #d9c7a5;
+  --header-bg: rgb(237 227 206 / 0.86);
   --font-display: 'Noto Sans Hebrew', 'Heebo', sans-serif;
   --font-body: 'IBM Plex Sans Hebrew', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   --font-mono: 'IBM Plex Mono', 'IBM Plex Sans Hebrew', monospace;
@@ -4216,31 +4298,143 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
 }
 
 :root[data-look='2ln'][data-theme='dark'] {
-  --bg: #111612;
-  --bg-2: #151b16;
-  --surface: #19201a;
-  --glass: #19201a;
-  --glass-strong: #19201a;
-  --glass-border: #2a342c;
-  --ink: #e8e6dc;
-  --ink-2: #c3c5b7;
-  --muted: #8f9889;
-  --line: rgb(232 230 220 / 0.11);
-  --line-strong: rgb(232 230 220 / 0.26);
-  --accent: #adb9a0;
-  --accent-2: #5c6b55;
-  --accent-ink: #c9d3bd;
-  --on-accent: #111612;
-  --accent-soft: #1e2820;
-  --spark: #adb9a0;
-  --curtain: #18201a;
-  --glow-1: #141a15;
-  --glow-2: #151c17;
-  --glow-3: #141a15;
-  --glow-4: #151c17;
+  --bg: #1c1814;
+  --bg-2: #211c17;
+  --surface: #28211b;
+  --glass: #28211b;
+  --glass-strong: #28211b;
+  --glass-border: #3a3128;
+  --ink: #ede3ce;
+  --ink-2: #e5d9be;
+  --muted: #b3a58d;
+  --line: rgb(237 227 206 / 0.12);
+  --line-strong: rgb(237 227 206 / 0.26);
+  --accent: #cbaf88;
+  --accent-2: #7d6648;
+  --accent-ink: #d9c7a5;
+  --on-accent: #1c1814;
+  --accent-soft: #2e261e;
+  --spark: #cbaf88;
+  --curtain: #241e18;
+  --glow-1: #201b16;
+  --glow-2: #221c17;
+  --glow-3: #201b16;
+  --glow-4: #221c17;
   --open: #7fc4a0;
-  --photo-bg: #1a221c;
-  --header-bg: rgb(17 22 18 / 0.86);
+  --photo-bg: #2b241d;
+  --header-bg: rgb(28 24 20 / 0.86);
+}
+
+:root[data-look='2ln'][data-palette='wheat'] {
+  --bg: #e5d9be;
+  --bg-2: #d9c7a5;
+  --surface: #ede3ce;
+  --glass: #ede3ce;
+  --glass-strong: #ede3ce;
+  --glass-border: #cbaf88;
+  --ink: #262a1f;
+  --ink-2: #41463a;
+  --muted: #4f5344;
+  --line: rgb(38 42 31 / 0.13);
+  --line-strong: rgb(38 42 31 / 0.3);
+  --accent: #4c5841;
+  --accent-2: #cbaf88;
+  --accent-ink: #3c4733;
+  --on-accent: #ede3ce;
+  --accent-soft: #ede3ce;
+  --spark: #4c5841;
+  --curtain: #d9c7a5;
+  --glow-1: #e0d3b6;
+  --glow-2: #e2d6bb;
+  --glow-3: #e0d3b6;
+  --glow-4: #e2d6bb;
+  --open: #3d7a5c;
+  --photo-bg: #d9c7a5;
+  --header-bg: rgb(229 217 190 / 0.86);
+}
+
+:root[data-look='2ln'][data-palette='wheat'][data-theme='dark'] {
+  --bg: #161813;
+  --bg-2: #1b1e17;
+  --surface: #21251c;
+  --glass: #21251c;
+  --glass-strong: #21251c;
+  --glass-border: #343a2c;
+  --ink: #ede3ce;
+  --ink-2: #e5d9be;
+  --muted: #aaa993;
+  --line: rgb(237 227 206 / 0.12);
+  --line-strong: rgb(237 227 206 / 0.26);
+  --accent: #b6bf9a;
+  --accent-2: #5b6649;
+  --accent-ink: #cdd4b4;
+  --on-accent: #161813;
+  --accent-soft: #242a1e;
+  --spark: #b6bf9a;
+  --curtain: #1d2018;
+  --glow-1: #1a1c16;
+  --glow-2: #1b1e17;
+  --glow-3: #1a1c16;
+  --glow-4: #1b1e17;
+  --open: #7fc4a0;
+  --photo-bg: #22261d;
+  --header-bg: rgb(22 24 19 / 0.86);
+}
+
+:root[data-look='2ln'][data-palette='dune'] {
+  --bg: #d9c7a5;
+  --bg-2: #cbaf88;
+  --surface: #ede3ce;
+  --glass: #ede3ce;
+  --glass-strong: #ede3ce;
+  --glass-border: #c2a57c;
+  --ink: #241c15;
+  --ink-2: #3b3027;
+  --muted: #4d4033;
+  --line: rgb(36 28 21 / 0.13);
+  --line-strong: rgb(36 28 21 / 0.3);
+  --accent: #2e241b;
+  --accent-2: #a88a62;
+  --accent-ink: #2e241b;
+  --on-accent: #ede3ce;
+  --accent-soft: #e5d9be;
+  --spark: #2e241b;
+  --curtain: #cbaf88;
+  --glow-1: #d4c19d;
+  --glow-2: #d6c4a1;
+  --glow-3: #d4c19d;
+  --glow-4: #d6c4a1;
+  --open: #3d7a5c;
+  --photo-bg: #e5d9be;
+  --header-bg: rgb(217 199 165 / 0.86);
+}
+
+:root[data-look='2ln'][data-palette='dune'][data-theme='dark'] {
+  --bg: #1f1914;
+  --bg-2: #251e18;
+  --surface: #2c241d;
+  --glass: #2c241d;
+  --glass-strong: #2c241d;
+  --glass-border: #43382c;
+  --ink: #e5d9be;
+  --ink-2: #d9c7a5;
+  --muted: #b09f86;
+  --line: rgb(229 217 190 / 0.12);
+  --line-strong: rgb(229 217 190 / 0.26);
+  --accent: #d9c7a5;
+  --accent-2: #8a7152;
+  --accent-ink: #ede3ce;
+  --on-accent: #1f1914;
+  --accent-soft: #30271f;
+  --spark: #d9c7a5;
+  --curtain: #271f19;
+  --glow-1: #231c17;
+  --glow-2: #251e18;
+  --glow-3: #231c17;
+  --glow-4: #251e18;
+  --open: #7fc4a0;
+  --photo-bg: #2e261e;
+  --header-bg: rgb(31 25 20 / 0.86);
 }
 
 /* The grid behind the page: six columns of hairlines over the content width */
@@ -4997,6 +5191,146 @@ html.js .reveal:not(.is-visible) {
     opacity: 1;
     transform: none;
     filter: none;
+  }
+}
+
+/* ---------- The bar for comparing the colour options (only with ?options) ---------- */
+
+.pal-switcher {
+  position: fixed;
+  inset-inline: 0;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  z-index: 95;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  margin-inline: auto;
+  font: 400 0.95rem/1.2 var(--font-body, system-ui), sans-serif;
+}
+
+.pal-toggle {
+  display: none;
+}
+
+.pal-list {
+  display: flex;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 28px;
+  background: #221c17;
+  box-shadow: 0 16px 40px -14px rgb(0 0 0 / 0.55);
+}
+
+.pal-list button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 8px 16px 8px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #f1e9db;
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.25s, color 0.25s;
+}
+
+.pal-list button:hover {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.pal-list button[aria-pressed='true'] {
+  background: #f1e9db;
+  color: #221c17;
+}
+
+/* the option's colours: page, bands, cards, buttons */
+.pal-chips {
+  display: inline-flex;
+  flex: none;
+  overflow: hidden;
+  border: 1px solid rgb(0 0 0 / 0.25);
+  border-radius: 6px;
+}
+
+.pal-chips i {
+  display: block;
+  width: 9px;
+  height: 20px;
+}
+
+/* Phones, and screens not tall enough for the bar: a round button that opens the list. On
+   phones it sits above the bottom bar once that shows, elsewhere above the WhatsApp button. */
+@media (max-width: 760px), (max-height: 820px) {
+  .pal-switcher {
+    --pal-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    inset-inline: auto 18px;
+    bottom: var(--pal-bottom);
+    max-width: none;
+    margin: 0;
+    transition: bottom 0.6s var(--ease);
+  }
+
+  .pal-toggle {
+    display: grid;
+    place-items: center;
+    gap: 3px;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    border-radius: 50%;
+    background: #221c17;
+    color: #f1e9db;
+    box-shadow: 0 12px 30px -10px rgb(0 0 0 / 0.55);
+    font: inherit;
+    font-size: 0.62rem;
+    cursor: pointer;
+  }
+
+  .pal-toggle .pal-chips i {
+    width: 6px;
+    height: 12px;
+  }
+
+  .pal-list {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    inset-inline-end: 0;
+    flex-direction: column;
+    width: max-content;
+    min-width: 180px;
+    padding: 6px;
+    border-radius: 18px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px) scale(0.97);
+    transform-origin: 0 100%;
+    transition: opacity 0.25s, transform 0.3s var(--ease), visibility 0s 0.3s;
+  }
+
+  [dir='ltr'] .pal-list {
+    transform-origin: 100% 100%;
+  }
+
+  .pal-switcher.is-open .pal-list {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity 0.25s, transform 0.3s var(--ease);
+  }
+
+  .pal-list button {
+    min-height: 46px;
+  }
+}
+
+/* phones: while the bottom bar waits, the round button rests at the bottom */
+@media (max-width: 760px) {
+  html.bar-wait .pal-switcher {
+    --pal-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   }
 }
 

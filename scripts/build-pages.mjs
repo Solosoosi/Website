@@ -161,6 +161,7 @@ function loadConfig() {
     siteConfig = {
       business: STATIC_CONFIG.business,
       services: STATIC_CONFIG.services,
+      prices: STATIC_CONFIG.prices,
       currency: STATIC_CONFIG.currency,
       timezone: STATIC_CONFIG.timezone,
       today: nowInZone(STATIC_CONFIG.timezone).date,
@@ -295,6 +296,17 @@ const themeInit = `(function () {
     else sessionStorage.setItem('intro', '1');
   } catch (e) {}
   r.setAttribute('data-look', '2ln');
+  try {
+    var opt = /[?&]options(?:=([a-z]*))?(?:&|$)/.exec(location.search);
+    if (opt) {
+      r.classList.add('show-palettes');
+      var pal = opt[1] || localStorage.getItem('palette') || '';
+      if (/^(oat|wheat|dune)$/.test(pal)) {
+        r.setAttribute('data-palette', pal);
+        localStorage.setItem('palette', pal);
+      }
+    }
+  } catch (e) {}
   if (location.hash !== '#book') r.classList.add('bar-wait');
   if (th !== 'light' && th !== 'dark') th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   r.setAttribute('data-theme', th);
@@ -334,7 +346,7 @@ const html = `<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>${escapeHtml(pageTitle)}</title>
   <meta name="description" content="${escapeHtml(he.meta.description)}">
-  <meta name="theme-color" content="#edebe3">
+  <meta name="theme-color" content="#ede3ce">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="he_IL">
   <meta property="og:site_name" content="${escapeHtml(name)}">

@@ -34,7 +34,7 @@
         "en": "A method for treating muscle pain or limited movement after injuries or overload. Through an accurate assessment of the body and locating trigger points, needling is done to release the trigger points."
       },
       "duration": 60,
-      "price": null,
+      "price": 350,
       "icon": "leaf",
       "image": "images/svc-dry.jpg"
     },
@@ -49,7 +49,7 @@
         "en": "Its aim is to balance and release the face and neck muscles to improve how the facial muscles work (the face is made of 43 different muscles) and to encourage a healthy, firm and vital look. It also improves blood and oxygen flow to the skin tissue and helps skin renewal and the production of collagen and elastin."
       },
       "duration": 60,
-      "price": null,
+      "price": 350,
       "icon": "sparkle",
       "image": "images/svc-cosmetic.jpg"
     },
@@ -64,11 +64,21 @@
         "en": "Combines techniques from the Japanese and Chinese traditions. Powerful points that address high cortisol levels and stress and contribute to peace of mind and hormonal balance."
       },
       "duration": 60,
-      "price": null,
+      "price": 350,
       "icon": "sun",
       "image": "images/svc-stress.jpg"
     }
   ],
+  "prices": {
+    "session": {
+      "minutes": 60,
+      "price": 350
+    },
+    "pack": {
+      "sessions": 4,
+      "price": 1200
+    }
+  },
   "defaultSchedule": {
     "weeklyHours": {
       "0": [

@@ -48,6 +48,12 @@ test('config exposes services and today in Israel time', async () => {
   assert.ok(body.services.length > 0);
 });
 
+test('config exposes the prices: a session and a card of sessions', async () => {
+  const { body } = await json('/api/config');
+  assert.ok(body.prices.session.price > 0 && body.prices.session.minutes > 0);
+  assert.ok(body.prices.pack.price > 0 && body.prices.pack.sessions > 1);
+});
+
 test('availability lists slots per day', async () => {
   const { body } = await json('/api/availability?service=dry-needling&from=2026-10-04&to=2026-10-05');
   assert.equal(body.days['2026-10-04'][0], '12:30');

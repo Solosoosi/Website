@@ -74,6 +74,12 @@ export const dictionaries = {
       lead: 'טיפולי דיקור מערבי יבש משולבים עם דיקור יפני, כוסות רוח, עיסוי לימפטי ועיסוי תאילנדי. חשוב לציין שהטיפול הוא טיפול בדיקור ושאר הטכניקות באות לידי ביטוי בטיפולים בהתאם לצרכים ולמטרת הטיפול.',
       book: 'לקביעת מועד',
     },
+    prices: {
+      title: 'מחירים',
+      session: 'מפגש',
+      minutes: '{n} דקות',
+      pack: 'כרטיסייה של {n} מפגשים',
+    },
     gallery: {
       title: 'גלריה',
       close: 'סגירה',
@@ -299,6 +305,12 @@ export const dictionaries = {
       title: 'Ways to begin',
       lead: 'Every session is tailored to you. You can start with a short introductory call and choose the right path together.',
       book: 'Book this',
+    },
+    prices: {
+      title: 'Prices',
+      session: 'A session',
+      minutes: '{n} minutes',
+      pack: 'A card of {n} sessions',
     },
     process: {
       eyebrow: 'The process',

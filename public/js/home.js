@@ -104,6 +104,35 @@ function renderServices() {
 }
 
 // ---------------------------------------------------------------------------
+// Prices: a session, and a card of sessions (config/site.json → prices)
+// ---------------------------------------------------------------------------
+
+function renderPrices() {
+  const box = $('prices');
+  const p = config?.prices;
+  if (!box || !p) return;
+  const items = [
+    p.session &&
+      el(
+        'li',
+        { class: 'price' },
+        el('span', { class: 'price-name' }, t('prices.session')),
+        el('span', { class: 'price-meta' }, t('prices.minutes', { n: p.session.minutes })),
+        el('span', { class: 'price-sum' }, formatPrice(p.session.price)),
+      ),
+    p.pack &&
+      el(
+        'li',
+        { class: 'price price-pack' },
+        el('span', { class: 'price-name' }, t('prices.pack', { n: p.pack.sessions })),
+        el('span', { class: 'price-sum' }, formatPrice(p.pack.price)),
+      ),
+  ].filter(Boolean);
+  $('price-list').replaceChildren(...items);
+  box.hidden = !items.length;
+}
+
+// ---------------------------------------------------------------------------
 // His quote: each word lights up as it scrolls through the screen
 // ---------------------------------------------------------------------------
 
@@ -541,6 +570,7 @@ function initClinicVideo() {
 function renderAll() {
   renderHeroTreatments();
   renderServices();
+  renderPrices();
   renderWords();
   renderHours();
 }

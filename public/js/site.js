@@ -623,6 +623,62 @@ function initMagneticButtons() {
   window.addEventListener('blur', release);
 }
 
+// ---------------------------------------------------------------------------
+// Colour options: open the site with ?options to compare the ways of wearing the
+// client's colours (data-palette on <html>, set in theme-init). Never on the normal site.
+// ---------------------------------------------------------------------------
+
+// [id, name, page, bands, cards, buttons]
+const PALETTES = [
+  ['oat', 'שיבולת', '#ede3ce', '#e5d9be', '#d9c7a5', '#5f4630'],
+  ['wheat', 'חיטה', '#e5d9be', '#d9c7a5', '#ede3ce', '#4c5841'],
+  ['dune', 'דיונה', '#d9c7a5', '#cbaf88', '#ede3ce', '#2e241b'],
+];
+
+function initPaletteSwitcher() {
+  if (!root.classList.contains('show-palettes')) return;
+  const current = () => (PALETTES.some(([id]) => id === root.dataset.palette) ? root.dataset.palette : PALETTES[0][0]);
+  const chips = (colors) =>
+    el(
+      'span',
+      { class: 'pal-chips', 'aria-hidden': 'true' },
+      ...colors.map((c) => {
+        const chip = el('i');
+        chip.style.background = c;
+        return chip;
+      }),
+    );
+  const buttons = PALETTES.map(([id, name, ...colors]) => el('button', { type: 'button', 'data-palette-id': id }, chips(colors), name));
+  // On phones (and screens not tall enough for the bar) the list folds into one round button.
+  const toggle = el('button', { type: 'button', class: 'pal-toggle', 'aria-expanded': 'false', 'aria-label': 'בחירת צבעים' });
+  const list = el('div', { class: 'pal-list' }, ...buttons);
+  const bar = el('div', { class: 'pal-switcher', role: 'group', 'aria-label': 'בחירת צבעים' }, toggle, list);
+  const setOpen = (open) => {
+    bar.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+  };
+  const sync = () => {
+    const id = current();
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.paletteId === id)));
+    const [, name, ...colors] = PALETTES.find(([p]) => p === id);
+    toggle.replaceChildren(chips(colors), el('span', {}, name));
+  };
+  toggle.addEventListener('click', () => setOpen(!bar.classList.contains('is-open')));
+  list.addEventListener('click', (e) => {
+    const button = e.target.closest('button');
+    if (!button) return;
+    root.dataset.palette = button.dataset.paletteId;
+    storageSet('palette', button.dataset.paletteId);
+    syncThemeColor();
+    sync();
+    setOpen(false);
+  });
+  document.addEventListener('click', (e) => bar.contains(e.target) || setOpen(false));
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+  sync();
+  document.body.append(bar);
+}
+
 // Underline the nav link of the section on screen.
 function initScrollSpy() {
   const links = [...document.querySelectorAll('.main-nav a[href^="#"]')];
@@ -675,6 +731,7 @@ applyTranslations();
 initReveal();
 initScrollSpy();
 initMagneticButtons();
+initPaletteSwitcher();
 syncThemeColor();
 loadConfig().catch(() => {});
 setInterval(renderStatus, 60_000);

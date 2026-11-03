@@ -43,6 +43,7 @@ export function createApp({ config, store, mailer, env = {}, clock = () => new D
     res.json({
       business: config.business,
       services: config.services,
+      prices: config.prices,
       currency: config.currency,
       timezone: tz,
       today: now().date,
