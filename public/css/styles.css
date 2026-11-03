@@ -2118,6 +2118,8 @@ html.a11y-contrast .words .w {
   }
 }
 
+/* The WhatsApp button: quiet, in the page's own colours (frosted like the header, a hairline
+   round it, the icon in the accent), so it's there when wanted without calling for attention */
 .whatsapp-fab {
   position: fixed;
   bottom: calc(22px + env(safe-area-inset-bottom, 0px));
@@ -2125,22 +2127,27 @@ html.a11y-contrast .words .w {
   z-index: 40;
   display: grid;
   place-items: center;
-  width: 58px;
-  height: 58px;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--line-strong);
   border-radius: 50%;
-  background: #25d366;
-  color: #fff;
-  box-shadow: 0 14px 30px -10px rgb(37 211 102 / 0.6);
-  transition: transform 0.35s var(--ease);
+  background: var(--header-bg);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  color: var(--accent);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.35s var(--ease), border-color 0.2s, color 0.2s;
 }
 
 .whatsapp-fab:hover {
-  transform: translateY(-3px) scale(1.04);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  transform: translateY(-2px);
 }
 
 .whatsapp-fab svg {
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
 }
 
 .action-bar {
