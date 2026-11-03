@@ -301,7 +301,7 @@ const themeInit = `(function () {
     if (opt) {
       r.classList.add('show-palettes');
       var pal = opt[1] || localStorage.getItem('palette') || '';
-      if (/^(oat|wheat|dune)$/.test(pal)) {
+      if (/^(oat|dune)$/.test(pal)) {
         r.setAttribute('data-palette', pal);
         localStorage.setItem('palette', pal);
       }

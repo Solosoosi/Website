@@ -18,14 +18,14 @@
   } catch (e) {}
   // The design: ערפל (mist).
   root.setAttribute('data-look', '2ln');
-  // Its colour options: ?options shows a switcher to compare them (?options=wheat opens on one)
+  // Its colour options: ?options shows a switcher to compare them (?options=dune opens on one)
   // and remembers the pick. The normal site always has the first.
   try {
     var opt = /[?&]options(?:=([a-z]*))?(?:&|$)/.exec(location.search);
     if (opt) {
       root.classList.add('show-palettes');
       var pal = opt[1] || localStorage.getItem('palette') || '';
-      if (/^(oat|wheat|dune)$/.test(pal)) {
+      if (/^(oat|dune)$/.test(pal)) {
         root.setAttribute('data-palette', pal);
         localStorage.setItem('palette', pal);
       }

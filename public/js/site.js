@@ -631,7 +631,6 @@ function initMagneticButtons() {
 // [id, name, page, bands, cards, buttons]
 const PALETTES = [
   ['oat', 'שיבולת', '#ede3ce', '#e5d9be', '#d9c7a5', '#5f4630'],
-  ['wheat', 'חיטה', '#e5d9be', '#d9c7a5', '#ede3ce', '#4c5841'],
   ['dune', 'דיונה', '#d9c7a5', '#cbaf88', '#ede3ce', '#2e241b'],
 ];
 

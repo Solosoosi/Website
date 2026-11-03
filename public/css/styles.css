@@ -4258,9 +4258,8 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
    numbers set like measurements. The room photo stands in an arched greenhouse window, and
    the page ends on layered ground.
 
-   Three ways to wear the colours (data-palette on <html>; ?options compares them):
+   Two ways to wear the colours (data-palette on <html>; ?options compares them):
    - שיבולת (the default): an Oat Milk page, Wheat bands, Sandy Dune edges, coffee buttons
-   - חיטה (wheat): a Wheat page, Sandy Dune bands, Oat Milk cards, Latte edges, olive buttons
    - דיונה (dune): a Sandy Dune page, Latte bands, Oat Milk cards, espresso buttons
    At night each turns dark, with the swatches for the text and the buttons.
    ========================================================================== */
@@ -4323,62 +4322,6 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
   --open: #7fc4a0;
   --photo-bg: #2b241d;
   --header-bg: rgb(28 24 20 / 0.86);
-}
-
-:root[data-look='2ln'][data-palette='wheat'] {
-  --bg: #e5d9be;
-  --bg-2: #d9c7a5;
-  --surface: #ede3ce;
-  --glass: #ede3ce;
-  --glass-strong: #ede3ce;
-  --glass-border: #cbaf88;
-  --ink: #262a1f;
-  --ink-2: #41463a;
-  --muted: #4f5344;
-  --line: rgb(38 42 31 / 0.13);
-  --line-strong: rgb(38 42 31 / 0.3);
-  --accent: #4c5841;
-  --accent-2: #cbaf88;
-  --accent-ink: #3c4733;
-  --on-accent: #ede3ce;
-  --accent-soft: #ede3ce;
-  --spark: #4c5841;
-  --curtain: #d9c7a5;
-  --glow-1: #e0d3b6;
-  --glow-2: #e2d6bb;
-  --glow-3: #e0d3b6;
-  --glow-4: #e2d6bb;
-  --open: #3d7a5c;
-  --photo-bg: #d9c7a5;
-  --header-bg: rgb(229 217 190 / 0.86);
-}
-
-:root[data-look='2ln'][data-palette='wheat'][data-theme='dark'] {
-  --bg: #161813;
-  --bg-2: #1b1e17;
-  --surface: #21251c;
-  --glass: #21251c;
-  --glass-strong: #21251c;
-  --glass-border: #343a2c;
-  --ink: #ede3ce;
-  --ink-2: #e5d9be;
-  --muted: #aaa993;
-  --line: rgb(237 227 206 / 0.12);
-  --line-strong: rgb(237 227 206 / 0.26);
-  --accent: #b6bf9a;
-  --accent-2: #5b6649;
-  --accent-ink: #cdd4b4;
-  --on-accent: #161813;
-  --accent-soft: #242a1e;
-  --spark: #b6bf9a;
-  --curtain: #1d2018;
-  --glow-1: #1a1c16;
-  --glow-2: #1b1e17;
-  --glow-3: #1a1c16;
-  --glow-4: #1b1e17;
-  --open: #7fc4a0;
-  --photo-bg: #22261d;
-  --header-bg: rgb(22 24 19 / 0.86);
 }
 
 :root[data-look='2ln'][data-palette='dune'] {
