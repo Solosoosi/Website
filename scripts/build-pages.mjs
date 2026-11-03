@@ -334,7 +334,7 @@ const html = `<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>${escapeHtml(pageTitle)}</title>
   <meta name="description" content="${escapeHtml(he.meta.description)}">
-  <meta name="theme-color" content="#e9edef">
+  <meta name="theme-color" content="#edebe3">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="he_IL">
   <meta property="og:site_name" content="${escapeHtml(name)}">
