@@ -11,6 +11,10 @@ const state = {
   schedule: null,
   blocked: [],
   messages: [],
+  // On Cloudflare the panel sits behind Cloudflare Access, which asks for a one-time code
+  // sent by email before this page loads: no password form, and logging out ends that session.
+  access: false,
+  enabled: false,
 };
 
 function fmtDate(dateStr, opts = { weekday: 'short', day: 'numeric', month: 'short' }) {
@@ -53,6 +57,16 @@ async function guarded(fn) {
 function showLogin() {
   $('dashboard').hidden = true;
   $('login-view').hidden = false;
+  if (state.access) {
+    // Signed in to Access with an email that isn't allowed in, or the sign-in has expired.
+    const notice = $('admin-disabled');
+    notice.dataset.i18n = state.enabled ? 'admin.noAccess' : 'admin.accessOff';
+    notice.textContent = t(notice.dataset.i18n);
+    notice.hidden = false;
+    $('login-form').hidden = true;
+    $('access-logout').hidden = !state.enabled;
+    return;
+  }
   $('password').focus();
 }
 
@@ -76,7 +90,8 @@ $('login-form').addEventListener('submit', async (e) => {
 });
 
 $('logout').addEventListener('click', async () => {
-  await api('/api/admin/logout', { method: 'POST', body: {} }).catch(() => {});
+  const res = await api('/api/admin/logout', { method: 'POST', body: {} }).catch(() => ({}));
+  if (res.redirect) return location.assign(res.redirect);
   showLogin();
 });
 
@@ -379,8 +394,10 @@ onLangChange(() => {
 });
 
 Promise.all([loadConfig().catch(() => null), api('/api/admin/session')])
-  .then(([cfg, { enabled, loggedIn }]) => {
+  .then(([cfg, { enabled, loggedIn, access }]) => {
     state.config = cfg;
+    state.access = Boolean(access);
+    state.enabled = Boolean(enabled);
     $('admin-disabled').hidden = enabled;
     $('login-form').hidden = !enabled;
     return loggedIn ? showDashboard() : showLogin();

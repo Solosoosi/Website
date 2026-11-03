@@ -12,10 +12,16 @@
     "start": "node --disable-warning=ExperimentalWarning server/index.js",
     "dev": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env --watch server/index.js",
     "test": "node --disable-warning=ExperimentalWarning --test",
-    "build:pages": "node scripts/build-pages.mjs"
+    "build:pages": "node scripts/build-pages.mjs",
+    "build:cf": "node scripts/build-cloudflare.mjs",
+    "cf:dev": "wrangler d1 migrations apply clinic --local && wrangler dev",
+    "cf:deploy": "wrangler d1 migrations apply clinic --remote && wrangler deploy"
   },
   "dependencies": {
     "express": "^5.2.1",
     "nodemailer": "^6.10.1"
+  },
+  "devDependencies": {
+    "wrangler": "4.151.3"
   }
 }

@@ -1,0 +1,11 @@
+# Local settings for `npm run cf:dev`. Copy to .dev.vars (git ignores it).
+
+# "online" takes bookings and messages on the site (stored in the local database);
+# "whatsapp" hands them to WhatsApp, as on the live site today.
+BOOKING_MODE=online
+
+# Cloudflare Access for the admin panel (worker/README.md, step 5). There's no Access
+# locally, so the panel stays closed while these are empty.
+ACCESS_TEAM_DOMAIN=
+ACCESS_AUD=
+ADMIN_EMAILS=

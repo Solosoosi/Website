@@ -1,0 +1,51 @@
+// Cloudflare settings for the website. The pages and files come from dist/ (built from
+// public/ by scripts/build-cloudflare.mjs) and Cloudflare serves them by itself; the Worker
+// in worker/ answers only /api/*. Setup and deployment: worker/README.md.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "clinic",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-15",
+
+  // Runs before `wrangler dev` and `wrangler deploy`.
+  "build": {
+    "command": "node scripts/build-cloudflare.mjs",
+    "watch_dir": ["public", "config", "scripts"]
+  },
+
+  "assets": {
+    "directory": "dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    // Only these reach the Worker. Pages, photos and the video are served straight from
+    // Cloudflare's cache, which is free and doesn't count toward the daily request limit.
+    "run_worker_first": ["/api/*", "/healthz"]
+  },
+
+  // The bookings, closed days, opening hours and messages. After `wrangler d1 create clinic`,
+  // paste the database_id it prints here (worker/README.md, step 3).
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "clinic",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Per visitor (by IP address): any API call, and sending a booking or a message.
+  "ratelimits": [
+    { "name": "API_LIMIT", "namespace_id": "1001", "simple": { "limit": 120, "period": 60 } },
+    { "name": "FORMS_LIMIT", "namespace_id": "1002", "simple": { "limit": 5, "period": 60 } }
+  ],
+
+  // Not secret. The admin settings (ACCESS_TEAM_DOMAIN, ACCESS_AUD, ADMIN_EMAILS) are
+  // secrets instead: `npx wrangler secret put …`, see worker/README.md.
+  "vars": {
+    "BOOKING_MODE": "whatsapp"
+  },
+
+  "observability": { "enabled": true },
+  "workers_dev": true,
+  "preview_urls": false
+}
