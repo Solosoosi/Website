@@ -300,6 +300,40 @@ function handOffToWhatsApp(data) {
 const PHONE_RE = /^\+?[\d\s\-()]{7,20}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+// Paying on the site (Grow): the client pays on Grow's secure page and comes back here. The
+// payment company asks for a full name and an Israeli mobile number.
+const viaPayment = () => state.config?.payments === true;
+const isFullName = (name) => name.trim().split(/\s+/).filter((w) => w.replace(/[^\p{L}\p{N}]/gu, '').length >= 2).length >= 2;
+function isMobile(phone) {
+  let digits = phone.replace(/\D+/g, '');
+  if (digits.startsWith('972')) digits = `0${digits.slice(3)}`;
+  return /^05\d{8}$/.test(digits);
+}
+const PAY_MESSAGES = { name: 'errors.fullName', phone: 'errors.mobile' };
+const saved = {
+  key: (ref) => `pay:${ref}`,
+  get(ref) {
+    try {
+      return JSON.parse(sessionStorage.getItem(this.key(ref)) || 'null');
+    } catch {
+      return null;
+    }
+  },
+  set(ref, value) {
+    try {
+      sessionStorage.setItem(this.key(ref), JSON.stringify(value));
+    } catch {}
+  },
+};
+
+// Agreeing to the terms, with a link to them: the payment company requires it on this form.
+function renderConsent() {
+  if (!viaPayment()) return;
+  const span = document.querySelector('#details-form [name="consent"] + span');
+  span.removeAttribute('data-i18n');
+  span.replaceChildren(t('book.termsBefore'), el('a', { href: '/terms', target: '_blank', rel: 'noopener' }, t('book.termsLink')));
+}
+
 async function submit(e) {
   e.preventDefault();
   const form = $('details-form');
@@ -308,20 +342,23 @@ async function submit(e) {
   setAlert('details-alert');
 
   const bad = [];
-  if ((data.name || '').trim().length < 2) bad.push('name');
-  if (!viaWhatsApp()) {
-    if (!PHONE_RE.test((data.phone || '').trim())) bad.push('phone');
+  const paying = viaPayment();
+  if ((data.name || '').trim().length < 2 || (paying && !isFullName(data.name))) bad.push('name');
+  if (paying || !viaWhatsApp()) {
+    if (!PHONE_RE.test((data.phone || '').trim()) || (paying && !isMobile(data.phone))) bad.push('phone');
     if (data.email && !EMAIL_RE.test(data.email.trim())) bad.push('email');
   }
   if (!data.consent) bad.push('consent');
-  if (bad.length) return showFieldErrors(form, bad);
-  if (viaWhatsApp()) return handOffToWhatsApp(data);
+  const messages = paying ? PAY_MESSAGES : {};
+  if (bad.length) return showFieldErrors(form, bad, messages);
+  if (!paying && viaWhatsApp()) return handOffToWhatsApp(data);
 
   const button = $('confirm-btn');
   button.disabled = true;
-  button.textContent = t('book.confirming');
+  button.textContent = t(paying ? 'book.paying' : 'book.confirming');
+  let leaving = false;
   try {
-    const { booking } = await api('/api/bookings', {
+    const { booking, payUrl, token } = await api('/api/bookings', {
       method: 'POST',
       body: {
         serviceId: state.service.id,
@@ -335,6 +372,13 @@ async function submit(e) {
         lang: getLang(),
       },
     });
+    if (payUrl) {
+      // Off to Grow's page. This tab remembers the booking for when the client comes back.
+      saved.set(booking.ref, { token, booking });
+      leaving = true;
+      location.assign(payUrl);
+      return;
+    }
     showConfirmation(booking, Boolean(data.email));
   } catch (err) {
     if (err.status === 409 || err.data?.fields?.some((f) => ['date', 'time', 'serviceId'].includes(f))) {
@@ -343,14 +387,69 @@ async function submit(e) {
       goTo(2);
       setAlert('time-alert', 'error', t('book.slotTaken'));
     } else if (err.status === 400) {
-      showFieldErrors(form, err.data.fields);
+      showFieldErrors(form, err.data.fields, messages);
     } else {
-      setAlert('details-alert', 'error', t(err.status === 429 ? 'errors.rate' : 'common.error'));
+      const key = err.status === 429 ? 'errors.rate' : paying && (err.status === 502 || err.status === 503) ? 'book.payError' : 'common.error';
+      setAlert('details-alert', 'error', t(key));
     }
   } finally {
-    button.disabled = false;
-    button.textContent = t(button.dataset.i18n);
+    if (!leaving) {
+      button.disabled = false;
+      button.textContent = t(button.dataset.i18n);
+    }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Back from the payment page
+// ---------------------------------------------------------------------------
+
+/** Paid: wait for the payment company to confirm it (a few seconds), then show the booking. */
+async function returnFromPayment(ref) {
+  const mine = saved.get(ref);
+  const booking = mine?.booking || { ref };
+  state.service = state.config.services.find((s) => s.id === booking.serviceId) || state.service;
+  $('booking-flow').hidden = true;
+  document.querySelector('.page-hero').hidden = true;
+  $('confirmation').hidden = false;
+  $('confirm-email').hidden = true;
+  $('confirm-whatsapp').hidden = true;
+  const title = $('confirm-title');
+  title.dataset.i18n = 'book.payChecking';
+  title.textContent = t('book.payChecking');
+  $('confirm-text').textContent = '';
+  $('confirm-details').replaceChildren();
+
+  // The client came back through Grow's "paid" address, so a payment was made: wait for it,
+  // even past the end of its hold (a late payment still counts while the time is free).
+  let status = 'pending';
+  for (let i = 0; i < 15 && status !== 'confirmed'; i++) {
+    if (i) await new Promise((r) => setTimeout(r, 2000));
+    try {
+      ({ status } = await api(`/api/bookings/status?ref=${encodeURIComponent(ref)}`));
+    } catch {
+      status = 'pending';
+    }
+  }
+  if (status === 'confirmed' && state.service && booking.date) return showConfirmation({ ...booking, paid: true }, false);
+  const key = status === 'confirmed' ? 'book.successTitle' : 'book.payPending';
+  title.dataset.i18n = key;
+  title.textContent = t(key);
+  if (status === 'confirmed') {
+    $('confirm-details').replaceChildren(el('dt', {}, t('book.ref')), el('dd', {}, el('span', { class: 'ref' }, ref)));
+  }
+}
+
+/** The client cancelled on the payment page: free the held time and let them choose again. */
+async function returnCancelled(ref) {
+  const mine = saved.get(ref);
+  if (mine?.token) await api('/api/bookings/release', { method: 'POST', body: { ref, token: mine.token } }).catch(() => {});
+  const s = mine && state.config.services.find((x) => x.id === mine.booking.serviceId);
+  if (s) {
+    state.service = s;
+    state.month = monthOf(mine.booking.date);
+  }
+  return s;
 }
 
 let confirmed = null;
@@ -369,6 +468,7 @@ function renderConfirmation() {
     ['book.service', pick(state.service.name)],
     ['book.date', fmtDate(booking.date)],
     ['book.time', el('bdi', {}, booking.time)],
+    booking.paid && booking.price != null && ['book.paid', formatPrice(booking.price)],
   ].filter(Boolean);
   $('confirm-details').replaceChildren(...rows.flatMap(([k, v]) => [el('dt', {}, t(k)), el('dd', {}, v)]));
 }
@@ -396,6 +496,7 @@ function renderAll() {
     renderSlots();
   }
   renderSummary();
+  renderConsent();
   renderConfirmation();
 }
 
@@ -420,7 +521,10 @@ loadConfig()
   .then((config) => {
     state.config = config;
     state.month = monthOf(config.today);
-    if (viaWhatsApp()) {
+    if (viaPayment()) {
+      $('confirm-btn').dataset.i18n = 'book.toPayment';
+      $('confirm-btn').textContent = t('book.toPayment');
+    } else if (viaWhatsApp()) {
       // The request is sent from the client's own WhatsApp, so the practitioner
       // already sees their number: no phone or email fields.
       $('b-phone').closest('.form-row').hidden = true;
@@ -429,7 +533,19 @@ loadConfig()
     }
     const preset = config.services.find((s) => s.id === new URLSearchParams(location.search).get('service'));
     if (preset) state.service = preset;
+    const back = viaPayment() ? new URLSearchParams(location.search) : null;
+    const paidRef = back?.get('paid');
+    const cancelledRef = back?.get('cancelled');
+    if (paidRef || cancelledRef) history.replaceState(null, '', '/book');
     renderAll();
+    if (paidRef) return returnFromPayment(paidRef);
+    if (cancelledRef) {
+      return returnCancelled(cancelledRef).then((s) => {
+        renderAll();
+        goTo(s ? 2 : 1, { focus: false });
+        setAlert('time-alert', 'info', t('book.payCancelled'));
+      });
+    }
     goTo(preset ? 2 : 1, { focus: false });
   })
   .catch(() => {

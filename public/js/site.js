@@ -292,8 +292,8 @@ export async function api(url, { method = 'GET', body } = {}) {
   return data;
 }
 
-/** Mark invalid fields in a form. `fields` are server field names. */
-export function showFieldErrors(form, fields = []) {
+/** Mark invalid fields in a form. `fields` are server field names; `messages` can give one another text. */
+export function showFieldErrors(form, fields = [], messages = {}) {
   for (const f of form.querySelectorAll('.has-error')) f.classList.remove('has-error');
   for (const e of form.querySelectorAll('.field-error')) e.remove();
   let first = null;
@@ -305,7 +305,7 @@ export function showFieldErrors(form, fields = []) {
     input.setAttribute('aria-invalid', 'true');
     if (wrap?.classList.contains('field')) {
       const id = `${input.id}-error`;
-      wrap.append(el('span', { class: 'field-error', id, role: 'alert' }, t(`errors.${name}`)));
+      wrap.append(el('span', { class: 'field-error', id, role: 'alert' }, t(messages[name] || `errors.${name}`)));
       input.setAttribute('aria-describedby', id);
     }
     first ??= input;

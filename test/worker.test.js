@@ -1,65 +1,18 @@
 // The Cloudflare Worker (worker/), run in Node against a stand-in for D1 built on node:sqlite
-// with the real migrations. The same checks as api.test.js for the Node server, plus what's
+// with the real migrations (test/support/fake-d1.js). The same checks as api.test.js for the Node server, plus what's
 // new on Cloudflare: WhatsApp mode, Cloudflare Access for the admin panel, the limits.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { DatabaseSync } from 'node:sqlite';
 import { createWorker } from '../worker/index.js';
+import { fakeD1 } from './support/fake-d1.js';
 
 const config = JSON.parse(fs.readFileSync(new URL('../config/site.json', import.meta.url), 'utf8'));
 // Fixed clock: Thursday 1 Oct 2026, 08:00 Israel time.
 const clock = () => new Date('2026-10-01T05:00:00Z');
 const NOW_S = Math.floor(clock().getTime() / 1000);
 const silent = { info() {}, error() {}, warn() {} };
-
-// ---------- A small D1 stand-in ----------
-
-function fakeD1() {
-  const db = new DatabaseSync(':memory:');
-  db.exec(fs.readFileSync(new URL('../migrations/0001_init.sql', import.meta.url), 'utf8'));
-  const check = (params) => {
-    if (params.some((p) => p === undefined)) throw new TypeError('D1_TYPE_ERROR: Type undefined is not supported');
-  };
-  const statement = (sql, params = []) => ({
-    bind: (...p) => statement(sql, p),
-    async first(column) {
-      check(params);
-      const row = db.prepare(sql).get(...params);
-      if (!row) return null;
-      return column ? row[column] : { ...row };
-    },
-    allNow() {
-      check(params);
-      return { success: true, results: db.prepare(sql).all(...params).map((r) => ({ ...r })), meta: {} };
-    },
-    async all() {
-      return this.allNow();
-    },
-    async run() {
-      check(params);
-      const r = db.prepare(sql).run(...params);
-      return { success: true, results: [], meta: { changes: Number(r.changes), last_row_id: Number(r.lastInsertRowid) } };
-    },
-  });
-  return {
-    raw: db,
-    prepare: (sql) => statement(sql),
-    async batch(statements) {
-      // All at once, like D1: nothing else runs in between.
-      db.exec('BEGIN');
-      try {
-        const out = statements.map((s) => s.allNow());
-        db.exec('COMMIT');
-        return out;
-      } catch (err) {
-        db.exec('ROLLBACK');
-        throw err;
-      }
-    },
-  };
-}
 
 // ---------- Cloudflare Access stand-in: a signing key and its public "certs" ----------
 

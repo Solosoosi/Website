@@ -1,11 +1,19 @@
 # Local settings for `npm run cf:dev`. Copy to .dev.vars (git ignores it).
 
-# "online" takes bookings and messages on the site (stored in the local database);
-# "whatsapp" hands them to WhatsApp, as on the live site today.
+# "whatsapp" hands bookings and messages to WhatsApp (as on the live site today); "pay" takes
+# bookings with payment at Grow; "online" takes bookings and messages without payment.
 BOOKING_MODE=online
 
-# Cloudflare Access for the admin panel (worker/README.md, step 5). There's no Access
-# locally, so the panel stays closed while these are empty.
+# Cloudflare Access for the admin panel (worker/README.md). There's no Access locally, so
+# the panel stays closed while these are empty.
 ACCESS_TEAM_DOMAIN=
 ACCESS_AUD=
 ADMIN_EMAILS=
+
+# Grow's test identifiers, for BOOKING_MODE=pay (GROW_ENV in wrangler.jsonc is "sandbox").
+GROW_USER_ID=
+GROW_PAGE_CODE=
+
+# The iCloud calendar: the Apple ID email and an app-specific password.
+ICLOUD_USER=
+ICLOUD_APP_PASSWORD=

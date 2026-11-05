@@ -6,19 +6,39 @@
 //   "whatsapp" (the default) – as on the site today: a booking request or a message opens
 //              WhatsApp, and nothing is stored. The booking page shows the free times from
 //              the opening hours, minus the days closed in the admin panel.
-//   "online"   – bookings and messages are taken here and stored in D1.
+//   "pay"      – the client books and pays in full on the site (Grow). The time is held while
+//              they pay, and the booking is confirmed only once Grow confirms the payment.
+//              Messages still go to WhatsApp.
+//   "online"   – bookings and messages are taken and stored here, without payment.
+//
+// With ICLOUD_USER and ICLOUD_APP_PASSWORD set, times taken in the practitioner's iCloud
+// calendar don't show, and each confirmed booking is added to it (worker/calendar.js).
 //
 // Setup and deployment: worker/README.md.
 
 import siteConfig from '../config/site.json' with { type: 'json' };
 import { addDays, dayIndex, isValidDate, isValidTime, nowInZone } from '../server/time.js';
 import { accessSettings, verifyAccess } from './access.js';
+import { addBooking as addToCalendar, busyTimes, calendarSettings } from './calendar.js';
+import {
+  approveTransaction,
+  createPaymentProcess,
+  getPaymentProcessInfo,
+  growSettings,
+  isFullName,
+  israeliMobile,
+  paidTransaction,
+  readNotice,
+} from './grow.js';
 import { HttpError, json, readJson } from './http.js';
 import { SlotTakenError, openD1Store } from './store.js';
 
 const PHONE_RE = /^\+?[\d\s\-()]{7,20}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const ACCESS_LOGOUT = '/cdn-cgi/access/logout';
+const HOLD_MINUTES = 20; // how long a time stays held while the client pays
+const RECONCILE_HOURS = 6; // how far back the scheduled check looks for unanswered payments
+const MODES = new Set(['whatsapp', 'pay', 'online']);
 
 function str(v, max) {
   if (typeof v !== 'string') return '';
@@ -27,6 +47,7 @@ function str(v, max) {
 
 const invalid = (fields) => new HttpError(400, 'invalid', { fields });
 const notFound = () => new HttpError(404, 'not_found');
+const tooMany = () => new HttpError(429, 'too_many_requests', {}, { 'Retry-After': '60' });
 
 /** True when this visitor has gone over the limit (the limiter is a binding in wrangler.jsonc). */
 async function overLimit(limiter, key) {
@@ -42,10 +63,12 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
   const tz = config.timezone;
   const services = new Map(config.services.map((s) => [s.id, s]));
   const now = () => nowInZone(tz, clock());
+  const modeOf = (env) => (MODES.has(env.BOOKING_MODE) ? env.BOOKING_MODE : 'whatsapp');
+  const storeFor = (env) => openD1Store(env.DB, config.defaultSchedule, clock);
 
-  // Emails aren't connected on Cloudflare yet: they come with the online payments, once the
-  // practice's email address and domain are set. Until then nothing is sent, and the log only
-  // notes that an email would have gone out, without anyone's details.
+  // Emails aren't connected on Cloudflare yet: they come once the practice's domain is set.
+  // Until then nothing is sent, and the log only notes that an email would have gone out,
+  // without anyone's details.
   const noMail = (kind) => log.info(`[mail not connected] ${kind} email not sent`);
 
   async function requireAdmin(request, env) {
@@ -55,15 +78,100 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
     return admin;
   }
 
-  async function api(request, env, url) {
+  /** Times taken in his calendar, or {} when it isn't connected or doesn't answer. */
+  async function calendarBusy(env, from, to) {
+    const settings = calendarSettings(env);
+    if (!settings) return {};
+    try {
+      return await busyTimes(settings, { from, to, tz }, fetchImpl);
+    } catch (err) {
+      // The booking page then shows the times from the opening hours alone, as before.
+      log.error('Calendar busy times failed:', err?.message || String(err));
+      return {};
+    }
+  }
+
+  /** After a booking is confirmed: into his calendar (and, later, the emails). */
+  async function afterConfirmed(env, store, booking) {
+    noMail('new booking');
+    if (booking.email) noMail('booking confirmation');
+    const settings = calendarSettings(env);
+    if (!settings) return;
+    try {
+      await addToCalendar(settings, { booking, serviceName: services.get(booking.service_id)?.name.he || booking.service_id, tz }, fetchImpl);
+      await store.markInCalendar(booking.id);
+    } catch (err) {
+      log.error('Adding the booking to the calendar failed (tried again later):', err?.message || String(err));
+    }
+  }
+
+  /**
+   * Asks Grow whether this payment is paid, with our own identifiers. Paid → the booking is
+   * confirmed and Grow is told the notice arrived. Safe to run again for the same payment.
+   */
+  async function settle(env, store, payment) {
+    const grow = growSettings(env);
+    if (!grow) return 'not_configured';
+    const info = await getPaymentProcessInfo(grow, { processId: payment.process_id, processToken: payment.process_token }, fetchImpl);
+    const transaction = paidTransaction(info, payment.sum);
+    if (!transaction) return 'not_paid';
+
+    const booking = await store.confirmBooking(payment.booking_id);
+    if (booking) {
+      await store.markPaid(payment.id, transaction);
+      await afterConfirmed(env, store, booking);
+    } else {
+      const current = await store.bookingById(payment.booking_id);
+      if (current?.status === 'confirmed') {
+        await store.markPaid(payment.id, transaction); // a repeat of a notice already handled
+      } else if (await store.markPaid(payment.id, transaction, 'conflict')) {
+        // Paid after the hold ran out, and someone else had taken the time meanwhile.
+        log.error(`Payment for booking ${current?.ref} arrived after its time was taken: refund it in Grow (asmachta ${transaction.asmachta}).`);
+      }
+    }
+    if (!payment.approved_at) {
+      try {
+        await approveTransaction(grow, { transaction, processId: payment.process_id, processToken: payment.process_token }, fetchImpl);
+        await store.markApproved(payment.id);
+      } catch (err) {
+        log.error('Grow approveTransaction failed:', err?.message || String(err));
+      }
+    }
+    return 'paid';
+  }
+
+  async function api(request, env, url, ctx) {
     const { method } = request;
     const path = url.pathname;
     const route = `${method} ${path}`;
     const ip = request.headers.get('CF-Connecting-IP') || 'local';
-    const online = env.BOOKING_MODE === 'online';
-    const store = openD1Store(env.DB, config.defaultSchedule);
+    const mode = modeOf(env);
+    const store = storeFor(env);
 
-    if (await overLimit(env.API_LIMIT, ip)) throw new HttpError(429, 'too_many_requests', {}, { 'Retry-After': '60' });
+    if (await overLimit(env.API_LIMIT, ip)) throw tooMany();
+
+    // ---------- Grow's server tells ours a payment's status (server to server) ----------
+    // Form fields, not JSON, and from Grow rather than from a browser – so it comes before
+    // the checks below. It only says which payment to look at: settle() asks Grow itself.
+    if (route === 'POST /api/payments/grow/notify') {
+      if (Number(request.headers.get('Content-Length') || 0) > 50_000) throw new HttpError(413, 'too_large');
+      const type = request.headers.get('Content-Type') || '';
+      let notice = {};
+      try {
+        if (/application\/json/i.test(type)) {
+          const body = await readJson(request, 50_000);
+          notice = body?.data ?? body ?? {};
+        } else {
+          notice = readNotice(await request.formData());
+        }
+      } catch {
+        return json({ ok: true }); // nothing readable to act on
+      }
+      const payment = await store.paymentByProcess(String(notice.processId ?? '').trim());
+      // Only a payment page this site opened, named with its own secret token.
+      if (payment && String(notice.processToken ?? '').trim() === payment.process_token) await settle(env, store, payment);
+      return json({ ok: true });
+    }
 
     // Anything that changes data must come from this site's own pages, as JSON.
     let body = null;
@@ -87,7 +195,9 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
         today: now().date,
         maxDaysAhead: schedule.maxDaysAhead,
         hours: schedule.weeklyHours,
-        handoff: online ? undefined : 'whatsapp',
+        // Messages go to WhatsApp unless the site takes them itself ("online").
+        handoff: mode === 'online' ? undefined : 'whatsapp',
+        payments: mode === 'pay' ? true : undefined,
       });
     }
 
@@ -104,12 +214,15 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
       if (to > last) to = last;
       if (from > to) return json({ days: {} });
       if (dayIndex(to) - dayIndex(from) > 62) throw invalid(['to']);
-      return json({ days: await store.availability({ from, to, duration: service.duration, now: n, schedule }) });
+      const busy = await calendarBusy(env, from, to);
+      return json({ days: await store.availability({ from, to, duration: service.duration, now: n, schedule, busy }) });
     }
 
     if (route === 'POST /api/bookings') {
-      if (!online) throw notFound();
-      if (await overLimit(env.FORMS_LIMIT, `${ip} bookings`)) throw new HttpError(429, 'too_many_requests', {}, { 'Retry-After': '60' });
+      if (mode === 'whatsapp') throw notFound();
+      const grow = mode === 'pay' ? growSettings(env) : null;
+      if (mode === 'pay' && !grow) throw new HttpError(503, 'payments_unavailable');
+      if (await overLimit(env.FORMS_LIMIT, `${ip} bookings`)) throw tooMany();
       const b = body;
       const service = services.get(b.serviceId);
       const input = {
@@ -126,41 +239,83 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
       if (!service) bad.push('serviceId');
       if (!isValidDate(input.date)) bad.push('date');
       if (!isValidTime(input.time)) bad.push('time');
-      if (input.name.length < 2) bad.push('name');
-      if (!PHONE_RE.test(input.phone)) bad.push('phone');
+      if (input.name.length < 2 || (grow && !isFullName(input.name))) bad.push('name');
+      if (!PHONE_RE.test(input.phone) || (grow && !israeliMobile(input.phone))) bad.push('phone');
       if (input.email && !EMAIL_RE.test(input.email)) bad.push('email');
       if (b.consent !== true) bad.push('consent');
       if (bad.length) throw invalid(bad);
 
+      const busy = await calendarBusy(env, input.date, input.date);
       let booking;
       try {
-        booking = await store.createBooking({ ...input, duration: service.duration }, now());
+        booking = await store.createBooking(
+          { ...input, duration: service.duration, price: grow ? service.price : null },
+          now(),
+          { hold: grow ? HOLD_MINUTES : 0, busy },
+        );
       } catch (err) {
         if (err instanceof SlotTakenError) throw new HttpError(409, 'slot_taken');
         throw err;
       }
+      const summary = {
+        ref: booking.ref,
+        serviceId: booking.service_id,
+        date: booking.date,
+        time: booking.time,
+        duration: booking.duration,
+        name: booking.name,
+        price: booking.price ?? undefined,
+      };
 
-      if (booking.email) noMail('booking confirmation');
-      noMail('new booking');
+      if (!grow) {
+        ctx?.waitUntil?.(afterConfirmed(env, store, booking));
+        return json({ booking: summary }, 201);
+      }
 
-      return json(
-        {
-          booking: {
+      // Payment: open Grow's page for exactly this booking.
+      let page;
+      try {
+        page = await createPaymentProcess(
+          grow,
+          {
+            sum: booking.price,
+            description: service.name.he,
+            fullName: booking.name,
+            phone: booking.phone,
+            email: booking.email,
             ref: booking.ref,
-            serviceId: booking.service_id,
-            date: booking.date,
-            time: booking.time,
-            duration: booking.duration,
-            name: booking.name,
+            successUrl: `${url.origin}/book?paid=${booking.ref}`,
+            cancelUrl: `${url.origin}/book?cancelled=${booking.ref}`,
+            notifyUrl: `${url.origin}/api/payments/grow/notify`,
           },
-        },
-        201,
-      );
+          fetchImpl,
+        );
+        await store.addPayment({ bookingId: booking.id, processId: page.processId, processToken: page.processToken, sum: booking.price });
+      } catch (err) {
+        await store.releaseBooking(booking.ref, booking.token);
+        log.error('Opening the payment page failed:', err?.message || String(err));
+        throw new HttpError(502, 'payment_unavailable');
+      }
+      // The token lets this browser release the held time if the client changes their mind.
+      return json({ booking: summary, payUrl: page.url, token: booking.token }, 201);
+    }
+
+    if (route === 'GET /api/bookings/status') {
+      if (mode !== 'pay') throw notFound();
+      const booking = await store.bookingByRef(String(url.searchParams.get('ref') || '').slice(0, 12));
+      if (!booking) throw notFound();
+      return json({ status: booking.status }); // only the status: no one else's details
+    }
+
+    if (route === 'POST /api/bookings/release') {
+      if (mode !== 'pay') throw notFound();
+      const released = await store.releaseBooking(str(body.ref, 12), str(body.token, 64));
+      return json({ ok: true, released });
     }
 
     if (route === 'POST /api/contact') {
-      if (!online) throw notFound();
-      if (await overLimit(env.FORMS_LIMIT, `${ip} contact`)) throw new HttpError(429, 'too_many_requests', {}, { 'Retry-After': '60' });
+      if (mode !== 'online') throw notFound();
+      if (await overLimit(env.FORMS_LIMIT, `${ip} contact`)) throw tooMany();
       const b = body;
       const msg = { name: str(b.name, 80), phone: str(b.phone, 30), email: str(b.email, 120), message: str(b.message, 2000) };
       const bad = [];
@@ -268,12 +423,34 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
     throw notFound();
   }
 
+  /**
+   * Every few minutes (wrangler.jsonc → triggers): payments Grow hasn't told us about are
+   * asked about directly, held times that ran out are released, and confirmed bookings
+   * that didn't reach the calendar are tried again.
+   */
+  async function scheduled(env) {
+    const store = storeFor(env);
+    if (growSettings(env)) {
+      for (const payment of await store.openPayments(new Date(clock().getTime() - RECONCILE_HOURS * 3_600_000))) {
+        try {
+          await settle(env, store, payment);
+        } catch (err) {
+          log.error('Checking a payment with Grow failed:', err?.message || String(err));
+        }
+      }
+    }
+    await store.expireHolds();
+    if (calendarSettings(env)) {
+      for (const booking of await store.missingFromCalendar(now().date)) await afterConfirmed(env, store, booking);
+    }
+  }
+
   return {
-    async fetch(request, env) {
+    async fetch(request, env, ctx) {
       const url = new URL(request.url);
       try {
         if (url.pathname === '/healthz') return json({ ok: true });
-        if (url.pathname.startsWith('/api/')) return await api(request, env, url);
+        if (url.pathname.startsWith('/api/')) return await api(request, env, url, ctx);
         // Pages and files: Cloudflare serves them without the Worker (wrangler.jsonc →
         // assets.run_worker_first), so this is only a fallback.
         return env.ASSETS.fetch(request);
@@ -282,6 +459,9 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
         log.error('API error:', err?.stack || String(err));
         return json({ error: 'server_error' }, 500);
       }
+    },
+    async scheduled(controller, env) {
+      await scheduled(env);
     },
   };
 }

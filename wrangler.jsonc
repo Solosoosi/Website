@@ -10,7 +10,7 @@
   // Runs before `wrangler dev` and `wrangler deploy`.
   "build": {
     "command": "node scripts/build-cloudflare.mjs",
-    "watch_dir": ["public", "config", "scripts"]
+    "watch_dir": ["public", "config", "scripts", "worker", "server"]
   },
 
   "assets": {
@@ -39,11 +39,20 @@
     { "name": "FORMS_LIMIT", "namespace_id": "1002", "simple": { "limit": 5, "period": 60 } }
   ],
 
-  // Not secret. The admin settings (ACCESS_TEAM_DOMAIN, ACCESS_AUD, ADMIN_EMAILS) are
-  // secrets instead: `npx wrangler secret put …`, see worker/README.md.
+  // Not secret. Everything else (Access, Grow, iCloud) is a secret instead:
+  // `npx wrangler secret put …`, see worker/README.md.
   "vars": {
-    "BOOKING_MODE": "whatsapp"
+    // "whatsapp" (as today), "pay" (book and pay on the site) or "online" (book, no payment)
+    "BOOKING_MODE": "whatsapp",
+    // Grow's test environment until the account is approved for real payments
+    "GROW_ENV": "sandbox",
+    // The calendar in his iCloud that bookings go into (made the first time if missing)
+    "CALENDAR_NAME": "קליניקה"
   },
+
+  // Every 10 minutes: ask Grow about payments it hasn't reported, release held times that
+  // ran out, and retry bookings that didn't reach the calendar.
+  "triggers": { "crons": ["*/10 * * * *"] },
 
   "observability": { "enabled": true },
   "workers_dev": true,
