@@ -1,4 +1,4 @@
-import { api, el, loadConfig, locale, onLangChange, pick, t, toast } from './site.js';
+import { api, clearFieldErrors, el, loadConfig, locale, onLangChange, pick, showFieldErrors, t, toast } from './site.js';
 import { svg } from './icons.js';
 
 const $ = (id) => document.getElementById(id);
@@ -11,10 +11,16 @@ const state = {
   schedule: null,
   blocked: [],
   messages: [],
-  // On Cloudflare the panel sits behind Cloudflare Access, which asks for a one-time code
-  // sent by email before this page loads: no password form, and logging out ends that session.
+  // On Cloudflare: signing in with a passkey (Face ID, Touch ID or a fingerprint), no password.
+  passkeys: false,
+  // Or behind Cloudflare Access, which asks for a one-time code sent by email before this
+  // page loads: no password form, and logging out ends that session.
   access: false,
   enabled: false,
+  clients: [],
+  clientQuery: '',
+  people: [],
+  me: null,
 };
 
 function fmtDate(dateStr, opts = { weekday: 'short', day: 'numeric', month: 'short' }) {
@@ -57,6 +63,14 @@ async function guarded(fn) {
 function showLogin() {
   $('dashboard').hidden = true;
   $('login-view').hidden = false;
+  if (state.passkeys) {
+    // A one-time link (#invite=…) adds this phone's passkey; otherwise sign in with it.
+    const invite = Boolean(inviteCode());
+    for (const id of ['login-form', 'admin-disabled', 'access-logout']) $(id).hidden = true;
+    $('passkey-login').hidden = invite;
+    $('register-form').hidden = !invite;
+    return;
+  }
   if (state.access) {
     // Signed in to Access with an email that isn't allowed in, or the sign-in has expired.
     const notice = $('admin-disabled');
@@ -73,8 +87,105 @@ function showLogin() {
 async function showDashboard() {
   $('login-view').hidden = true;
   $('dashboard').hidden = false;
-  await Promise.all([loadBookings(), loadSchedule(), loadMessages()]);
+  $('tab-clients').hidden = !state.passkeys;
+  $('tab-people').hidden = !state.passkeys;
+  await Promise.all([loadBookings(), loadSchedule(), loadMessages(), ...(state.passkeys ? [loadClients(), loadPeople()] : [])]);
 }
+
+// ---------------------------------------------------------------------------
+// Passkeys: Face ID / Touch ID / a fingerprint
+// ---------------------------------------------------------------------------
+
+const fromB64 = (s) => {
+  const b = s.replace(/-/g, '+').replace(/_/g, '/');
+  return Uint8Array.from(atob(b + '='.repeat((4 - (b.length % 4)) % 4)), (c) => c.charCodeAt(0));
+};
+const toB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const inviteCode = () => /^#invite=([\w-]{20,100})$/.exec(location.hash)?.[1] || '';
+const canPasskey = () => typeof window.PublicKeyCredential === 'function' && Boolean(navigator.credentials?.get);
+
+function passkeyMessage(err) {
+  if (err?.name === 'NotAllowedError' || err?.name === 'AbortError') return 'admin.passkeyCancelled';
+  if (err?.status === 403) return 'admin.inviteInvalid';
+  if (err?.status === 429) return 'errors.rate';
+  return 'admin.passkeyFailed';
+}
+
+$('passkey-btn').addEventListener('click', async () => {
+  alertIn('passkey-alert');
+  if (!canPasskey()) return alertIn('passkey-alert', 'error', t('admin.passkeyUnsupported'));
+  const button = $('passkey-btn');
+  button.disabled = true;
+  try {
+    const start = await api('/api/admin/passkey/login/start', { method: 'POST', body: {} });
+    const cred = await navigator.credentials.get({ publicKey: { ...start.publicKey, challenge: fromB64(start.publicKey.challenge) } });
+    const r = cred.response;
+    await api('/api/admin/passkey/login/finish', {
+      method: 'POST',
+      body: {
+        id: start.id,
+        credential: {
+          id: cred.id,
+          rawId: toB64(cred.rawId),
+          type: cred.type,
+          response: {
+            clientDataJSON: toB64(r.clientDataJSON),
+            authenticatorData: toB64(r.authenticatorData),
+            signature: toB64(r.signature),
+            userHandle: r.userHandle ? toB64(r.userHandle) : null,
+          },
+        },
+      },
+    });
+    showDashboard();
+  } catch (err) {
+    alertIn('passkey-alert', 'error', t(passkeyMessage(err)));
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$('register-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  alertIn('passkey-alert');
+  if (!canPasskey()) return alertIn('passkey-alert', 'error', t('admin.passkeyUnsupported'));
+  const button = $('register-form').querySelector('[type="submit"]');
+  button.disabled = true;
+  try {
+    const start = await api('/api/admin/passkey/register/start', { method: 'POST', body: { invite: inviteCode() } });
+    const name = $('reg-name').value.trim() || start.name;
+    const pk = start.publicKey;
+    const user = { ...pk.user, id: fromB64(pk.user.id), ...(name ? { name, displayName: name } : {}) };
+    const cred = await navigator.credentials.create({ publicKey: { ...pk, challenge: fromB64(pk.challenge), user } });
+    const r = cred.response;
+    await api('/api/admin/passkey/register/finish', {
+      method: 'POST',
+      body: {
+        id: start.id,
+        name,
+        credential: {
+          id: cred.id,
+          rawId: toB64(cred.rawId),
+          type: cred.type,
+          response: {
+            clientDataJSON: toB64(r.clientDataJSON),
+            authenticatorData: toB64(r.getAuthenticatorData()),
+            publicKey: toB64(r.getPublicKey()),
+            publicKeyAlgorithm: r.getPublicKeyAlgorithm(),
+            transports: r.getTransports?.() || [],
+          },
+        },
+      },
+    });
+    history.replaceState(null, '', location.pathname); // the link is used up
+    toast(t('admin.registered'));
+    showDashboard();
+  } catch (err) {
+    alertIn('passkey-alert', 'error', t(passkeyMessage(err)));
+  } finally {
+    button.disabled = false;
+  }
+});
 
 $('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -382,6 +493,255 @@ function renderMessages() {
 }
 
 // ---------------------------------------------------------------------------
+// Clients
+// ---------------------------------------------------------------------------
+
+/** A phone number as the client list keeps it (digits) → easy to read: 050-123-4567, 03-123-4567. */
+function fmtPhone(digits) {
+  const d = String(digits ?? '');
+  if (/^0[57]\d{8}$/.test(d)) return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`;
+  if (/^0[2-489]\d{7}$/.test(d)) return `${d.slice(0, 2)}-${d.slice(2, 5)}-${d.slice(5)}`;
+  return d;
+}
+
+/** "YYYY-MM-DD HH:MM" or an ISO moment → a short date (and time) in the practice's time zone. */
+function fmtMoment(value) {
+  const at = new Date(/[zZ]$|[+-]\d\d:\d\d$/.test(value) ? value : `${value.replace(' ', 'T')}Z`);
+  const opts = { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' };
+  return new Intl.DateTimeFormat(locale(), { ...opts, timeZone: state.config?.timezone }).format(at);
+}
+
+let searchTimer = null;
+$('client-search').addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    state.clientQuery = $('client-search').value;
+    loadClients();
+  }, 250);
+});
+$('client-add').addEventListener('click', () => openClient(null));
+
+async function loadClients() {
+  const { clients } = await guarded(() => api(`/api/admin/clients?q=${encodeURIComponent(state.clientQuery)}`));
+  state.clients = clients;
+  renderClients();
+}
+
+function renderClients() {
+  const list = $('clients-list');
+  if (!state.clients.length) {
+    list.replaceChildren(el('p', { class: 'empty-state' }, t(state.clientQuery ? 'admin.noClientsFound' : 'admin.noClients')));
+    return;
+  }
+  list.replaceChildren(
+    ...state.clients.map((c) =>
+      el(
+        'article',
+        { class: 'item item-plain' },
+        el(
+          'div',
+          { class: 'item-body' },
+          el('h3', {}, c.name),
+          el(
+            'p',
+            {},
+            el('a', { href: `tel:${c.phone}` }, el('bdi', {}, fmtPhone(c.phone))),
+            c.email ? ' · ' : '',
+            c.email ? el('a', { href: `mailto:${c.email}` }, el('bdi', {}, c.email)) : '',
+          ),
+          el(
+            'p',
+            {},
+            [
+              t('admin.visits', { n: c.visits }),
+              c.last_visit ? t('admin.lastVisit', { date: fmtDate(c.last_visit) }) : '',
+              c.next_visit ? t('admin.nextVisit', { date: `${fmtDate(c.next_visit.slice(0, 10))} ${c.next_visit.slice(11)}` }) : '',
+              c.card_left ? t('admin.cardLeft', { n: c.card_left }) : '',
+            ]
+              .filter(Boolean)
+              .join(' · '),
+          ),
+        ),
+        el('div', { class: 'item-actions' }, el('button', { type: 'button', class: 'btn btn-outline btn-sm', onclick: () => openClient(c.id) }, t('admin.openClient'))),
+      ),
+    ),
+  );
+}
+
+const STATUS = { cancelled: 'admin.statusCancelled', pending: 'admin.statusUnpaid', expired: 'admin.statusUnpaid' };
+
+/** One client's card: details, private notes, sessions left on the card, and history. */
+async function openClient(id) {
+  const box = $('client-detail');
+  let client = { name: '', phone: '', email: '', notes: '', card_left: 0 };
+  let bookings = [];
+  if (id) ({ client, bookings } = await guarded(() => api(`/api/admin/clients/${id}`)));
+  const input = (name, label, value, attrs = {}) =>
+    el('div', { class: 'field' }, el('label', { for: `c-${name}` }, t(label)), el('input', { id: `c-${name}`, name, value: value ?? '', ...attrs }));
+  const card = el('input', { id: 'c-card', name: 'cardLeft', type: 'number', min: 0, max: 100, value: String(client.card_left ?? 0) });
+  const bump = (n) => (card.value = String(Math.max(0, Math.min(100, (Number(card.value) || 0) + n))));
+  const form = el(
+    'form',
+    { class: 'form panel client-form', novalidate: true },
+    el('h2', { class: 'subhead' }, id ? client.name : t('admin.addClient')),
+    input('name', 'admin.clientName', client.name, { autocomplete: 'off', maxlength: 80, required: true }),
+    el(
+      'div',
+      { class: 'form-row' },
+      input('phone', 'admin.clientPhone', fmtPhone(client.phone), { type: 'tel', maxlength: 30, required: true }),
+      input('email', 'admin.clientEmail', client.email, { type: 'email', maxlength: 120 }),
+    ),
+    el('div', { class: 'field' }, el('label', { for: 'c-notes' }, t('admin.clientNotes')), el('textarea', { id: 'c-notes', name: 'notes', maxlength: 2000 }, client.notes || '')),
+    el(
+      'div',
+      { class: 'field' },
+      el('label', { for: 'c-card' }, t('admin.cardSessions')),
+      el(
+        'div',
+        { class: 'toolbar card-row' },
+        card,
+        el('button', { type: 'button', class: 'btn btn-outline btn-sm', onclick: () => bump(4) }, t('admin.newCard')),
+        el('button', { type: 'button', class: 'btn btn-outline btn-sm', onclick: () => bump(-1) }, t('admin.useSession')),
+      ),
+    ),
+    el('div', { id: 'client-alert', role: 'status' }),
+    el(
+      'div',
+      { class: 'panel-actions' },
+      el('button', { type: 'submit', class: 'btn btn-primary' }, t('admin.save')),
+      el('button', { type: 'button', class: 'btn btn-ghost', onclick: closeClient }, t('admin.close')),
+      id ? el('button', { type: 'button', class: 'btn btn-danger', onclick: () => forgetClient(client) }, t('admin.forget')) : '',
+    ),
+    id ? el('h3', { class: 'subhead' }, t('admin.history')) : '',
+    id
+      ? bookings.length
+        ? el(
+            'ul',
+            { class: 'client-history' },
+            bookings.map((b) =>
+              el('li', {}, `${fmtDate(b.date)} · ${b.time} · ${serviceName(b.service_id)}${STATUS[b.status] ? ` · ${t(STATUS[b.status])}` : ''}`),
+            ),
+          )
+        : el('p', { class: 'empty-state' }, t('admin.noHistory'))
+      : '',
+  );
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearFieldErrors(form);
+    alertIn('client-alert');
+    const data = Object.fromEntries(new FormData(form));
+    const body = { name: data.name, phone: data.phone, email: data.email, notes: data.notes, cardLeft: Number(data.cardLeft) || 0 };
+    try {
+      await api(id ? `/api/admin/clients/${id}` : '/api/admin/clients', { method: id ? 'PUT' : 'POST', body });
+      toast(t('admin.saved'));
+      closeClient();
+      loadClients();
+    } catch (err) {
+      if (err.status === 401) return showLogin();
+      if (err.status === 409) return alertIn('client-alert', 'error', t('admin.phoneTaken'));
+      if (err.status === 400) return showFieldErrors(form, err.data.fields, { cardLeft: 'admin.cardInvalid' });
+      alertIn('client-alert', 'error', t('common.error'));
+    }
+  });
+  box.replaceChildren(form);
+  box.hidden = false;
+  $('clients-list').hidden = true;
+  form.querySelector('input').focus();
+}
+
+function closeClient() {
+  $('client-detail').hidden = true;
+  $('client-detail').replaceChildren();
+  $('clients-list').hidden = false;
+}
+
+async function forgetClient(client) {
+  if (!confirm(t('admin.forgetConfirm', { name: client.name }))) return;
+  await guarded(() => api(`/api/admin/clients/${client.id}`, { method: 'DELETE', body: {} }));
+  toast(t('admin.forgotten'));
+  closeClient();
+  loadClients();
+}
+
+// ---------------------------------------------------------------------------
+// Who may sign in
+// ---------------------------------------------------------------------------
+
+async function loadPeople() {
+  const { admins, me } = await guarded(() => api('/api/admin/admins'));
+  state.people = admins;
+  state.me = me;
+  renderPeople();
+}
+
+function renderPeople() {
+  $('people-list').replaceChildren(
+    ...state.people.map((a) =>
+      el(
+        'article',
+        { class: 'item item-plain' },
+        el(
+          'div',
+          { class: 'item-body' },
+          el('h3', {}, a.name, a.id === state.me ? ` ${t('admin.you')}` : ''),
+          el('p', {}, a.last_used ? t('admin.lastSignIn', { date: fmtMoment(a.last_used) }) : t('admin.neverSignedIn')),
+        ),
+        el(
+          'div',
+          { class: 'item-actions' },
+          a.id === state.me
+            ? ''
+            : el('button', {
+                type: 'button',
+                class: 'btn btn-danger btn-sm',
+                onclick: async () => {
+                  if (!confirm(t('admin.removeConfirm', { name: a.name }))) return;
+                  await guarded(() => api(`/api/admin/admins/${a.id}`, { method: 'DELETE', body: {} }));
+                  loadPeople();
+                },
+              }, t('admin.remove')),
+        ),
+      ),
+    ),
+  );
+}
+
+$('invite-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearFieldErrors($('invite-form'));
+  const name = $('invite-name').value.trim();
+  if (name.length < 2) return showFieldErrors($('invite-form'), ['name'], { name: 'admin.inviteNameNeeded' });
+  const { link, hours } = await guarded(() => api('/api/admin/invites', { method: 'POST', body: { name } }));
+  const message = t('admin.inviteMessage', { link, hours });
+  $('invite-result').replaceChildren(
+    el(
+      'div',
+      { class: 'panel invite-panel' },
+      el('p', {}, t('admin.inviteReady', { name, hours })),
+      el('p', { class: 'invite-link' }, el('bdi', {}, link)),
+      el(
+        'div',
+        { class: 'toolbar' },
+        el('a', { class: 'btn btn-primary btn-sm', href: `https://wa.me/?text=${encodeURIComponent(message)}`, target: '_blank', rel: 'noopener' }, t('admin.shareWhatsapp')),
+        el('button', {
+          type: 'button',
+          class: 'btn btn-outline btn-sm',
+          onclick: async () => {
+            try {
+              await navigator.clipboard.writeText(link);
+              toast(t('admin.copied'));
+            } catch {
+              toast(t('common.error'));
+            }
+          },
+        }, t('admin.copy')),
+      ),
+    ),
+  );
+  $('invite-name').value = '';
+});
+
+// ---------------------------------------------------------------------------
 // Boot
 // ---------------------------------------------------------------------------
 
@@ -394,12 +754,14 @@ onLangChange(() => {
 });
 
 Promise.all([loadConfig().catch(() => null), api('/api/admin/session')])
-  .then(([cfg, { enabled, loggedIn, access }]) => {
+  .then(([cfg, { enabled, loggedIn, access, passkeys }]) => {
     state.config = cfg;
-    state.access = Boolean(access);
+    state.passkeys = Boolean(passkeys);
+    state.access = Boolean(access) && !state.passkeys;
     state.enabled = Boolean(enabled);
     $('admin-disabled').hidden = enabled;
-    $('login-form').hidden = !enabled;
-    return loggedIn ? showDashboard() : showLogin();
+    $('login-form').hidden = !enabled || state.passkeys;
+    // Opening a one-time link always adds this phone's passkey.
+    return loggedIn && !(state.passkeys && inviteCode()) ? showDashboard() : showLogin();
   })
   .catch(() => showLogin());

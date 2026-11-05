@@ -65,3 +65,12 @@ export async function readJson(request, max = 20_000) {
     throw new HttpError(400, 'invalid_json');
   }
 }
+
+/** A cookie's value from the request, or ''. */
+export function readCookie(request, name) {
+  for (const pair of (request.headers.get('Cookie') || '').split(';')) {
+    const i = pair.indexOf('=');
+    if (i > 0 && pair.slice(0, i).trim() === name) return pair.slice(i + 1).trim();
+  }
+  return '';
+}

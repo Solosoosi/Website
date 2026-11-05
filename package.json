@@ -14,6 +14,7 @@
     "test": "node --disable-warning=ExperimentalWarning --test",
     "build:pages": "node scripts/build-pages.mjs",
     "build:cf": "node scripts/build-cloudflare.mjs",
+    "admin:invite": "node scripts/admin-invite.mjs",
     "cf:dev": "wrangler d1 migrations apply clinic --local && wrangler dev",
     "cf:deploy": "wrangler d1 migrations apply clinic --remote && wrangler deploy"
   },

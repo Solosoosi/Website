@@ -19,6 +19,7 @@
 import siteConfig from '../config/site.json' with { type: 'json' };
 import { addDays, dayIndex, isValidDate, isValidTime, nowInZone } from '../server/time.js';
 import { accessSettings, verifyAccess } from './access.js';
+import { openAdminStore, phoneKey } from './admin-store.js';
 import { addBooking as addToCalendar, busyTimes, calendarSettings } from './calendar.js';
 import {
   approveTransaction,
@@ -30,12 +31,19 @@ import {
   paidTransaction,
   readNotice,
 } from './grow.js';
-import { HttpError, json, readJson } from './http.js';
+import { HttpError, json, readCookie, readJson } from './http.js';
+import { PasskeyError, hashCode, randomCode, verifyLogin, verifyRegistration } from './passkeys.js';
 import { SlotTakenError, openD1Store } from './store.js';
 
 const PHONE_RE = /^\+?[\d\s\-()]{7,20}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const ACCESS_LOGOUT = '/cdn-cgi/access/logout';
+// The admin panel's sign-in cookie: only sent over HTTPS, never readable by scripts, never
+// sent from another site, and valid for 12 hours.
+const SESSION_COOKIE = '__Host-admin';
+const SESSION_HOURS = 12;
+const sessionCookie = (token, hours = SESSION_HOURS) =>
+  `${SESSION_COOKIE}=${token}; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=${Math.round(hours * 3600)}`;
 const HOLD_MINUTES = 20; // how long a time stays held while the client pays
 const RECONCILE_HOURS = 6; // how far back the scheduled check looks for unanswered payments
 const MODES = new Set(['whatsapp', 'pay', 'online']);
@@ -71,11 +79,28 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
   // without anyone's details.
   const noMail = (kind) => log.info(`[mail not connected] ${kind} email not sent`);
 
-  async function requireAdmin(request, env) {
+  /** Who is signed in: with a passkey (a session cookie), or through Cloudflare Access if it's set up. */
+  async function currentAdmin(request, env) {
+    const token = readCookie(request, SESSION_COOKIE);
+    if (token) {
+      const admin = await openAdminStore(env.DB, clock).sessionAdmin(await hashCode(token));
+      if (admin) return { id: admin.id, name: admin.name };
+    }
     const settings = accessSettings(env);
-    const admin = settings && (await verifyAccess(request, settings, { fetch: fetchImpl, now: clock().getTime() }));
+    const viaAccess = settings && (await verifyAccess(request, settings, { fetch: fetchImpl, now: clock().getTime() }));
+    return viaAccess ? { email: viaAccess.email, name: viaAccess.email } : null;
+  }
+
+  async function requireAdmin(request, env) {
+    const admin = await currentAdmin(request, env);
     if (!admin) throw new HttpError(401, 'unauthorized');
     return admin;
+  }
+
+  async function startSession(env, adminId) {
+    const token = randomCode(32);
+    await openAdminStore(env.DB, clock).addSession({ hash: await hashCode(token), adminId, hours: SESSION_HOURS });
+    return sessionCookie(token);
   }
 
   /** Times taken in his calendar, or {} when it isn't connected or doesn't answer. */
@@ -93,6 +118,11 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
 
   /** After a booking is confirmed: into his calendar (and, later, the emails). */
   async function afterConfirmed(env, store, booking) {
+    try {
+      await openAdminStore(env.DB, clock).clientFromBooking(booking); // into David's client list
+    } catch (err) {
+      log.error('Adding the client to the list failed:', err?.message || String(err));
+    }
     noMail('new booking');
     if (booking.email) noMail('booking confirmation');
     const settings = calendarSettings(env);
@@ -334,17 +364,148 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
 
     // ---------- Admin API (behind Cloudflare Access) ----------
 
+    const admins = openAdminStore(env.DB, clock);
+
     if (route === 'GET /api/admin/session') {
-      const settings = accessSettings(env);
-      const admin = settings && (await verifyAccess(request, settings, { fetch: fetchImpl, now: clock().getTime() }));
-      return json({ enabled: Boolean(settings), loggedIn: Boolean(admin), access: true });
+      const admin = await currentAdmin(request, env);
+      return json({ enabled: true, loggedIn: Boolean(admin), passkeys: true, name: admin?.name, access: Boolean(accessSettings(env)) });
     }
 
-    if (route === 'POST /api/admin/logout') return json({ ok: true, redirect: ACCESS_LOGOUT });
+    // Signing in with a passkey: a fresh challenge, which the phone signs after Face ID.
+    if (route === 'POST /api/admin/passkey/login/start') {
+      const id = randomCode(16);
+      const challenge = randomCode(32);
+      await admins.addChallenge({ id, challenge, purpose: 'login' });
+      return json({ id, publicKey: { challenge, rpId: url.hostname, timeout: 120_000, userVerification: 'required' } });
+    }
+
+    if (route === 'POST /api/admin/passkey/login/finish') {
+      if (await overLimit(env.FORMS_LIMIT, `${ip} admin`)) throw tooMany();
+      const challenge = await admins.takeChallenge(body.id, 'login');
+      if (!challenge) throw new HttpError(400, 'challenge_expired');
+      const stored = await admins.passkey(body.credential?.id);
+      if (!stored || stored.rp_id !== url.hostname) throw new HttpError(401, 'passkey_unknown');
+      let signCount;
+      try {
+        signCount = await verifyLogin(body.credential, stored, { challenge: challenge.challenge, origin: url.origin, rpId: url.hostname });
+      } catch (err) {
+        if (err instanceof PasskeyError) throw new HttpError(401, 'passkey_failed');
+        throw err;
+      }
+      await admins.touchPasskey(stored.id, signCount);
+      return json({ ok: true, name: stored.name }, 200, { 'Set-Cookie': await startSession(env, stored.admin_id) });
+    }
+
+    // A new passkey, with a one-time invite link.
+    if (route === 'POST /api/admin/passkey/register/start') {
+      const invite = await admins.openInvite(await hashCode(str(body.invite, 100)));
+      if (!invite) throw new HttpError(403, 'invite_invalid');
+      const id = randomCode(16);
+      const challenge = randomCode(32);
+      const handle = randomCode(16);
+      await admins.addChallenge({ id, challenge, purpose: 'register', inviteHash: invite.code_hash, handle });
+      const person = invite.name || 'admin';
+      return json({
+        id,
+        name: invite.name || '',
+        publicKey: {
+          challenge,
+          rp: { name: config.business.name.he, id: url.hostname },
+          user: { id: handle, name: person, displayName: person },
+          pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+          authenticatorSelection: { residentKey: 'required', userVerification: 'required' },
+          attestation: 'none',
+          timeout: 120_000,
+        },
+      });
+    }
+
+    if (route === 'POST /api/admin/passkey/register/finish') {
+      if (await overLimit(env.FORMS_LIMIT, `${ip} admin`)) throw tooMany();
+      const challenge = await admins.takeChallenge(body.id, 'register');
+      if (!challenge) throw new HttpError(400, 'challenge_expired');
+      let passkey;
+      try {
+        passkey = await verifyRegistration(body.credential, { challenge: challenge.challenge, origin: url.origin, rpId: url.hostname });
+      } catch (err) {
+        if (err instanceof PasskeyError) throw new HttpError(400, 'passkey_failed');
+        throw err;
+      }
+      const invite = await admins.openInvite(challenge.invite_hash);
+      if (!invite || !(await admins.useInvite(challenge.invite_hash))) throw new HttpError(403, 'invite_invalid');
+      const name = str(body.name, 60) || invite.name || 'מנהל';
+      const admin = await admins.addAdmin(name, challenge.handle);
+      await admins.addPasskey({ ...passkey, adminId: admin.id, rpId: url.hostname });
+      return json({ ok: true, name }, 201, { 'Set-Cookie': await startSession(env, admin.id) });
+    }
+
+    if (route === 'POST /api/admin/logout') {
+      const token = readCookie(request, SESSION_COOKIE);
+      if (token) await admins.endSession(await hashCode(token));
+      const viaAccess = Boolean(readCookie(request, 'CF_Authorization') || request.headers.get('Cf-Access-Jwt-Assertion'));
+      return json({ ok: true, redirect: viaAccess ? ACCESS_LOGOUT : undefined }, 200, { 'Set-Cookie': sessionCookie('', 0) });
+    }
 
     if (path.startsWith('/api/admin/')) {
-      await requireAdmin(request, env);
+      const me = await requireAdmin(request, env);
       const today = now().date;
+
+      // ---------- The people who may sign in ----------
+      if (route === 'GET /api/admin/admins') return json({ admins: await admins.listAdmins(), me: me.id ?? null });
+
+      if (route === 'POST /api/admin/invites') {
+        const code = randomCode(24);
+        const hours = 48;
+        await admins.addInvite({ hash: await hashCode(code), name: str(body.name, 60), createdBy: me.id, hours });
+        return json({ link: `${url.origin}/admin#invite=${code}`, hours }, 201);
+      }
+
+      const person = /^\/api\/admin\/admins\/(\d{1,12})$/.exec(path);
+      if (method === 'DELETE' && person) {
+        if (Number(person[1]) === me.id) throw new HttpError(409, 'cannot_remove_self');
+        if (!(await admins.removeAdmin(Number(person[1])))) throw notFound();
+        return json({ ok: true });
+      }
+
+      // ---------- David's clients ----------
+      const clientFields = (b) => {
+        const c = { name: str(b.name, 80), phone: phoneKey(str(b.phone, 30)), email: str(b.email, 120), notes: str(b.notes, 2000), cardLeft: b.cardLeft ?? 0 };
+        const bad = [];
+        if (c.name.length < 2) bad.push('name');
+        if (c.phone.length < 7 || c.phone.length > 15) bad.push('phone');
+        if (c.email && !EMAIL_RE.test(c.email)) bad.push('email');
+        if (!Number.isInteger(c.cardLeft) || c.cardLeft < 0 || c.cardLeft > 100) bad.push('cardLeft');
+        if (bad.length) throw invalid(bad);
+        return c;
+      };
+
+      if (route === 'GET /api/admin/clients') return json({ clients: await admins.listClients(url.searchParams.get('q'), today) });
+
+      if (route === 'POST /api/admin/clients') {
+        const client = await admins.addClient(clientFields(body));
+        if (!client) throw new HttpError(409, 'phone_taken');
+        return json({ client }, 201);
+      }
+
+      const clientPath = /^\/api\/admin\/clients\/(\d{1,12})$/.exec(path);
+      if (clientPath) {
+        const id = Number(clientPath[1]);
+        if (method === 'GET') {
+          const client = await admins.client(id);
+          if (!client) throw notFound();
+          return json({ client, bookings: await admins.clientBookings(id) });
+        }
+        if (method === 'PUT') {
+          const client = await admins.updateClient(id, clientFields(body));
+          if (client === false) throw new HttpError(409, 'phone_taken');
+          if (!client) throw notFound();
+          return json({ client });
+        }
+        if (method === 'DELETE') {
+          if (!(await admins.forgetClient(id))) throw notFound();
+          return json({ ok: true });
+        }
+      }
 
       if (route === 'GET /api/admin/bookings') {
         return json({ bookings: await store.listBookings(url.searchParams.get('scope'), today) });
@@ -440,6 +601,7 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
       }
     }
     await store.expireHolds();
+    await openAdminStore(env.DB, clock).purge();
     if (calendarSettings(env)) {
       for (const booking of await store.missingFromCalendar(now().date)) await afterConfirmed(env, store, booking);
     }

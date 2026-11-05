@@ -5290,6 +5290,18 @@ html.js .reveal:not(.is-visible) {
   margin: 48px auto;
 }
 
+/* The admin page's header has no menu: its buttons go to the far end, and the language
+   button is as wide as its label */
+.admin-header .header-actions {
+  margin-inline-start: auto;
+}
+
+.admin-header .lang-btn {
+  width: auto;
+  min-width: 40px;
+  padding-inline: 12px;
+}
+
 .admin-top {
   display: flex;
   justify-content: space-between;
@@ -5326,6 +5338,30 @@ html.js .reveal:not(.is-visible) {
   color: var(--muted);
   cursor: pointer;
   white-space: nowrap;
+}
+
+/* Phones: the tabs share the width; on the narrowest ones they go onto two rows */
+@media (max-width: 480px) {
+  .tabs {
+    width: 100%;
+  }
+
+  .tab {
+    flex: 1 1 auto;
+    padding: 8px;
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 374px) {
+  .tabs {
+    flex-wrap: wrap;
+    border-radius: 24px;
+  }
+
+  .tab {
+    flex-basis: 30%;
+  }
 }
 
 .tab[aria-selected='true'] {
@@ -5529,6 +5565,51 @@ html.js .reveal:not(.is-visible) {
 
 .inline-form .field {
   flex: 1 1 180px;
+}
+
+/* Clients and admins: rows without a date box */
+.item.item-plain {
+  grid-template-columns: 1fr auto;
+}
+
+.client-search {
+  flex: 1 1 240px;
+}
+
+.client-search input {
+  min-height: 40px;
+}
+
+.card-row {
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.card-row input {
+  width: 96px;
+}
+
+.client-history {
+  margin: 0;
+  padding-inline-start: 20px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.invite-link {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  overflow-wrap: anywhere;
+  direction: ltr;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .item.item-plain {
+    grid-template-columns: 1fr;
+  }
 }
 
 .toast {

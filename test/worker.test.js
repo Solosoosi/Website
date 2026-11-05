@@ -219,10 +219,10 @@ test('limits answer 429 once a visitor goes over them', async () => {
 
 test('admin: closed until Access is set up, and to anyone without a valid token', async () => {
   const off = setup({ ACCESS_AUD: '' });
-  assert.deepEqual((await off.call('/api/admin/session')).body, { enabled: false, loggedIn: false, access: true });
+  assert.deepEqual((await off.call('/api/admin/session')).body, { enabled: true, loggedIn: false, passkeys: true, access: false });
   assert.equal((await off.call('/api/admin/bookings', { headers: { 'Cf-Access-Jwt-Assertion': await token() } })).status, 401);
   const plainHttp = setup({ ACCESS_TEAM_DOMAIN: 'http://clinic-test.cloudflareaccess.com' });
-  assert.equal((await plainHttp.call('/api/admin/session')).body.enabled, false);
+  assert.equal((await plainHttp.call('/api/admin/session')).body.access, false);
 
   const { call } = setup();
   const rejected = [
@@ -246,14 +246,14 @@ test('admin: closed until Access is set up, and to anyone without a valid token'
   const [h, , s] = good.split('.');
   const forged = `${h}.${b64url(JSON.stringify({ aud: [AUD], iss: TEAM, email: 'stranger@example.com', exp: NOW_S + 3600 }))}.${s}`;
   assert.equal((await call('/api/admin/bookings', { headers: { 'Cf-Access-Jwt-Assertion': forged } })).status, 401);
-  assert.deepEqual((await call('/api/admin/session')).body, { enabled: true, loggedIn: false, access: true });
+  assert.deepEqual((await call('/api/admin/session')).body, { enabled: true, loggedIn: false, passkeys: true, access: true });
 });
 
 test('admin: with a valid Access token (header or cookie) everything works', async () => {
   const { env, call } = setup();
   const auth = { 'Cf-Access-Jwt-Assertion': await token() };
   const asked = certsAsked;
-  assert.deepEqual((await call('/api/admin/session', { headers: auth })).body, { enabled: true, loggedIn: true, access: true });
+  assert.deepEqual((await call('/api/admin/session', { headers: auth })).body, { enabled: true, loggedIn: true, passkeys: true, name: 'david@example.com', access: true });
   const viaCookie = await call('/api/admin/session', { headers: { Cookie: `theme=dark; CF_Authorization=${await token({ email: 'rotem@example.com' })}` } });
   assert.equal(viaCookie.body.loggedIn, true);
   assert.ok(certsAsked - asked <= 1, 'the signing keys are fetched once, then kept');
@@ -308,7 +308,8 @@ test('admin: with a valid Access token (header or cookie) everything works', asy
 
   // Changes need JSON here too, and logging out ends the Access session.
   assert.equal((await call('/api/admin/blocked', { method: 'POST', body: 'date=2026-10-06', headers: { ...auth, 'Content-Type': 'text/plain' } })).status, 415);
-  assert.deepEqual((await call('/api/admin/logout', { method: 'POST', body: {} })).body, { ok: true, redirect: '/cdn-cgi/access/logout' });
+  assert.deepEqual((await call('/api/admin/logout', { method: 'POST', body: {}, headers: auth })).body, { ok: true, redirect: '/cdn-cgi/access/logout' });
+  assert.deepEqual((await call('/api/admin/logout', { method: 'POST', body: {} })).body, { ok: true });
 });
 
 test('pages go to the static files; unknown API paths are 404', async () => {

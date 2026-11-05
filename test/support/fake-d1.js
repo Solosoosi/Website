@@ -8,6 +8,7 @@ const dir = new URL('../../migrations/', import.meta.url);
 
 export function fakeD1() {
   const db = new DatabaseSync(':memory:');
+  db.exec('PRAGMA foreign_keys = ON'); // as D1
   for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.sql')).sort()) {
     db.exec(fs.readFileSync(new URL(file, dir), 'utf8'));
   }
@@ -24,6 +25,11 @@ export function fakeD1() {
     },
     allNow() {
       check(params);
+      // In a batch, D1 answers a change with how many rows it changed.
+      if (!/^\s*(SELECT|WITH|PRAGMA)\b/i.test(sql) && !/\bRETURNING\b/i.test(sql)) {
+        const r = db.prepare(sql).run(...params);
+        return { success: true, results: [], meta: { changes: Number(r.changes), last_row_id: Number(r.lastInsertRowid) } };
+      }
       return { success: true, results: db.prepare(sql).all(...params).map((r) => ({ ...r })), meta: {} };
     },
     async all() {

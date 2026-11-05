@@ -6,8 +6,8 @@ The site runs on Cloudflare's free plan:
 |---|---|---|
 | Pages, photos, the video | Cloudflare's static files: `dist/`, built from `public/` by `scripts/build-cloudflare.mjs` | Unlimited, and they don't count toward the Worker's daily limit |
 | `/api/*`: free times, bookings, messages, the admin panel | The Worker: `worker/index.js` | 100,000 requests a day |
-| The data: bookings, closed days, opening hours, messages | Cloudflare D1, a database named `clinic` (tables in `migrations/`) | 5 GB; 5 million rows read and 100,000 written a day |
-| Signing in to the admin panel | Cloudflare Access: a one-time code sent by email, no password | Up to 50 people |
+| The data: bookings, closed days, opening hours, messages, David's clients | Cloudflare D1, a database named `clinic` (tables in `migrations/`) | 5 GB; 5 million rows read and 100,000 written a day |
+| Signing in to the admin panel | Face ID, Touch ID or a fingerprint (passkeys, `worker/passkeys.js`), no password. A person is added with a one-time link | Free |
 | Payment at booking | Grow's own secure page (`worker/grow.js`): card details never reach the site | Grow's fees only |
 | The iPhone calendar | iCloud, over CalDAV (`worker/calendar.js`) | Free |
 
@@ -21,7 +21,7 @@ The site runs on Cloudflare's free plan:
 
 Ready now:
 - Everything the site does today, on Cloudflare.
-- The admin panel, behind Cloudflare Access.
+- The admin panel, with Face ID sign-in and David's client list (below).
 - Security headers on every page and file, and limits per visitor.
 - The database.
 - Payment at booking through Grow, tested against a stand-in for Grow's API.
@@ -51,29 +51,25 @@ You'll need David's Cloudflare account. Cloudflare's dashboard is renamed now an
    - Set the production branch to the branch the site is on.
 
    The site is then at `https://clinic.davidneeman.workers.dev`. Deploying from a computer with `npm run cf:deploy` works too. It doesn't work from a cloud session whose network proxy adds the Cloudflare token to every request: uploading the site's files needs a short-lived upload pass instead, which the proxy replaces.
-5. **The admin panel's sign-in (Cloudflare Access).**
-   1. Open **Zero Trust**. The first time, it asks for a team name (for example `davidneeman`) and a plan: choose Free.
-   2. Under **Settings → Authentication**, add the **One-time PIN** login method.
-   3. Under **Access → Applications → Add an application → Self-hosted**:
-      - Add the site's address twice, with the paths `admin` and `api/admin`.
-      - Add a policy: **Allow**, Include → Emails → David's email (and yours).
+5. **The admin panel's sign-in: Face ID.** Nothing to set up. Each person signs in with a passkey: Face ID or Touch ID on an iPhone, iPad or Mac, a fingerprint on Android. The passkey stays on the phone (on Apple devices it also syncs through iCloud Keychain); the site keeps only its public half, so there's no password to steal or forget.
+   - **The first person** gets a one-time link from the database:
+     ```sh
+     npm run admin:invite -- https://clinic.davidneeman.workers.dev "דוד" 24
+     ```
+     It prints the link. Open it on the phone, write a name, confirm with Face ID, and the panel opens.
+   - **Everyone after that:** in the panel, **מנהלים → יצירת קישור**, then send the link (WhatsApp or copy). Each link works once, within 48 hours. The same tab shows who can sign in, and removing someone stops their sign-in at once.
+   - A signed-in session lasts 12 hours, in a cookie scripts can't read. Signing in is limited to a few tries a minute per visitor.
+   - A passkey works only on the address it was made on. After the site moves to its domain (step 6), make a new first link for the new address with the command above.
 
-      While the site is still on workers.dev, turn on Access for the whole workers.dev address from the Worker's **Settings → Domains & Routes** instead. Only you two will be able to open the site until the domain is connected.
-   4. Copy the application's **Audience (AUD) tag**, then:
-      ```sh
-      npx wrangler secret put ACCESS_TEAM_DOMAIN   # https://<team name>.cloudflareaccess.com
-      npx wrangler secret put ACCESS_AUD           # the AUD tag
-      npx wrangler secret put ADMIN_EMAILS         # david@…, you@… (comma between them)
-      ```
-   5. Open `/admin`: Cloudflare sends a code to the email, and the panel opens.
+   **The client list** (**לקוחות**) fills itself: each confirmed booking adds its client, found by phone number, or joins an existing one. David can add clients by hand, keep private notes, count the sessions left on a 4-session card, and see each client's bookings. **מחיקת הלקוח** removes a client and erases their name and details from past bookings too.
 
-   The Worker checks Access's token on every admin request. That covers the signature, that it's for this application, that it hasn't expired, and that the email is in `ADMIN_EMAILS`. So the data stays closed even if the Access settings are ever changed by mistake. Until all three secrets are set, the admin panel is closed.
+   **Optional: Cloudflare Access** as a second way in, with a one-time code sent by email. In **Zero Trust**, add the One-time PIN login method and a self-hosted application for the paths `admin` and `api/admin`, allowing David's email. Then set `ACCESS_TEAM_DOMAIN` (`https://<team name>.cloudflareaccess.com`), `ACCESS_AUD` (the application's AUD tag) and `ADMIN_EMAILS` with `npx wrangler secret put`. The Worker checks Access's token on every admin request: its signature, that it's for this application, that it hasn't expired, and that the email is in `ADMIN_EMAILS`.
 6. **The domain** (question 18).
    1. Cloudflare doesn't sell `.co.il` addresses: buy it from an Israeli registrar, in David's name. A `.com` can be bought on Cloudflare itself.
    2. In Cloudflare, add the domain to David's account (**Add a site**, Free plan). At the registrar, switch its nameservers to the two that Cloudflare shows.
    3. Under **Workers & Pages → clinic → Settings → Domains & Routes → Add → Custom domain**, add the address, and `www.` too.
    4. Set `siteUrl` in `config/site.json` to `https://<domain>/`. Link previews, the canonical address and search results all use it.
-   5. Move the Access application from step 5 to the new address.
+   5. Make a new first sign-in link for the new address (step 5). If Cloudflare Access is used, move its application there too.
    6. Send the old GitHub Pages address to the new one.
 7. **Extra protection, also free:**
    - Under **Security → WAF → Rate limiting rules**, add one rule: when the URI path starts with `/api/`, at most 60 requests in 10 seconds per IP, otherwise block. Floods are stopped before they reach the Worker or its daily limit.
@@ -136,9 +132,9 @@ npx wrangler secret put ICLOUD_APP_PASSWORD   # the password Apple shows, once
 | `BOOKING_MODE` | `vars` in `wrangler.jsonc` | `whatsapp`, `pay` or `online` (see above) |
 | `GROW_ENV` | `vars` | `sandbox` (Grow's test environment) or `production` |
 | `CALENDAR_NAME` | `vars` | The calendar bookings go into (default "קליניקה") |
-| `ACCESS_TEAM_DOMAIN` | secret | `https://<team name>.cloudflareaccess.com` |
-| `ACCESS_AUD` | secret | The Access application's AUD tag |
-| `ADMIN_EMAILS` | secret | Who may open the admin panel, with a comma between addresses |
+| `ACCESS_TEAM_DOMAIN` | secret, optional | `https://<team name>.cloudflareaccess.com` (only with Cloudflare Access) |
+| `ACCESS_AUD` | secret, optional | The Access application's AUD tag |
+| `ADMIN_EMAILS` | secret, optional | Who may sign in through Access, with a comma between addresses |
 | `GROW_USER_ID`, `GROW_PAGE_CODE` | secrets | Grow's identifiers for the account (and `GROW_API_KEY` if Grow gives one) |
 | `ICLOUD_USER`, `ICLOUD_APP_PASSWORD` | secrets | His Apple ID email and the app-specific password |
 
@@ -152,4 +148,4 @@ npm run cf:dev                   # http://localhost:8787, with a local database
 npm test                         # includes test/worker.test.js
 ```
 
-The local database lives in `.wrangler/`, which git ignores. There's no Cloudflare Access locally, so the admin panel stays closed. `test/worker.test.js` shows how its sign-in tokens are checked.
+The local database lives in `.wrangler/`, which git ignores. To sign in to the local admin panel, run `npm run admin:invite -- http://localhost:8787` and open the link (use `localhost`, not `127.0.0.1`: passkeys need a name). `test/admin.test.js` shows how passkeys are checked.

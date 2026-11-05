@@ -14,10 +14,11 @@
   <script type="module" src="/js/admin.js"></script>
 </head>
 <body data-title-key="meta.adminTitle">
-  <header class="site-header">
+  <header class="site-header admin-header">
     <div class="container header-inner">
       <a class="brand" href="/">
-        <span class="brand-mark" data-icon="logo"></span>
+        <span class="brand-orb" aria-hidden="true"></span>
+        <svg class="brand-logo" viewBox="0 0 610 111" aria-hidden="true" focusable="false"><use href="/images/logo-wordmark.svg#word"></use></svg>
         <span class="brand-text">
           <span class="brand-name" data-biz="name"></span>
           <span class="brand-tagline" data-i18n="admin.title"></span>
@@ -45,6 +46,20 @@
           <button class="btn btn-primary btn-block" type="submit" data-i18n="admin.login"></button>
         </form>
         <a class="btn btn-outline btn-block" id="access-logout" href="/cdn-cgi/access/logout" data-i18n="admin.logout" hidden></a>
+        <!-- On Cloudflare: Face ID / Touch ID (passkeys), no password -->
+        <div id="passkey-login" hidden>
+          <p class="panel-sub" data-i18n="admin.passkeyLead"></p>
+          <button class="btn btn-primary btn-block" type="button" id="passkey-btn" data-i18n="admin.passkeyLogin"></button>
+        </div>
+        <form class="form" id="register-form" novalidate hidden>
+          <p class="panel-sub" data-i18n="admin.registerLead"></p>
+          <div class="field">
+            <label for="reg-name" data-i18n="admin.yourName"></label>
+            <input id="reg-name" name="name" autocomplete="name" maxlength="60" required>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit" data-i18n="admin.registerBtn"></button>
+        </form>
+        <div id="passkey-alert" role="status"></div>
       </div>
     </section>
 
@@ -60,8 +75,10 @@
 
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" id="tab-bookings" aria-controls="panel-bookings" aria-selected="true" data-tab="bookings" data-i18n="admin.tabBookings"></button>
+        <button class="tab" role="tab" id="tab-clients" aria-controls="panel-clients" aria-selected="false" data-tab="clients" data-i18n="admin.tabClients" hidden></button>
         <button class="tab" role="tab" id="tab-schedule" aria-controls="panel-schedule" aria-selected="false" data-tab="schedule" data-i18n="admin.tabSchedule"></button>
         <button class="tab" role="tab" id="tab-messages" aria-controls="panel-messages" aria-selected="false" data-tab="messages"><span data-i18n="admin.tabMessages"></span><span class="badge" id="unread-badge" hidden></span></button>
+        <button class="tab" role="tab" id="tab-people" aria-controls="panel-people" aria-selected="false" data-tab="people" data-i18n="admin.tabPeople" hidden></button>
       </div>
 
       <!-- Bookings -->
@@ -103,6 +120,31 @@
       <!-- Messages -->
       <div role="tabpanel" id="panel-messages" aria-labelledby="tab-messages" hidden>
         <div class="list" id="messages-list"></div>
+      </div>
+
+      <!-- Clients -->
+      <div role="tabpanel" id="panel-clients" aria-labelledby="tab-clients" hidden>
+        <div class="toolbar">
+          <div class="field client-search">
+            <input id="client-search" type="search" autocomplete="off" data-i18n-attr="placeholder:admin.searchClients;aria-label:admin.searchClients">
+          </div>
+          <button class="btn btn-outline btn-sm" type="button" id="client-add" data-i18n="admin.addClient"></button>
+        </div>
+        <div id="client-detail" hidden></div>
+        <div class="list" id="clients-list"></div>
+      </div>
+
+      <!-- Who may sign in -->
+      <div role="tabpanel" id="panel-people" aria-labelledby="tab-people" hidden>
+        <p class="panel-sub" data-i18n="admin.peopleSub"></p>
+        <div class="list" id="people-list"></div>
+        <h2 class="subhead" data-i18n="admin.inviteTitle"></h2>
+        <p class="panel-sub" data-i18n="admin.inviteSub"></p>
+        <form class="inline-form" id="invite-form" novalidate>
+          <div class="field"><label for="invite-name" data-i18n="admin.inviteName"></label><input id="invite-name" name="name" maxlength="60" required></div>
+          <button class="btn btn-outline" type="submit" data-i18n="admin.inviteBtn"></button>
+        </form>
+        <div id="invite-result"></div>
       </div>
     </section>
   </main>

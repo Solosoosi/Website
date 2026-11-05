@@ -5347,6 +5347,18 @@ html.js .reveal:not(.is-visible) {
   margin: 48px auto;
 }
 
+/* The admin page's header has no menu: its buttons go to the far end, and the language
+   button is as wide as its label */
+.admin-header .header-actions {
+  margin-inline-start: auto;
+}
+
+.admin-header .lang-btn {
+  width: auto;
+  min-width: 40px;
+  padding-inline: 12px;
+}
+
 .admin-top {
   display: flex;
   justify-content: space-between;
@@ -5383,6 +5395,30 @@ html.js .reveal:not(.is-visible) {
   color: var(--muted);
   cursor: pointer;
   white-space: nowrap;
+}
+
+/* Phones: the tabs share the width; on the narrowest ones they go onto two rows */
+@media (max-width: 480px) {
+  .tabs {
+    width: 100%;
+  }
+
+  .tab {
+    flex: 1 1 auto;
+    padding: 8px;
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 374px) {
+  .tabs {
+    flex-wrap: wrap;
+    border-radius: 24px;
+  }
+
+  .tab {
+    flex-basis: 30%;
+  }
 }
 
 .tab[aria-selected='true'] {
@@ -5586,6 +5622,51 @@ html.js .reveal:not(.is-visible) {
 
 .inline-form .field {
   flex: 1 1 180px;
+}
+
+/* Clients and admins: rows without a date box */
+.item.item-plain {
+  grid-template-columns: 1fr auto;
+}
+
+.client-search {
+  flex: 1 1 240px;
+}
+
+.client-search input {
+  min-height: 40px;
+}
+
+.card-row {
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.card-row input {
+  width: 96px;
+}
+
+.client-history {
+  margin: 0;
+  padding-inline-start: 20px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.invite-link {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  overflow-wrap: anywhere;
+  direction: ltr;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .item.item-plain {
+    grid-template-columns: 1fr;
+  }
 }
 
 .toast {
@@ -6272,6 +6353,59 @@ const dictionaries = {
       delete: 'מחיקה',
       deleteConfirm: 'למחוק את ההודעה?',
       invalid: 'יש שדות לא תקינים. נא לבדוק ולנסות שוב.',
+      passkeyLead: 'נכנסים עם Face\u00a0ID או טביעת אצבע, בלי סיסמה.',
+      passkeyLogin: 'כניסה עם Face\u00a0ID',
+      registerLead: 'זה קישור הזמנה חד-פעמי. כתבו את השם שלכם ואשרו עם Face\u00a0ID או טביעת אצבע. מעכשיו נכנסים מהמכשיר הזה בלי סיסמה.',
+      yourName: 'השם שלך',
+      registerBtn: 'הוספת Face\u00a0ID',
+      passkeyCancelled: 'האישור בוטל או שעבר הזמן. אפשר לנסות שוב.',
+      passkeyFailed: 'הכניסה לא הצליחה. מכשיר חדש צריך קודם קישור הזמנה ממי שכבר מנהל את האתר.',
+      passkeyUnsupported: 'הדפדפן הזה לא תומך בכניסה עם Face\u00a0ID. אפשר לנסות בספארי או בכרום מעודכנים.',
+      inviteInvalid: 'קישור ההזמנה כבר שומש או שפג תוקפו. צריך לבקש קישור חדש.',
+      registered: 'נוסף. מעכשיו נכנסים עם Face\u00a0ID.',
+      tabClients: 'לקוחות',
+      tabPeople: 'מנהלים',
+      searchClients: 'חיפוש לפי שם, טלפון או אימייל',
+      addClient: 'הוספת לקוח',
+      noClients: 'עוד אין לקוחות. מי שקובע תור באתר נוסף לכאן אוטומטית, ואפשר גם להוסיף ידנית.',
+      noClientsFound: 'לא נמצאו לקוחות.',
+      openClient: 'פתיחה',
+      visits: 'ביקורים: {n}',
+      lastVisit: 'אחרון: {date}',
+      nextVisit: 'הבא: {date}',
+      cardLeft: 'בכרטיסייה: {n}',
+      clientName: 'שם',
+      clientPhone: 'טלפון',
+      clientEmail: 'אימייל',
+      clientNotes: 'הערות (נראות רק כאן)',
+      cardSessions: 'טיפולים שנשארו בכרטיסייה',
+      cardInvalid: 'מספר בין 0 ל-100',
+      newCard: 'כרטיסייה חדשה: 4 טיפולים',
+      useSession: 'הורדת טיפול אחד',
+      history: 'היסטוריית תורים',
+      noHistory: 'אין עדיין תורים.',
+      statusCancelled: 'בוטל',
+      statusUnpaid: 'לא שולם',
+      close: 'סגירה',
+      forget: 'מחיקת הלקוח',
+      forgetConfirm: 'למחוק את {name} מרשימת הלקוחות? גם השם והפרטים יימחקו מהתורים הקודמים, ואי אפשר לבטל את זה.',
+      forgotten: 'הלקוח נמחק',
+      phoneTaken: 'כבר יש לקוח עם מספר הטלפון הזה.',
+      peopleSub: 'מי שיכול להיכנס לניהול. כל אחד נכנס עם Face\u00a0ID מהטלפון שלו.',
+      you: '(החשבון שלך)',
+      lastSignIn: 'כניסה אחרונה: {date}',
+      neverSignedIn: 'בלי כניסות עדיין',
+      removeConfirm: 'להסיר את {name} מהמנהלים? הכניסה תיחסם מיד.',
+      inviteTitle: 'הוספת מנהל או מכשיר',
+      inviteSub: 'יוצרים קישור חד-פעמי, תקף ל-48 שעות, ושולחים. פותחים אותו בטלפון, מאשרים עם Face\u00a0ID, ומאז נכנסים בלי סיסמה.',
+      inviteName: 'שם',
+      inviteNameNeeded: 'נא לכתוב שם (לפחות 2 תווים)',
+      inviteBtn: 'יצירת קישור',
+      inviteReady: 'הקישור עבור {name} מוכן. הוא עובד פעם אחת, ב-{hours} השעות הקרובות.',
+      copy: 'העתקה',
+      copied: 'הועתק',
+      shareWhatsapp: 'שליחה בוואטסאפ',
+      inviteMessage: 'קישור לכניסה לניהול האתר (עובד פעם אחת, תקף {hours} שעות): {link}',
     },
     notFound: {
       title: 'העמוד לא נמצא',
@@ -6524,6 +6658,59 @@ const dictionaries = {
       delete: 'Delete',
       deleteConfirm: 'Delete this message?',
       invalid: 'Some fields are invalid. Please check and try again.',
+      passkeyLead: 'Sign in with Face\u00a0ID or a fingerprint, no password.',
+      passkeyLogin: 'Sign in with Face\u00a0ID',
+      registerLead: 'This is a one-time invite link. Enter your name and confirm with Face\u00a0ID or a fingerprint. From then on you sign in from this device without a password.',
+      yourName: 'Your name',
+      registerBtn: 'Add Face\u00a0ID',
+      passkeyCancelled: 'The confirmation was cancelled or timed out. Please try again.',
+      passkeyFailed: "Sign-in didn't work. A new device first needs an invite link from someone who already manages the site.",
+      passkeyUnsupported: "This browser doesn't support signing in with Face\u00a0ID. Try an up-to-date Safari or Chrome.",
+      inviteInvalid: 'This invite link was already used or has expired. Ask for a new one.',
+      registered: 'Added. From now on, sign in with Face\u00a0ID.',
+      tabClients: 'Clients',
+      tabPeople: 'Admins',
+      searchClients: 'Search by name, phone or email',
+      addClient: 'Add client',
+      noClients: 'No clients yet. Anyone who books on the site is added here automatically, and you can also add clients by hand.',
+      noClientsFound: 'No clients found.',
+      openClient: 'Open',
+      visits: 'Visits: {n}',
+      lastVisit: 'Last: {date}',
+      nextVisit: 'Next: {date}',
+      cardLeft: 'On card: {n}',
+      clientName: 'Name',
+      clientPhone: 'Phone',
+      clientEmail: 'Email',
+      clientNotes: 'Notes (only shown here)',
+      cardSessions: 'Sessions left on the card',
+      cardInvalid: 'A number from 0 to 100',
+      newCard: 'New card (+4)',
+      useSession: 'Session used (−1)',
+      history: 'Booking history',
+      noHistory: 'No bookings yet.',
+      statusCancelled: 'Cancelled',
+      statusUnpaid: 'Not paid',
+      close: 'Close',
+      forget: 'Delete client',
+      forgetConfirm: 'Delete {name} from the client list? Their name and details are also erased from past bookings. This can’t be undone.',
+      forgotten: 'Client deleted',
+      phoneTaken: 'A client with this phone number already exists.',
+      peopleSub: 'Who can sign in to the admin panel. Each person signs in with Face\u00a0ID on their own phone.',
+      you: '(you)',
+      lastSignIn: 'Last sign-in: {date}',
+      neverSignedIn: 'No sign-ins yet',
+      removeConfirm: 'Remove {name} from the admins? Their sign-in stops working right away.',
+      inviteTitle: 'Add an admin or a device',
+      inviteSub: 'Create a one-time link, valid for 48 hours, and send it. Open it on the phone, confirm with Face\u00a0ID, and from then on sign in without a password.',
+      inviteName: 'Name',
+      inviteNameNeeded: 'Please enter a name (at least 2 characters)',
+      inviteBtn: 'Create link',
+      inviteReady: 'The link for {name} is ready. It works once, within the next {hours} hours.',
+      copy: 'Copy',
+      copied: 'Copied',
+      shareWhatsapp: 'Send on WhatsApp',
+      inviteMessage: 'Link to sign in to the site admin (works once, valid for {hours} hours): {link}',
     },
     notFound: {
       title: 'Page not found',
