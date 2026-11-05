@@ -44,21 +44,13 @@ You'll need David's Cloudflare account. Cloudflare's dashboard is renamed now an
    npm install
    npx wrangler login        # sign in as yourself, then choose David's account
    ```
-3. **The database.**
-   ```sh
-   npx wrangler d1 create clinic --jurisdiction eu
-   ```
-   Paste the `database_id` it prints into `wrangler.jsonc`, under `d1_databases`, and commit.
+3. **The database.** Done: `clinic`, made with `npx wrangler d1 create clinic --jurisdiction eu`, so the data stays inside the EU (Israel's rules on sending personal data abroad allow EU countries). Its `database_id` is in `wrangler.jsonc`, and its tables were made with `npx wrangler d1 migrations apply clinic --remote`. Run that again whenever a new file appears in `migrations/`.
+4. **Deploys: Cloudflare builds the site from GitHub** (Workers Builds), so every push to the branch goes live by itself, with no token needed anywhere else:
+   - Go to **Workers & Pages → Create → Import a repository** and connect GitHub.
+   - Pick this repository, name the Worker `clinic` (it must match `name` in `wrangler.jsonc`), and keep the deploy command `npx wrangler deploy`.
+   - Set the production branch to the branch the site is on.
 
-   `--jurisdiction eu` keeps the data inside the EU. Israel's rules on sending personal data abroad allow EU countries. If the option is refused, use `--location eeur` instead.
-4. **Create the tables and deploy:**
-   ```sh
-   npm run cf:deploy
-   ```
-   The site is now at `https://clinic.<account>.workers.dev`. Run `npm run cf:deploy` again for every later change, or let Cloudflare deploy each push:
-   - Go to **Workers & Pages → clinic → Settings → Builds → Connect** and pick this repository and branch.
-   - Keep the deploy command `npx wrangler deploy`.
-   - When a new file appears in `migrations/`, run `npx wrangler d1 migrations apply clinic --remote` once yourself.
+   The site is then at `https://clinic.davidneeman.workers.dev`. Deploying from a computer with `npm run cf:deploy` works too. It doesn't work from a cloud session whose network proxy adds the Cloudflare token to every request: uploading the site's files needs a short-lived upload pass instead, which the proxy replaces.
 5. **The admin panel's sign-in (Cloudflare Access).**
    1. Open **Zero Trust**. The first time, it asks for a team name (for example `davidneeman`) and a plan: choose Free.
    2. Under **Settings → Authentication**, add the **One-time PIN** login method.

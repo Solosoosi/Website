@@ -23,12 +23,13 @@
     "run_worker_first": ["/api/*", "/healthz"]
   },
 
-  // The bookings, closed days, opening hours and messages. After `wrangler d1 create clinic`,
-  // paste the database_id it prints here (worker/README.md, step 3).
+  // The bookings, closed days, opening hours and messages (made with
+  // `wrangler d1 create clinic --jurisdiction eu`: the data stays in the EU).
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "clinic",
+      "database_id": "10b4d26c-239c-41e4-b02f-645aaad9b70d",
       "migrations_dir": "migrations"
     }
   ],
