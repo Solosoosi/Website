@@ -59,6 +59,8 @@ ${header}
 ${footer}
 ${tail}`;
 body = body.replaceAll('href="/book"', 'href="#book"').replaceAll('href="/"', 'href="#top"');
+// No admin panel on GitHub Pages (no server), so no link to it.
+body = replaceOnce(body, '\n          <a href="/admin" rel="nofollow" data-i18n="footer.admin"></a>', '');
 const absolute = body.match(/href="\/[^"]*"/g);
 if (absolute) throw new Error(`build-pages: absolute links left: ${absolute.join(', ')}`);
 
