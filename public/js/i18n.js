@@ -55,6 +55,7 @@ export const dictionaries = {
       titleA: 'טיפולי',
       titleB: 'דיקור',
       ctaBook: 'לקביעת טיפול',
+      ctaMore: 'למידע על הטיפולים',
     },
     status: {
       open: 'פתוח עכשיו · עד {time}',

@@ -118,42 +118,6 @@
   color-scheme: dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #0b1311;
-    --bg-2: #0f1916;
-    --surface: #13201c;
-    --glass: rgb(20 34 30 / 0.55);
-    --glass-strong: rgb(20 34 30 / 0.86);
-    --glass-border: rgb(255 255 255 / 0.08);
-    --ink: #e4efeb;
-    --ink-2: #c2d3cd;
-    --muted: #92a7a1;
-    --line: rgb(228 239 235 / 0.1);
-    --line-strong: rgb(228 239 235 / 0.22);
-    --accent: #7fd1b9;
-    --accent-2: #a6e3d0;
-    --accent-ink: #92dcc5;
-    --on-accent: #07201a;
-    --accent-soft: #15362e;
-    --glow-1: #1c5b4c;
-    --glow-2: #23386a;
-    --glow-3: #4b2a3b;
-    --glow-4: #3b3522;
-    --open: #62d39c;
-    --success: #8fdcc4;
-    --success-soft: #133a2f;
-    --danger: #f09a8c;
-    --danger-soft: #3d221d;
-    --photo-bg: #1a2925;
-    --cursor-glow: rgb(127 209 185 / 0.16);
-    --shadow-soft: 0 18px 48px -24px rgb(0 0 0 / 0.65);
-    --shadow-lift: 0 34px 80px -30px rgb(0 0 0 / 0.75);
-    --header-bg: rgb(15 25 22 / 0.62);
-    color-scheme: dark;
-  }
-}
-
 @media (min-width: 720px) {
   :root {
     --gutter: 32px;
@@ -4498,6 +4462,41 @@ html.dock-on[data-look^='2l']:not(.dock-done) .site-header .brand:focus-visible 
 
 [data-look='2ln'] .footer-mark.is-visible .footer-logo .logo-ring {
   animation: dash-in 1.6s var(--ease) 0.1s both;
+}
+
+/* David: the logo without its dotted oval and the marks around it, everywhere it appears */
+[data-look='2ln'] :is(.hero-logo, .intro-logo, .footer-logo) :is(.logo-ring, .logo-guides) {
+  display: none;
+}
+
+/* The opening choice: two big buttons under the headline, booking first. On phones they
+   stack, full width; the treatments list follows. */
+[data-look^='2'] .hero-choice {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 520px;
+  margin: 10px 0 30px;
+  animation-delay: calc(var(--intro) + 0.25s);
+}
+
+[data-look^='2'] .hero-choice .btn {
+  justify-content: center;
+  min-height: 64px;
+  font-size: 1.15rem;
+}
+
+[data-look^='2'] .hero-choice .status {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+}
+
+@media (max-width: 560px) {
+  [data-look^='2'] .hero-choice {
+    grid-template-columns: minmax(0, 1fr);
+    margin-bottom: 24px;
+  }
 }
 
 [data-look='2ln'] .hero-title .line > .grad {

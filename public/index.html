@@ -64,11 +64,13 @@
           <h1 class="hero-title">
             <span class="line"><span data-i18n="hero.titleA"></span> <span class="grad" data-i18n="hero.titleB"></span></span>
           </h1>
-          <ul class="hero-treatments" id="hero-treatments" data-i18n-attr="aria-label:nav.treatments"></ul>
-          <div class="hero-ctas">
+          <!-- The two things people come for: book a treatment, or read about the treatments first -->
+          <div class="hero-ctas hero-choice">
             <a class="btn btn-primary btn-arrow" href="/book"><span data-i18n="hero.ctaBook"></span><span class="flip-rtl" data-icon="arrow"></span></a>
+            <a class="btn btn-outline" href="#treatments" data-i18n="hero.ctaMore"></a>
             <p class="status" data-status hidden></p>
           </div>
+          <ul class="hero-treatments" id="hero-treatments" data-i18n-attr="aria-label:nav.treatments"></ul>
         </div>
         <figure class="hero-room" aria-hidden="true" data-parallax="18">
           <img src="images/room.jpg" srcset="images/room-640.jpg 640w, images/room.jpg 960w, images/room-1440.jpg 1440w" sizes="(max-width: 900px) 92vw, 46vw" alt="" width="960" height="1200" loading="lazy">

@@ -6,9 +6,8 @@
   root.classList.add('js');
   try {
     var saved = localStorage.getItem('theme');
-    theme = saved === 'light' || saved === 'dark'
-      ? saved
-      : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // Light unless the visitor picked dark with the button (David: light is the default).
+    theme = saved === 'dark' ? 'dark' : 'light';
     lang = new URLSearchParams(location.search).get('lang') || localStorage.getItem('lang') || 'he';
     var a11y = JSON.parse(localStorage.getItem('a11y') || '{}') || {};
     if (a11y.text) root.classList.add('a11y-text-' + a11y.text);

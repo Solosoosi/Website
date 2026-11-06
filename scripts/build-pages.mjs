@@ -283,7 +283,7 @@ const script = [
   router,
 ].join('\n');
 
-// Hebrew only; theme from the visitor's saved choice or device setting.
+// Hebrew only; light unless the visitor picked dark with the button.
 const themeInit = `(function () {
   var r = document.documentElement, th = null;
   r.classList.add('js');
@@ -310,7 +310,7 @@ const themeInit = `(function () {
     }
   } catch (e) {}
   if (location.hash !== '#book') r.classList.add('bar-wait');
-  if (th !== 'light' && th !== 'dark') th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  if (th !== 'dark') th = 'light';
   r.setAttribute('data-theme', th);
   r.lang = 'he';
   r.dir = 'rtl';
