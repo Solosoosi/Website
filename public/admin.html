@@ -35,7 +35,7 @@
     <!-- Login -->
     <section id="login-view" hidden>
       <div class="panel login-card">
-        <h1 class="section-title" data-i18n="admin.loginTitle"></h1>
+        <h1 class="section-title" id="login-title" data-i18n="admin.loginTitle"></h1>
         <p class="alert alert-error" id="admin-disabled" data-i18n="admin.disabled" hidden></p>
         <form class="form" id="login-form" novalidate>
           <div class="field">
@@ -47,17 +47,21 @@
         </form>
         <a class="btn btn-outline btn-block" id="access-logout" href="/cdn-cgi/access/logout" data-i18n="admin.logout" hidden></a>
         <!-- On Cloudflare: Face ID / Touch ID (passkeys), no password -->
+        <!-- The steps are worded for a phone or a computer (admin.js → renderSignIn) -->
         <div id="passkey-login" hidden>
-          <p class="panel-sub" data-i18n="admin.passkeyLead"></p>
+          <ol class="steps" id="passkey-steps"></ol>
           <button class="btn btn-primary btn-block" type="button" id="passkey-btn" data-i18n="admin.passkeyLogin"></button>
+          <p class="panel-sub login-note" id="passkey-note"></p>
         </div>
         <form class="form" id="register-form" novalidate hidden>
-          <p class="panel-sub" data-i18n="admin.registerLead"></p>
+          <p class="alert alert-info" id="register-computer" data-i18n="admin.inviteOnComputer" hidden></p>
+          <ol class="steps" id="register-steps"></ol>
           <div class="field">
             <label for="reg-name" data-i18n="admin.yourName"></label>
             <input id="reg-name" name="name" autocomplete="name" maxlength="60" required>
           </div>
-          <button class="btn btn-primary btn-block" type="submit" data-i18n="admin.registerBtn"></button>
+          <button class="btn btn-primary btn-block" type="submit" id="register-btn" data-i18n="admin.registerBtn"></button>
+          <p class="panel-sub login-note" data-i18n="admin.inviteOnce"></p>
         </form>
         <div id="passkey-alert" role="status"></div>
       </div>
@@ -70,6 +74,14 @@
         <div class="toolbar">
           <a class="btn btn-outline btn-sm" href="/" data-i18n="admin.viewSite"></a>
           <button class="btn btn-ghost btn-sm" type="button" id="logout" data-i18n="admin.logout"></button>
+        </div>
+      </div>
+
+      <!-- Just joined: how to come back next time -->
+      <div class="panel device-offer" id="welcome" role="status" hidden>
+        <p id="welcome-text"></p>
+        <div class="toolbar">
+          <button class="btn btn-primary btn-sm" type="button" id="welcome-close" data-i18n="admin.gotIt"></button>
         </div>
       </div>
 

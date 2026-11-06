@@ -5624,6 +5624,37 @@ html.js .reveal:not(.is-visible) {
   flex: 1 1 180px;
 }
 
+/* The sign-in card: a title that fits, then the steps */
+.login-card {
+  max-width: 440px;
+}
+
+.login-card .section-title {
+  margin: 0 0 18px;
+  font-size: clamp(1.9rem, 7vw, 2.3rem);
+  line-height: 1.15;
+}
+
+/* The sign-in steps */
+.steps {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 20px;
+  padding-inline-start: 22px;
+  color: var(--ink-2);
+}
+
+.login-note {
+  margin: 16px 0 0;
+  font-size: 0.9rem;
+}
+
+.alert-info {
+  margin-bottom: 16px;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
 /* Signed in with the phone on a computer: the offer to save the sign-in here */
 .device-offer {
   margin-bottom: 16px;
@@ -6367,7 +6398,6 @@ const dictionaries = {
       delete: 'מחיקה',
       deleteConfirm: 'למחוק את ההודעה?',
       invalid: 'יש שדות לא תקינים. נא לבדוק ולנסות שוב.',
-      passkeyLead: 'נכנסים עם Face\u00a0ID או עם קוד הנעילה של הטלפון. במחשב: לוחצים על הכפתור, בוחרים בטלפון וסורקים איתו את הקוד שמופיע.',
       deviceOffer: 'נכנסתם עם הטלפון. לשמור את הכניסה גם במחשב הזה? בפעם הבאה תיכנסו ממנו ישירות.',
       addDevice: 'שמירת כניסה במכשיר הזה',
       notNow: 'לא עכשיו',
@@ -6376,14 +6406,32 @@ const dictionaries = {
       reauth: 'כדי לשמור כניסה במכשיר, צריך להיכנס מחדש: יציאה, ואז כניסה.',
       devices: 'מכשירים: {n}',
       passkeyLogin: 'כניסה עם Face\u00a0ID',
-      registerLead: 'זה קישור הזמנה חד-פעמי. כתבו את השם שלכם ואשרו עם Face\u00a0ID או עם קוד הנעילה של הטלפון. בפעמים הבאות נכנסים מ"ניהול" בתחתית האתר.',
+      signInTitle: 'כניסה לניהול האתר',
+      joinTitle: 'הצטרפות לניהול האתר',
+      phoneStep1: 'לוחצים על "כניסה עם Face\u00a0ID".',
+      phoneStep2: 'מאשרים עם Face\u00a0ID, או עם קוד הנעילה של הטלפון.',
+      phoneNote: 'פעם ראשונה מהטלפון הזה? צריך קודם קישור הזמנה ממי שכבר מנהל את האתר.',
+      pcLogin: 'כניסה',
+      pcStep1: 'לוחצים על "כניסה".',
+      pcStep2: 'אם הכניסה שמורה במחשב הזה: מאשרים עם טביעת אצבע, פנים או הקוד של המחשב.',
+      pcStep3: 'אם לא: בחלון שנפתח בוחרים בטלפון, וסורקים את הקוד עם המצלמה של הטלפון. Bluetooth צריך להיות פתוח בשניהם.',
+      pcNote: 'אחרי שנכנסים עם הטלפון, אפשר לשמור את הכניסה במחשב, ואז לא צריך אותו יותר.',
+      joinStep1: 'כותבים את השם שלכם.',
+      joinStep2: 'לוחצים על "הוספת Face\u00a0ID" ומאשרים עם Face\u00a0ID או עם קוד הנעילה.',
+      joinStep2pc: 'לוחצים על "הוספת הכניסה" ומאשרים עם טביעת אצבע, פנים או הקוד של המחשב.',
+      joinStep3: 'זהו. בפעמים הבאות נכנסים מ"ניהול" בתחתית האתר.',
+      registerBtnPc: 'הוספת הכניסה',
+      inviteOnComputer: 'הקישור הזה מיועד לטלפון: הכי פשוט לפתוח אותו באייפון. אפשר גם להמשיך כאן, ואז הכניסה תישמר במחשב הזה.',
+      inviteOnce: 'הקישור עובד פעם אחת בלבד.',
+      welcome: 'הכל מוכן! בפעם הבאה: "ניהול" בתחתית האתר, ואז "כניסה עם Face\u00a0ID".',
+      welcomePc: 'הכל מוכן! בפעם הבאה: "ניהול" בתחתית האתר, ואז "כניסה".',
+      gotIt: 'הבנתי',
       yourName: 'השם שלך',
       registerBtn: 'הוספת Face\u00a0ID',
       passkeyCancelled: 'האישור בוטל או שעבר הזמן. אפשר לנסות שוב.',
-      passkeyFailed: 'הכניסה לא הצליחה. מכשיר חדש צריך קודם קישור הזמנה ממי שכבר מנהל את האתר.',
+      passkeyFailed: 'הכניסה לא הצליחה. אם זה מכשיר חדש: בטלפון צריך קישור הזמנה, ובמחשב בוחרים בטלפון וסורקים את הקוד.',
       passkeyUnsupported: 'הדפדפן הזה לא תומך בכניסה עם Face\u00a0ID. אפשר לנסות בספארי או בכרום מעודכנים.',
       inviteInvalid: 'קישור ההזמנה כבר שומש או שפג תוקפו. צריך לבקש קישור חדש.',
-      registered: 'נוסף. מעכשיו נכנסים עם Face\u00a0ID.',
       tabClients: 'לקוחות',
       tabPeople: 'מנהלים',
       searchClients: 'חיפוש לפי שם, טלפון או אימייל',
@@ -6680,7 +6728,6 @@ const dictionaries = {
       delete: 'Delete',
       deleteConfirm: 'Delete this message?',
       invalid: 'Some fields are invalid. Please check and try again.',
-      passkeyLead: "Sign in with Face\u00a0ID or your phone's passcode. On a computer: click the button, choose your phone, and scan the code with it.",
       deviceOffer: 'You signed in with your phone. Save the sign-in on this computer too? Next time you can sign in from it directly.',
       addDevice: 'Save sign-in on this device',
       notNow: 'Not now',
@@ -6689,14 +6736,32 @@ const dictionaries = {
       reauth: 'To save the sign-in on a device, sign in again: log out, then sign in.',
       devices: 'Devices: {n}',
       passkeyLogin: 'Sign in with Face\u00a0ID',
-      registerLead: "This is a one-time invite link. Enter your name and confirm with Face\u00a0ID or your phone's passcode. Next time, sign in from \"Admin\" at the bottom of the site.",
+      signInTitle: 'Sign in to the site admin',
+      joinTitle: 'Join the site admin',
+      phoneStep1: 'Tap "Sign in with Face\u00a0ID".',
+      phoneStep2: "Confirm with Face\u00a0ID, or with your phone's passcode.",
+      phoneNote: 'First time on this phone? You need an invite link from someone who already manages the site.',
+      pcLogin: 'Sign in',
+      pcStep1: 'Click "Sign in".',
+      pcStep2: "If the sign-in is saved on this computer: confirm with your fingerprint, face or the computer's PIN.",
+      pcStep3: "If not: in the window that opens, choose your phone and scan the code with the phone's camera. Bluetooth must be on in both.",
+      pcNote: "After signing in with the phone, you can save the sign-in on this computer and won't need the phone again.",
+      joinStep1: 'Enter your name.',
+      joinStep2: 'Tap "Add Face\u00a0ID" and confirm with Face\u00a0ID or your passcode.',
+      joinStep2pc: 'Click "Add sign-in" and confirm with your fingerprint, face or the computer\'s PIN.',
+      joinStep3: 'That\'s it. Next time, sign in from "Admin" at the bottom of the site.',
+      registerBtnPc: 'Add sign-in',
+      inviteOnComputer: 'This link is meant for a phone: the easiest is to open it on the iPhone. You can also continue here, and the sign-in will be saved on this computer.',
+      inviteOnce: 'The link works only once.',
+      welcome: 'All set! Next time: "Admin" at the bottom of the site, then "Sign in with Face\u00a0ID".',
+      welcomePc: 'All set! Next time: "Admin" at the bottom of the site, then "Sign in".',
+      gotIt: 'Got it',
       yourName: 'Your name',
       registerBtn: 'Add Face\u00a0ID',
       passkeyCancelled: 'The confirmation was cancelled or timed out. Please try again.',
-      passkeyFailed: "Sign-in didn't work. A new device first needs an invite link from someone who already manages the site.",
+      passkeyFailed: "Sign-in didn't work. On a new device: a phone needs an invite link; on a computer, choose your phone and scan the code.",
       passkeyUnsupported: "This browser doesn't support signing in with Face\u00a0ID. Try an up-to-date Safari or Chrome.",
       inviteInvalid: 'This invite link was already used or has expired. Ask for a new one.',
-      registered: 'Added. From now on, sign in with Face\u00a0ID.',
       tabClients: 'Clients',
       tabPeople: 'Admins',
       searchClients: 'Search by name, phone or email',

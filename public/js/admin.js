@@ -63,6 +63,7 @@ async function guarded(fn) {
 function showLogin() {
   $('dashboard').hidden = true;
   $('device-offer').hidden = true;
+  $('welcome').hidden = true;
   $('login-view').hidden = false;
   if (state.passkeys) {
     // A one-time link (#invite=…) adds this phone's passkey; otherwise sign in with it.
@@ -70,6 +71,7 @@ function showLogin() {
     for (const id of ['login-form', 'admin-disabled', 'access-logout']) $(id).hidden = true;
     $('passkey-login').hidden = invite;
     $('register-form').hidden = !invite;
+    renderSignIn();
     return;
   }
   if (state.access) {
@@ -103,6 +105,29 @@ const fromB64 = (s) => {
 };
 const toB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const inviteCode = () => /^#invite=([\w-]{20,100})$/.exec(location.hash)?.[1] || '';
+// A phone or tablet signs in with its own Face ID; a computer, usually, with the phone.
+const onPhone = () => /iPhone|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+
+/** Sets an element's text from a key, so a language switch re-translates it. */
+function setText(id, key) {
+  $(id).dataset.i18n = key;
+  $(id).textContent = t(key);
+}
+
+/** The sign-in screens: a few short steps, worded for a phone or for a computer. */
+function renderSignIn() {
+  if (!state.passkeys) return;
+  const phone = onPhone();
+  const steps = (id, keys) => $(id).replaceChildren(...keys.map((k) => el('li', {}, t(k))));
+  setText('login-title', inviteCode() ? 'admin.joinTitle' : 'admin.signInTitle');
+  steps('passkey-steps', phone ? ['admin.phoneStep1', 'admin.phoneStep2'] : ['admin.pcStep1', 'admin.pcStep2', 'admin.pcStep3']);
+  setText('passkey-btn', phone ? 'admin.passkeyLogin' : 'admin.pcLogin');
+  setText('passkey-note', phone ? 'admin.phoneNote' : 'admin.pcNote');
+  steps('register-steps', ['admin.joinStep1', phone ? 'admin.joinStep2' : 'admin.joinStep2pc', 'admin.joinStep3']);
+  setText('register-btn', phone ? 'admin.registerBtn' : 'admin.registerBtnPc');
+  $('register-computer').hidden = phone;
+}
+onLangChange(renderSignIn);
 const canPasskey = () => typeof window.PublicKeyCredential === 'function' && Boolean(navigator.credentials?.get);
 
 function passkeyMessage(err) {
@@ -138,8 +163,8 @@ $('passkey-btn').addEventListener('click', async () => {
         },
       },
     });
-    await showDashboard();
     if (cred.authenticatorAttachment === 'cross-platform') offerThisDevice();
+    await showDashboard();
   } catch (err) {
     alertIn('passkey-alert', 'error', t(passkeyMessage(err)));
   } finally {
@@ -203,6 +228,7 @@ async function addThisDevice() {
 }
 
 $('device-offer-add').addEventListener('click', addThisDevice);
+$('welcome-close').addEventListener('click', () => ($('welcome').hidden = true));
 $('device-offer-close').addEventListener('click', () => ($('device-offer').hidden = true));
 
 $('register-form').addEventListener('submit', async (e) => {
@@ -238,8 +264,9 @@ $('register-form').addEventListener('submit', async (e) => {
       },
     });
     history.replaceState(null, '', location.pathname); // the link is used up
-    toast(t('admin.registered'));
-    showDashboard();
+    setText('welcome-text', onPhone() ? 'admin.welcome' : 'admin.welcomePc');
+    $('welcome').hidden = false;
+    await showDashboard();
   } catch (err) {
     alertIn('passkey-alert', 'error', t(passkeyMessage(err)));
   } finally {

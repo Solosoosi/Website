@@ -5567,6 +5567,37 @@ html.js .reveal:not(.is-visible) {
   flex: 1 1 180px;
 }
 
+/* The sign-in card: a title that fits, then the steps */
+.login-card {
+  max-width: 440px;
+}
+
+.login-card .section-title {
+  margin: 0 0 18px;
+  font-size: clamp(1.9rem, 7vw, 2.3rem);
+  line-height: 1.15;
+}
+
+/* The sign-in steps */
+.steps {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 20px;
+  padding-inline-start: 22px;
+  color: var(--ink-2);
+}
+
+.login-note {
+  margin: 16px 0 0;
+  font-size: 0.9rem;
+}
+
+.alert-info {
+  margin-bottom: 16px;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
 /* Signed in with the phone on a computer: the offer to save the sign-in here */
 .device-offer {
   margin-bottom: 16px;
