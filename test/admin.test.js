@@ -94,7 +94,11 @@ async function softPasskey({ counting = false } = {}) {
 
 function setup(vars = {}) {
   const env = { DB: fakeD1(), BOOKING_MODE: 'online', ...vars };
-  const worker = createWorker({ config, clock: () => new Date('2026-10-01T05:00:00Z'), log: silent });
+  let now = new Date('2026-10-01T05:00:00Z');
+  const worker = createWorker({ config, clock: () => now, log: silent });
+  const advance = (minutes) => {
+    now = new Date(now.getTime() + minutes * 60_000);
+  };
   const waits = [];
   const ctx = { waitUntil: (p) => waits.push(p) };
   const call = async (path, { method = 'GET', body, cookie } = {}) => {
@@ -128,7 +132,7 @@ function setup(vars = {}) {
     return call('/api/admin/passkey/login/finish', { method: 'POST', body: { id: start.body.id, credential: await key.get(start.body.publicKey, opts) } });
   };
   const cookieOf = (res) => res.headers.get('set-cookie')?.split(';')[0];
-  return { env, call, invite, register, login, cookieOf, settle: () => Promise.all(waits) };
+  return { env, call, invite, register, login, cookieOf, advance, settle: () => Promise.all(waits) };
 }
 
 test('Face ID: a one-time link adds a passkey, then the passkey signs in', async () => {
@@ -213,6 +217,53 @@ test('people: invite another person, list them, remove them (their passkey stops
   assert.equal((await call(`/api/admin/admins/${davidId}`, { method: 'DELETE', body: {}, cookie: me })).status, 200);
   assert.equal((await login(david)).status, 401);
   assert.equal((await login(mine)).status, 200);
+});
+
+test('saving the sign-in on a computer: the same person gets a second passkey, only right after signing in', async () => {
+  const { call, invite, register, login, cookieOf, advance } = setup();
+  const phone = await softPasskey();
+  const me = cookieOf(await register(phone, await invite(), 'דוד'));
+  const add = async (key, cookie) => {
+    const start = await call('/api/admin/passkey/add/start', { method: 'POST', body: {}, cookie });
+    if (start.status !== 200) return start;
+    return call('/api/admin/passkey/add/finish', { method: 'POST', body: { id: start.body.id, credential: await key.create(start.body.publicKey) }, cookie });
+  };
+
+  const start = await call('/api/admin/passkey/add/start', { method: 'POST', body: {}, cookie: me });
+  assert.equal(start.status, 200);
+  // The phone already holds a passkey, and this asks for the computer's own one.
+  assert.deepEqual(start.body.publicKey.excludeCredentials, [{ type: 'public-key', id: phone.id }]);
+  assert.equal(start.body.publicKey.authenticatorSelection.authenticatorAttachment, 'platform');
+
+  const computer = await softPasskey();
+  assert.equal((await add(computer, me)).status, 201);
+  const { body } = await call('/api/admin/admins', { cookie: me });
+  assert.deepEqual(body.admins.map((a) => [a.name, a.passkeys]), [['דוד', 2]]);
+  const viaComputer = await login(computer);
+  assert.equal(viaComputer.status, 200);
+  assert.equal(viaComputer.body.name, 'דוד');
+  assert.equal((await login(phone)).status, 200);
+
+  // The same device twice: refused.
+  assert.equal((await add(computer, me)).status, 409);
+
+  // One person's challenge can't add a passkey to someone else.
+  const other = cookieOf(await register(await softPasskey(), await invite(), 'שני'));
+  const mine = await call('/api/admin/passkey/add/start', { method: 'POST', body: {}, cookie: me });
+  const crossed = await call('/api/admin/passkey/add/finish', {
+    method: 'POST',
+    body: { id: mine.body.id, credential: await (await softPasskey()).create(mine.body.publicKey) },
+    cookie: other,
+  });
+  assert.equal(crossed.status, 400);
+
+  // Later in the session: sign in again first. And never without signing in.
+  advance(20);
+  const late = await call('/api/admin/passkey/add/start', { method: 'POST', body: {}, cookie: me });
+  assert.equal(late.status, 403);
+  assert.equal(late.body.error, 'reauth_required');
+  assert.equal((await call('/api/admin/passkey/add/start', { method: 'POST', body: {} })).status, 401);
+  assert.equal((await call('/api/admin/passkey/add/finish', { method: 'POST', body: { id: 'x', credential: {} } })).status, 401);
 });
 
 test('without signing in, none of the admin data is reachable', async () => {

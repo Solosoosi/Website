@@ -62,6 +62,9 @@ export function openAdminStore(db, clock = () => new Date()) {
         .prepare('SELECT p.*, a.name FROM passkeys p JOIN admins a ON a.id = p.admin_id WHERE p.id = ?')
         .bind(String(id ?? ''))
         .first(),
+    /** The ids of a person's passkeys: a device that already holds one isn't added twice. */
+    passkeyIds: async (adminId) =>
+      (await db.prepare('SELECT id FROM passkeys WHERE admin_id = ? ORDER BY created_at').bind(adminId).all()).results.map((r) => r.id),
     touchPasskey: (id, signCount) =>
       db.prepare('UPDATE passkeys SET sign_count = ?, last_used_at = ? WHERE id = ?').bind(signCount, now(), id).run(),
     listAdmins: async () =>
@@ -89,7 +92,7 @@ export function openAdminStore(db, clock = () => new Date()) {
       db.prepare('INSERT INTO sessions (id_hash, admin_id, expires_at) VALUES (?, ?, ?)').bind(hash, adminId, later(hours * 60)).run(),
     sessionAdmin: (hash) =>
       db
-        .prepare('SELECT a.id, a.name FROM sessions s JOIN admins a ON a.id = s.admin_id WHERE s.id_hash = ? AND s.expires_at > ?')
+        .prepare('SELECT a.id, a.name, a.handle, s.expires_at FROM sessions s JOIN admins a ON a.id = s.admin_id WHERE s.id_hash = ? AND s.expires_at > ?')
         .bind(hash, now())
         .first(),
     endSession: (hash) => db.prepare('DELETE FROM sessions WHERE id_hash = ?').bind(hash).run(),

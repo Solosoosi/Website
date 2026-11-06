@@ -62,6 +62,7 @@ async function guarded(fn) {
 
 function showLogin() {
   $('dashboard').hidden = true;
+  $('device-offer').hidden = true;
   $('login-view').hidden = false;
   if (state.passkeys) {
     // A one-time link (#invite=…) adds this phone's passkey; otherwise sign in with it.
@@ -137,13 +138,72 @@ $('passkey-btn').addEventListener('click', async () => {
         },
       },
     });
-    showDashboard();
+    await showDashboard();
+    if (cred.authenticatorAttachment === 'cross-platform') offerThisDevice();
   } catch (err) {
     alertIn('passkey-alert', 'error', t(passkeyMessage(err)));
   } finally {
     button.disabled = false;
   }
 });
+
+/** Signed in with the phone on a device that has its own Face ID, Touch ID or Windows Hello. */
+async function offerThisDevice() {
+  const here = await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable?.().catch(() => false);
+  if (here) $('device-offer').hidden = false;
+}
+
+/** Saves the sign-in on this device: one more passkey for the person signed in. */
+async function addThisDevice() {
+  if (!canPasskey()) return toast(t('admin.passkeyUnsupported'));
+  try {
+    const start = await api('/api/admin/passkey/add/start', { method: 'POST', body: {} });
+    const pk = start.publicKey;
+    const cred = await navigator.credentials.create({
+      publicKey: {
+        ...pk,
+        challenge: fromB64(pk.challenge),
+        user: { ...pk.user, id: fromB64(pk.user.id) },
+        excludeCredentials: pk.excludeCredentials.map((c) => ({ ...c, id: fromB64(c.id) })),
+      },
+    });
+    const r = cred.response;
+    await api('/api/admin/passkey/add/finish', {
+      method: 'POST',
+      body: {
+        id: start.id,
+        credential: {
+          id: cred.id,
+          rawId: toB64(cred.rawId),
+          type: cred.type,
+          response: {
+            clientDataJSON: toB64(r.clientDataJSON),
+            authenticatorData: toB64(r.getAuthenticatorData()),
+            publicKey: toB64(r.getPublicKey()),
+            publicKeyAlgorithm: r.getPublicKeyAlgorithm(),
+            transports: r.getTransports?.() || [],
+          },
+        },
+      },
+    });
+    $('device-offer').hidden = true;
+    toast(t('admin.deviceAdded'));
+    if (state.passkeys) loadPeople();
+  } catch (err) {
+    if (err.status === 401) return showLogin();
+    // A device that already holds the sign-in says so before Face ID is even asked.
+    const key =
+      err.name === 'InvalidStateError' || err.status === 409
+        ? 'admin.deviceAlready'
+        : err.data?.error === 'reauth_required'
+          ? 'admin.reauth'
+          : passkeyMessage(err);
+    toast(t(key));
+  }
+}
+
+$('device-offer-add').addEventListener('click', addThisDevice);
+$('device-offer-close').addEventListener('click', () => ($('device-offer').hidden = true));
 
 $('register-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -684,13 +744,17 @@ function renderPeople() {
           'div',
           { class: 'item-body' },
           el('h3', {}, a.name, a.id === state.me ? ` ${t('admin.you')}` : ''),
-          el('p', {}, a.last_used ? t('admin.lastSignIn', { date: fmtMoment(a.last_used) }) : t('admin.neverSignedIn')),
+          el(
+            'p',
+            {},
+            [a.last_used ? t('admin.lastSignIn', { date: fmtMoment(a.last_used) }) : t('admin.neverSignedIn'), t('admin.devices', { n: a.passkeys })].join(' · '),
+          ),
         ),
         el(
           'div',
           { class: 'item-actions' },
           a.id === state.me
-            ? ''
+            ? el('button', { type: 'button', class: 'btn btn-outline btn-sm', onclick: addThisDevice }, t('admin.addDevice'))
             : el('button', {
                 type: 'button',
                 class: 'btn btn-danger btn-sm',

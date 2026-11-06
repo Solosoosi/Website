@@ -5624,6 +5624,19 @@ html.js .reveal:not(.is-visible) {
   flex: 1 1 180px;
 }
 
+/* Signed in with the phone on a computer: the offer to save the sign-in here */
+.device-offer {
+  margin-bottom: 16px;
+}
+
+.device-offer p {
+  margin: 0 0 12px;
+}
+
+.device-offer .toolbar {
+  margin-bottom: 0;
+}
+
 /* Clients and admins: rows without a date box */
 .item.item-plain {
   grid-template-columns: 1fr auto;
@@ -6354,7 +6367,14 @@ const dictionaries = {
       delete: 'מחיקה',
       deleteConfirm: 'למחוק את ההודעה?',
       invalid: 'יש שדות לא תקינים. נא לבדוק ולנסות שוב.',
-      passkeyLead: 'נכנסים עם Face\u00a0ID או עם קוד הנעילה של הטלפון.',
+      passkeyLead: 'נכנסים עם Face\u00a0ID או עם קוד הנעילה של הטלפון. במחשב: לוחצים על הכפתור, בוחרים בטלפון וסורקים איתו את הקוד שמופיע.',
+      deviceOffer: 'נכנסתם עם הטלפון. לשמור את הכניסה גם במחשב הזה? בפעם הבאה תיכנסו ממנו ישירות.',
+      addDevice: 'שמירת כניסה במכשיר הזה',
+      notNow: 'לא עכשיו',
+      deviceAdded: 'נשמר. מעכשיו אפשר להיכנס מהמכשיר הזה ישירות.',
+      deviceAlready: 'הכניסה כבר שמורה במכשיר הזה.',
+      reauth: 'כדי לשמור כניסה במכשיר, צריך להיכנס מחדש: יציאה, ואז כניסה.',
+      devices: 'מכשירים: {n}',
       passkeyLogin: 'כניסה עם Face\u00a0ID',
       registerLead: 'זה קישור הזמנה חד-פעמי. כתבו את השם שלכם ואשרו עם Face\u00a0ID או עם קוד הנעילה של הטלפון. בפעמים הבאות נכנסים מ"ניהול" בתחתית האתר.',
       yourName: 'השם שלך',
@@ -6392,7 +6412,7 @@ const dictionaries = {
       forgetConfirm: 'למחוק את {name} מרשימת הלקוחות? גם השם והפרטים יימחקו מהתורים הקודמים, ואי אפשר לבטל את זה.',
       forgotten: 'הלקוח נמחק',
       phoneTaken: 'כבר יש לקוח עם מספר הטלפון הזה.',
-      peopleSub: 'מי שיכול להיכנס לניהול. כל אחד נכנס עם Face\u00a0ID מהטלפון שלו.',
+      peopleSub: 'מי שיכול להיכנס לניהול. כל אחד נכנס עם Face\u00a0ID מהטלפון שלו, ואפשר לשמור את הכניסה גם במחשב.',
       you: '(החשבון שלך)',
       lastSignIn: 'כניסה אחרונה: {date}',
       neverSignedIn: 'בלי כניסות עדיין',
@@ -6660,7 +6680,14 @@ const dictionaries = {
       delete: 'Delete',
       deleteConfirm: 'Delete this message?',
       invalid: 'Some fields are invalid. Please check and try again.',
-      passkeyLead: "Sign in with Face\u00a0ID or your phone's passcode.",
+      passkeyLead: "Sign in with Face\u00a0ID or your phone's passcode. On a computer: click the button, choose your phone, and scan the code with it.",
+      deviceOffer: 'You signed in with your phone. Save the sign-in on this computer too? Next time you can sign in from it directly.',
+      addDevice: 'Save sign-in on this device',
+      notNow: 'Not now',
+      deviceAdded: 'Saved. You can now sign in from this device directly.',
+      deviceAlready: 'The sign-in is already saved on this device.',
+      reauth: 'To save the sign-in on a device, sign in again: log out, then sign in.',
+      devices: 'Devices: {n}',
       passkeyLogin: 'Sign in with Face\u00a0ID',
       registerLead: "This is a one-time invite link. Enter your name and confirm with Face\u00a0ID or your phone's passcode. Next time, sign in from \"Admin\" at the bottom of the site.",
       yourName: 'Your name',
@@ -6698,7 +6725,7 @@ const dictionaries = {
       forgetConfirm: 'Delete {name} from the client list? Their name and details are also erased from past bookings. This can’t be undone.',
       forgotten: 'Client deleted',
       phoneTaken: 'A client with this phone number already exists.',
-      peopleSub: 'Who can sign in to the admin panel. Each person signs in with Face\u00a0ID on their own phone.',
+      peopleSub: 'Who can sign in to the admin panel. Each person signs in with Face\u00a0ID on their own phone, and can save the sign-in on a computer too.',
       you: '(you)',
       lastSignIn: 'Last sign-in: {date}',
       neverSignedIn: 'No sign-ins yet',

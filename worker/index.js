@@ -42,6 +42,8 @@ const ACCESS_LOGOUT = '/cdn-cgi/access/logout';
 // sent from another site, and valid for 12 hours.
 const SESSION_COOKIE = '__Host-admin';
 const SESSION_HOURS = 12;
+// Saving the sign-in on another device is allowed only this soon after signing in.
+const FRESH_MINUTES = 15;
 const sessionCookie = (token, hours = SESSION_HOURS) =>
   `${SESSION_COOKIE}=${token}; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=${Math.round(hours * 3600)}`;
 const HOLD_MINUTES = 20; // how long a time stays held while the client pays
@@ -84,7 +86,10 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
     const token = readCookie(request, SESSION_COOKIE);
     if (token) {
       const admin = await openAdminStore(env.DB, clock).sessionAdmin(await hashCode(token));
-      if (admin) return { id: admin.id, name: admin.name };
+      if (admin) {
+        const signedInAt = Date.parse(admin.expires_at) - SESSION_HOURS * 3_600_000;
+        return { id: admin.id, name: admin.name, handle: admin.handle, signedInAt };
+      }
     }
     const settings = accessSettings(env);
     const viaAccess = settings && (await verifyAccess(request, settings, { fetch: fetchImpl, now: clock().getTime() }));
@@ -449,6 +454,49 @@ export function createWorker({ config = siteConfig, clock = () => new Date(), fe
     if (path.startsWith('/api/admin/')) {
       const me = await requireAdmin(request, env);
       const today = now().date;
+
+      // ---------- Saving the sign-in on this device: one more passkey for the same person ----------
+      // Only right after signing in (on a computer, usually with the phone), so a session cookie
+      // alone can never add a passkey later.
+      if (route === 'POST /api/admin/passkey/add/start') {
+        if (!me.id) throw new HttpError(403, 'passkeys_only');
+        if (clock().getTime() - me.signedInAt > FRESH_MINUTES * 60_000) throw new HttpError(403, 'reauth_required');
+        const id = randomCode(16);
+        const challenge = randomCode(32);
+        await admins.addChallenge({ id, challenge, purpose: 'add', handle: me.handle });
+        const existing = await admins.passkeyIds(me.id);
+        return json({
+          id,
+          publicKey: {
+            challenge,
+            rp: { name: config.business.name.he, id: url.hostname },
+            user: { id: me.handle, name: me.name, displayName: me.name },
+            pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+            // This device's own Face ID, Touch ID or Windows Hello, not the phone again.
+            authenticatorSelection: { authenticatorAttachment: 'platform', residentKey: 'required', userVerification: 'required' },
+            excludeCredentials: existing.map((cid) => ({ type: 'public-key', id: cid })),
+            attestation: 'none',
+            timeout: 120_000,
+          },
+        });
+      }
+
+      if (route === 'POST /api/admin/passkey/add/finish') {
+        if (!me.id) throw new HttpError(403, 'passkeys_only');
+        if (await overLimit(env.FORMS_LIMIT, `${ip} admin`)) throw tooMany();
+        const challenge = await admins.takeChallenge(body.id, 'add');
+        if (!challenge || challenge.handle !== me.handle) throw new HttpError(400, 'challenge_expired');
+        let passkey;
+        try {
+          passkey = await verifyRegistration(body.credential, { challenge: challenge.challenge, origin: url.origin, rpId: url.hostname });
+        } catch (err) {
+          if (err instanceof PasskeyError) throw new HttpError(400, 'passkey_failed');
+          throw err;
+        }
+        if (await admins.passkey(passkey.id)) throw new HttpError(409, 'already_added');
+        await admins.addPasskey({ ...passkey, adminId: me.id, rpId: url.hostname });
+        return json({ ok: true }, 201);
+      }
 
       // ---------- The people who may sign in ----------
       if (route === 'GET /api/admin/admins') return json({ admins: await admins.listAdmins(), me: me.id ?? null });

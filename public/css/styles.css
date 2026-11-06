@@ -5567,6 +5567,19 @@ html.js .reveal:not(.is-visible) {
   flex: 1 1 180px;
 }
 
+/* Signed in with the phone on a computer: the offer to save the sign-in here */
+.device-offer {
+  margin-bottom: 16px;
+}
+
+.device-offer p {
+  margin: 0 0 12px;
+}
+
+.device-offer .toolbar {
+  margin-bottom: 0;
+}
+
 /* Clients and admins: rows without a date box */
 .item.item-plain {
   grid-template-columns: 1fr auto;

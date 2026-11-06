@@ -73,6 +73,15 @@
         </div>
       </div>
 
+      <!-- Signed in on a computer with the phone: offer to save the sign-in on this computer -->
+      <div class="panel device-offer" id="device-offer" role="status" hidden>
+        <p data-i18n="admin.deviceOffer"></p>
+        <div class="toolbar">
+          <button class="btn btn-primary btn-sm" type="button" id="device-offer-add" data-i18n="admin.addDevice"></button>
+          <button class="btn btn-ghost btn-sm" type="button" id="device-offer-close" data-i18n="admin.notNow"></button>
+        </div>
+      </div>
+
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" id="tab-bookings" aria-controls="panel-bookings" aria-selected="true" data-tab="bookings" data-i18n="admin.tabBookings"></button>
         <button class="tab" role="tab" id="tab-clients" aria-controls="panel-clients" aria-selected="false" data-tab="clients" data-i18n="admin.tabClients" hidden></button>

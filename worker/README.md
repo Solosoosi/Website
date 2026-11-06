@@ -58,6 +58,7 @@ You'll need David's Cloudflare account. Cloudflare's dashboard is renamed now an
      ```
      It prints the link. Open it on the phone, write a name, confirm with Face ID, and the panel opens.
    - **Everyone after that:** in the panel, **מנהלים → יצירת קישור**, then send the link (WhatsApp or copy). Each link works once, within 48 hours. The same tab shows who can sign in, and removing someone stops their sign-in at once.
+   - **On a computer:** click the sign-in button, choose the phone, and scan the code with it (Bluetooth on in both). Right after, the panel offers to save the sign-in on that computer (Windows Hello or Touch ID). It's added to the same person, as a second device; **מנהלים** shows how many devices each person has. Saving is allowed only in the 15 minutes after signing in, so a session alone can't add a device later.
    - A signed-in session lasts 12 hours, in a cookie scripts can't read. Signing in is limited to a few tries a minute per visitor.
    - A passkey works only on the address it was made on. After the site moves to its domain (step 6), make a new first link for the new address with the command above.
 
